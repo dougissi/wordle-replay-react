@@ -1,10 +1,27 @@
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
+import ResponsiveAppBar from './components/ResponsiveAppBar';
+import GuessesBoard from './components/GuessesBoard';
+import Keyboard from './components/Keyboard';
+// import useScreenSize from './components/useScreenSize';
 
 function App() {
+  // const screenSize = useScreenSize();
+
   return (
     <div className="App">
-      <header className="App-header">
+      <ResponsiveAppBar />
+      {/* <div>
+        <h1>Screen Size Detection with React Hook</h1>
+        <p>Width: {screenSize.width}</p>
+        <p>Height: {screenSize.height}</p>
+      </div> */}
+
+      <GuessesBoard />
+      <Keyboard />
+
+      {/* Default create-react-app screen */}
+      {/* <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.
@@ -17,7 +34,7 @@ function App() {
         >
           Learn React
         </a>
-      </header>
+      </header> */}
     </div>
   );
 }
