@@ -1,21 +1,18 @@
 import { useTheme } from '@mui/material/styles';
-import useScreenSize from './useScreenSize';
 import Stack from '@mui/material/Stack';
 import Paper from '@mui/material/Paper';
+import { backspaceSymbol } from '../utils';
 
-// import KeyboardKey from './KeyboardKey';
-
-function Keyboard() {
-    const screenSize = useScreenSize();
+function Keyboard({ screenSize, answer, handleInputText }) {
     const theme = useTheme();
 
     const keyboardVerticalPctOfScreen = 0.25;
     const numRows = 3;
     const rowHeight = screenSize.height * keyboardVerticalPctOfScreen / numRows;
     
-    const topRowLetters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'];
-    const middleRowLetters = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'];
-    const bottomRowLetters = ['z', 'x', 'c', 'v', 'b', 'n', 'm'];
+    const topRowLetters = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'];
+    const middleRowLetters = ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'];
+    const bottomRowLetters = ['Z', 'X', 'C', 'V', 'B', 'N', 'M'];
 
     const normalKeyWidth = (screenSize.width * 0.8) / topRowLetters.length;
     const specialKeyWidth = normalKeyWidth * 1.5;
@@ -35,7 +32,7 @@ function Keyboard() {
     const KeyboardKey = ({ text, width, rowHeight, fontSize }) => {    
         return (
             <Paper
-                onClick={() => {console.log(`clicked ${text}`)}}
+                onClick={() => handleInputText(text)}
                 style={{
                     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
                     ...theme.typography.body2,
@@ -47,7 +44,7 @@ function Keyboard() {
                     lineHeight: `${rowHeight}px`,  // center text
                 }}
             >
-                {text.toUpperCase()}
+                {text}
             </Paper>
         )
     };
@@ -66,7 +63,7 @@ function Keyboard() {
 
     const DeleteKey = () => {
         return (
-            <KeyboardKey text="&#11013;" width={specialKeyWidth} rowHeight={rowHeight} />
+            <KeyboardKey text={backspaceSymbol} width={specialKeyWidth} rowHeight={rowHeight} />
         )
     };
 

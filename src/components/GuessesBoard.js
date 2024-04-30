@@ -1,15 +1,13 @@
 import { styled, useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
-import useScreenSize from './useScreenSize';
 import { Stack } from '@mui/material';
 
-function GuessesBoard() {
-    const screenSize = useScreenSize();
+function GuessesBoard({ screenSize, answer, guessesData }) {
     const theme = useTheme();
 
+    const numRows = guessesData.length;
+    const numLetters = guessesData[0].length;
     const boardVerticalPctOfScreen = 0.5;
-    const numRows = 6;
-    const numLetters = 5;
     const maxTileHeight = screenSize.height * boardVerticalPctOfScreen / numRows;
     const maxTileWidth = (screenSize.width * 0.9) / numLetters;
     const tileLenSqr = Math.min(maxTileHeight, maxTileWidth);
@@ -21,16 +19,19 @@ function GuessesBoard() {
         textAlign: 'center',
         color: theme.palette.text.secondary,
         height: tileLenSqr,
-        width: tileLenSqr 
+        width: tileLenSqr,
+        fontSize: tileLenSqr / 2,
+        fontWeight: 'bold',
+        lineHeight: `${tileLenSqr}px`,  // center text
     }));
 
     return (
         <div className="guessesBoard" style={{ padding: "10px 0px" }}>
-            {[...Array(numRows)].map((_, rowIndex) => (
-                <Stack direction="row" spacing={1} key={`BoardRow${rowIndex}`} style={{ paddingTop: "5px", justifyContent: "center"}}>
-                    {[...Array(numLetters)].map((_, colIndex) => (
-                        <Tile key={`guessTile${rowIndex}row-${colIndex}col`}>
-                            {`(${colIndex + 1}, ${rowIndex + 1})`}
+            {guessesData.map((guess, i) => (
+                <Stack direction="row" spacing={1} key={`BoardRow${i}`} style={{ paddingTop: "5px", justifyContent: "center"}}>
+                    {guess.map((letter, j) => (
+                        <Tile key={`guessTile-row${i}-col${j}`}>
+                            {letter.toUpperCase()}
                         </Tile>
                     ))}
                 </Stack>
