@@ -72,23 +72,23 @@ function Keyboard({ screenSize, answer, handleInputText }) {
 
             {/* top row */}
             <KeyboardRow>
-                {topRowLetters.map((keyLetter, i) => (
-                    <NormalKey text={keyLetter} key={`key${keyLetter}`} />
+                {topRowLetters.map((letter) => (
+                    <NormalKey text={letter} key={`key${letter}`} />
                 ))}
             </KeyboardRow>
 
             {/* middle row */}
             <KeyboardRow>
-                {middleRowLetters.map((keyLetter, i) => (
-                    <NormalKey text={keyLetter} key={`key${keyLetter}`} />
+                {middleRowLetters.map((letter) => (
+                    <NormalKey text={letter} key={`key${letter}`} />
                 ))}
             </KeyboardRow>
 
             {/* bottom row */}
             <KeyboardRow>
                 <EnterKey />
-                {bottomRowLetters.map((keyLetter, i) => (
-                    <NormalKey text={keyLetter} key={`key${keyLetter}`} />
+                {bottomRowLetters.map((letter) => (
+                    <NormalKey text={letter} key={`key${letter}`} />
                 ))}
                 <DeleteKey />
             </KeyboardRow>

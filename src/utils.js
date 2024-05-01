@@ -25,8 +25,6 @@ function isSingleEnglishLetter(text) {
     // console.log(isSingleEnglishLetter('AB')); // false
     // console.log(isSingleEnglishLetter('@')); // false
 }
-  
-
 
 export {
     backspaceSymbol,
