@@ -1,8 +1,8 @@
 import './App.css';
 import useScreenSize from './components/useScreenSize';
 import { useState } from 'react';
-import { getDateToday, isSingleEnglishLetter, evaluateGuess, letterToNumber } from './utils';
-import { rankToColor, ALPHABET, backspaceSymbol } from "./constants";
+import { getDateToday, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex } from './utils';
+import { rankToColor, backspaceSymbol } from "./constants";
 import { dateToWord } from './assets/date_to_word';
 import { wordleAcceptableWords } from './assets/wordle_acceptable_words';
 import ResponsiveAppBar from './components/ResponsiveAppBar';
@@ -17,14 +17,14 @@ const initialNumGuessesToShow = 6;
 function App() {
   const screenSize = useScreenSize();
   const [puzzleDate, setPuzzleDate] = useState(getDateToday());
-  const [answer, setAnswer] = useState(dateToWord.get(puzzleDate));
+  const [answer, setAnswer] = useState(dateToWord.get(puzzleDate).toUpperCase());
   const [guessesData, setGuessesData] = useState(Array(initialNumGuessesToShow).fill(Array(numLetters).fill("")));
   const [guessesColors, setGuessesColors] = useState(Array(initialNumGuessesToShow).fill(Array(numLetters).fill("")));
-  const [keyRanks, setKeyRanks] = useState(Array(26).fill('-1'));
+  const [letterMaxRanks, setLetterMaxRanks] = useState(Array(26).fill('-1'));
   const [nextLetterIndex, setNextLetterIndex] = useState([0,0]);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  // console.log(`${puzzleDate} ${answer}`);
+  console.log(`${puzzleDate} ${answer}`);
   // console.log(`${new Date()}`);
   // console.log(guessesData);
 
@@ -32,48 +32,54 @@ function App() {
     // console.log(`entered ${text}`);
 
     if (text === 'ENTER' && nextLetterIndex[1] === numLetters) {  // ENTER at end of word
-      const guessCaps = guessesData[nextLetterIndex[0]].join("");
-      const guess = guessCaps.toLowerCase();
-      if (!wordleAcceptableWords.has(guess)) {
+      const guess = guessesData[nextLetterIndex[0]].join("");
+      if (!wordleAcceptableWords.has(guess.toLowerCase())) {
         setDialogOpen(true);
-      } else {
-        const guessResult = evaluateGuess(guess, answer);
-        if (guessResult === '22222') {
+      } else {  // guess is an acceptable word
+        // get the ranks for each letter of the guess
+        // in the form of a string of 5 numbers, each [0, 2],
+        // where 0 -> gray, 1 -> yellow, 2 -> green
+        const guessRanks = getGuessRanks(guess, answer); 
+        const guessColors = [...guessRanks].map((rank) => rankToColor[rank]);
+
+        const newGuessesColors = [...guessesColors];
+        newGuessesColors[nextLetterIndex[0]] = guessColors;
+        setGuessesColors(newGuessesColors);
+
+        // for each letter of guess, keep the max color rank
+        // across all guesses
+        const newLetterMaxRanks = [...letterMaxRanks];
+        for (let i = 0; i < guess.length; i++) {
+          const letter = guess[i];
+          const j = getLetterAlphabetIndex(letter);
+          newLetterMaxRanks[j] = Math.max(newLetterMaxRanks[j], guessRanks[i])
+        }
+        setLetterMaxRanks(newLetterMaxRanks);
+
+        if (guessRanks === '22222') {
           console.log('TODO: winner!');
         }
-        const guessColors = [...guessResult].map((rank) => rankToColor[rank]);
 
-        const updatedGuessesColors = [...guessesColors];
-        updatedGuessesColors[nextLetterIndex[0]] = guessColors;
-        setGuessesColors(updatedGuessesColors);  // TODO: this could get set twice when blank row added, see below
-
-        const updatedKeyRanks = [...keyRanks];
-        for (let i = 0; i < guess.length; i++) {
-          const letter = guessCaps[i];
-          const j = letterToNumber(letter);
-          updatedKeyRanks[j] = Math.max(updatedKeyRanks[j], guessResult[i])
-        }
-        setKeyRanks(updatedKeyRanks);
-
+        // update next letter index, potentially adding a new row
         const nextRowIndex = nextLetterIndex[0] + 1;
         if (nextRowIndex === guessesData.length) {  // at end of all words
           setGuessesData([...guessesData, Array(numLetters).fill("")]);  // add blank row
-          setGuessesColors([...updatedGuessesColors, Array(numLetters).fill("")]); // add blank row
+          setGuessesColors([...newGuessesColors, Array(numLetters).fill("")]); // add blank row
         }
         setNextLetterIndex([nextRowIndex, 0]);
       }
     } else if ((text === 'BACKSPACE' || text === backspaceSymbol) && nextLetterIndex[1] > 0) {  // BACKSPACE with some letters
       const newGuessesData = [...guessesData];
-      const updatedGuess = [...guessesData[nextLetterIndex[0]]];
-      updatedGuess[nextLetterIndex[1] - 1] = "";
-      newGuessesData[nextLetterIndex[0]] = updatedGuess;
+      const newGuess = [...guessesData[nextLetterIndex[0]]];
+      newGuess[nextLetterIndex[1] - 1] = "";
+      newGuessesData[nextLetterIndex[0]] = newGuess;
       setGuessesData(newGuessesData);
       setNextLetterIndex([nextLetterIndex[0], nextLetterIndex[1] - 1]);
     } else if (isSingleEnglishLetter(text) && nextLetterIndex[1] < numLetters) {  // Letter not at end
       const newGuessesData = [...guessesData];
-      const updatedGuess = [...guessesData[nextLetterIndex[0]]];
-      updatedGuess[nextLetterIndex[1]] = text;
-      newGuessesData[nextLetterIndex[0]] = updatedGuess;
+      const newGuess = [...guessesData[nextLetterIndex[0]]];
+      newGuess[nextLetterIndex[1]] = text;
+      newGuessesData[nextLetterIndex[0]] = newGuess;
       setGuessesData(newGuessesData);
       setNextLetterIndex([nextLetterIndex[0], nextLetterIndex[1] + 1]);
     }
@@ -101,7 +107,7 @@ function App() {
       />
       <Keyboard
         screenSize={screenSize}
-        keyRanks={keyRanks}
+        letterMaxRanks={letterMaxRanks}
         handleInputText={handleInputText}
       />
 

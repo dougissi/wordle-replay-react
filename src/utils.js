@@ -16,7 +16,7 @@ function isSingleEnglishLetter(text) {
     return text.length === 1 && regex.test(text);
 }
 
-function evaluateGuess(guess, answer) {
+function getGuessRanks(guess, answer) {
     const n = guess.length;
     if (n !== answer.length) {
         throw new Error(`'${guess}' and '${answer}' not same length`);
@@ -50,7 +50,7 @@ function evaluateGuess(guess, answer) {
     return result.join("");
 }
 
-function letterToNumber(letter) {    
+function getLetterAlphabetIndex(letter) {    
     // Get the ASCII code of the letter and subtract the ASCII code of 'A' to get the position
     const position = letter.charCodeAt(0) - 'A'.charCodeAt(0);
   
@@ -65,6 +65,6 @@ function letterToNumber(letter) {
 export {
     getDateToday,
     isSingleEnglishLetter,
-    evaluateGuess,
-    letterToNumber
+    getGuessRanks,
+    getLetterAlphabetIndex
 }

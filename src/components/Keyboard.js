@@ -2,10 +2,9 @@ import { useTheme } from '@mui/material/styles';
 import Stack from '@mui/material/Stack';
 import Paper from '@mui/material/Paper';
 import { backspaceSymbol, rankToColor } from "../constants";
-import { letterToNumber } from '../utils';
-import { useState } from 'react';
+import { getLetterAlphabetIndex } from '../utils';
 
-function Keyboard({ screenSize, keyRanks, handleInputText }) {
+function Keyboard({ screenSize, letterMaxRanks, handleInputText }) {
     const theme = useTheme();
 
     const keyboardVerticalPctOfScreen = 0.25;
@@ -53,8 +52,8 @@ function Keyboard({ screenSize, keyRanks, handleInputText }) {
     };
 
     const NormalKey = ({ text }) => {
-        const i = letterToNumber(text);
-        const rank = keyRanks[i];
+        const i = getLetterAlphabetIndex(text);
+        const rank = letterMaxRanks[i];
         const color = rankToColor[rank];
 
         return (
@@ -80,7 +79,7 @@ function Keyboard({ screenSize, keyRanks, handleInputText }) {
             {/* top row */}
             <KeyboardRow>
                 {topRowLetters.map((letter) => (
-                    <NormalKey text={letter} key={`key${letter}`} style={{ backgroundColor: rankToColor[keyRanks[letterToNumber(letter)]] }} />
+                    <NormalKey text={letter} key={`key${letter}`} style={{ backgroundColor: rankToColor[letterMaxRanks[getLetterAlphabetIndex(letter)]] }} />
                 ))}
             </KeyboardRow>
 

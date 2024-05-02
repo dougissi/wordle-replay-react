@@ -4,4 +4,5 @@
 * [ ] animate UI keyboard when typing on a physical keyboard
 * [x] unit tests for utils.js
 * [ ] update React tests for App.js
+* [ ] add unit tests for getting today's date
 * [ ] update README
