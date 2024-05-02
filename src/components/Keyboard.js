@@ -1,9 +1,11 @@
 import { useTheme } from '@mui/material/styles';
 import Stack from '@mui/material/Stack';
 import Paper from '@mui/material/Paper';
-import { backspaceSymbol } from '../utils';
+import { backspaceSymbol, rankToColor } from "../constants";
+import { letterToNumber } from '../utils';
+import { useState } from 'react';
 
-function Keyboard({ screenSize, answer, handleInputText }) {
+function Keyboard({ screenSize, keyRanks, handleInputText }) {
     const theme = useTheme();
 
     const keyboardVerticalPctOfScreen = 0.25;
@@ -29,12 +31,13 @@ function Keyboard({ screenSize, answer, handleInputText }) {
         )
     };
 
-    const KeyboardKey = ({ text, width, rowHeight, fontSize }) => {    
+    const KeyboardKey = ({ text, width, rowHeight, fontSize, color }) => {    
         return (
             <Paper
                 onClick={() => handleInputText(text)}
                 style={{
-                    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+                    // backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+                    backgroundColor: color,
                     ...theme.typography.body2,
                     fontSize: fontSize ? fontSize : rowHeight / 2,
                     fontWeight: 'bold',
@@ -50,8 +53,12 @@ function Keyboard({ screenSize, answer, handleInputText }) {
     };
 
     const NormalKey = ({ text }) => {
+        const i = letterToNumber(text);
+        const rank = keyRanks[i];
+        const color = rankToColor[rank];
+
         return (
-            <KeyboardKey text={text} width={normalKeyWidth} rowHeight={rowHeight} />
+            <KeyboardKey text={text} width={normalKeyWidth} rowHeight={rowHeight} color={color} />
         )
     };
 
@@ -73,7 +80,7 @@ function Keyboard({ screenSize, answer, handleInputText }) {
             {/* top row */}
             <KeyboardRow>
                 {topRowLetters.map((letter) => (
-                    <NormalKey text={letter} key={`key${letter}`} />
+                    <NormalKey text={letter} key={`key${letter}`} style={{ backgroundColor: rankToColor[keyRanks[letterToNumber(letter)]] }} />
                 ))}
             </KeyboardRow>
 

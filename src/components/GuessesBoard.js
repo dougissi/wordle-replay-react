@@ -3,7 +3,7 @@ import { styled, useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { Stack } from '@mui/material';
 
-function GuessesBoard({ screenSize, answer, guessesData, handleInputText }) {
+function GuessesBoard({ screenSize, guessesData, guessesColors, handleInputText }) {
     const theme = useTheme();
     const divRef = useRef(null);
 
@@ -15,7 +15,7 @@ function GuessesBoard({ screenSize, answer, guessesData, handleInputText }) {
     const tileLenSqr = Math.min(maxTileHeight, maxTileWidth);
 
     const Tile = styled(Paper)(() => ({
-        backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+        // backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
         ...theme.typography.body2,
         //padding: theme.spacing(1),
         textAlign: 'center',
@@ -46,7 +46,7 @@ function GuessesBoard({ screenSize, answer, guessesData, handleInputText }) {
             {guessesData.map((guess, i) => (
                 <Stack direction="row" spacing={1} key={`BoardRow${i}`} style={{ paddingTop: "5px", justifyContent: "center"}}>
                     {guess.map((letter, j) => (
-                        <Tile key={`guessTile-row${i}-col${j}`}>
+                        <Tile key={`guessTile-row${i}-col${j}`} style={{ backgroundColor: guessesColors[i][j] }}>
                             {letter.toUpperCase()}
                         </Tile>
                     ))}

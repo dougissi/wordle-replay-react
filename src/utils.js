@@ -1,5 +1,3 @@
-const backspaceSymbol = "⬅";
-
 function getDateToday() {
     const today = new Date();
     const year = today.getFullYear();
@@ -26,8 +24,55 @@ function isSingleEnglishLetter(text) {
     // console.log(isSingleEnglishLetter('@')); // false
 }
 
+function evaluateGuess(guess, answer) {
+    const n = guess.length;
+    if (n !== answer.length) {
+        throw new Error(`'${guess}' and '${answer}' not same length`);
+    }
+
+    const result = [...guess];
+    const ans = [...answer];
+
+    // check for greens
+    for (let i = 0; i < n; i++) {
+        if (guess[i] === ans[i]) {
+            result[i] = 2;
+            ans[i] = ''
+        }
+    }
+
+    // check for yellows and grays
+    for (let i = 0; i < n; i++) {
+        if (result[i] !== 2) {
+            const j = ans.indexOf(guess[i]);
+            if (j === -1) {
+                result[i] = 0;
+                ans[j] = '';
+            } else {
+                result[i] = 1;
+                ans[j] = '';
+            }
+        }
+    }
+
+    return result.join("");
+}
+
+function letterToNumber(letter) {    
+    // Get the ASCII code of the letter and subtract the ASCII code of 'A' to get the position
+    const position = letter.charCodeAt(0) - 'A'.charCodeAt(0);
+  
+    // Check if the input is a valid uppercase letter
+    if (position < 0 || position > 25) {
+      throw new Error("Input is not a valid uppercase letter");
+    }
+  
+    return position;
+}
+
 export {
-    backspaceSymbol,
     getDateToday,
-    isSingleEnglishLetter
+    isSingleEnglishLetter,
+    evaluateGuess,
+    letterToNumber
 }
