@@ -51,8 +51,14 @@ function InvalidGuessDialog({ open, handleClose, guess, clearGuess }) {
     )
 }
 
-function WonDialog({ open, handleClose, answer }) {
+function WonDialog({ open, handleClose, answer, resetGame }) {
+    const handleClickRestartButton = () => {
+        resetGame();
+        handleClose();
+    }
+
     const okButton = <Button key="wonOkButton" onClick={handleClose} autoFocus>OK</Button>;
+    const restartButton = <Button key="wonRestartButton" onClick={handleClickRestartButton}>Restart</Button>;
 
     return (
         <AlertDialog
@@ -60,7 +66,7 @@ function WonDialog({ open, handleClose, answer }) {
             handleClose={handleClose}
             title={`You found "${answer}"!`}
             text="Thanks for playing."  // TODO: update
-            buttons={[okButton]}
+            buttons={[restartButton, okButton]}
         />
     )
 }

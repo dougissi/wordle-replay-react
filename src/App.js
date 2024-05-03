@@ -1,8 +1,8 @@
 import './App.css';
-import useScreenSize from './components/useScreenSize';
+import { numLetters, initialNumGuessesToShow, rankToColor, backspaceSymbol } from "./constants";
 import { useState } from 'react';
-import { getDateToday, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex } from './utils';
-import { rankToColor, backspaceSymbol } from "./constants";
+import { getDateToday, blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex } from './utils';
+import useScreenSize from './components/useScreenSize';
 import { dateToWord } from './assets/date_to_word';
 import { wordleAcceptableWords } from './assets/wordle_acceptable_words';
 import ResponsiveAppBar from './components/ResponsiveAppBar';
@@ -11,17 +11,14 @@ import Keyboard from './components/Keyboard';
 import { InvalidGuessDialog, WonDialog } from './components/AlertDialog';
 
 
-const numLetters = 5;
-const initialNumGuessesToShow = 6;
-
 function App() {
   const screenSize = useScreenSize();
   const [puzzleDate, setPuzzleDate] = useState(getDateToday());
   const [answer, setAnswer] = useState(dateToWord.get(puzzleDate).toUpperCase());
-  const [guessesData, setGuessesData] = useState(Array(initialNumGuessesToShow).fill(Array(numLetters).fill("")));
-  const [guessesColors, setGuessesColors] = useState(Array(initialNumGuessesToShow).fill(Array(numLetters).fill("")));
+  const [guessesData, setGuessesData] = useState(blankGuessesGrid());
+  const [guessesColors, setGuessesColors] = useState(blankGuessesGrid());
   const [letterMaxRanks, setLetterMaxRanks] = useState(Array(26).fill('-1'));
-  const [nextLetterIndex, setNextLetterIndex] = useState([0,0]);
+  const [nextLetterIndex, setNextLetterIndex] = useState([0, 0]);
   const [invalidGuess, setInvalidGuess] = useState("");
   const [invalidGuessDialogOpen, setInvalidGuessDialogOpen] = useState(false);
   const [wonDialogOpen, setWonDialogOpen] = useState(false);
@@ -66,8 +63,8 @@ function App() {
           // update next letter index, potentially adding a new row
           const nextRowIndex = nextLetterIndex[0] + 1;
           if (nextRowIndex === guessesData.length) {  // at end of all words
-            setGuessesData([...guessesData, Array(numLetters).fill("")]);  // add blank row
-            setGuessesColors([...newGuessesColors, Array(numLetters).fill("")]); // add blank row
+            setGuessesData([...guessesData, blankRow()]);  // add blank row
+            setGuessesColors([...newGuessesColors, blankRow()]); // add blank row
           }
           setNextLetterIndex([nextRowIndex, 0]);
         }
@@ -91,10 +88,21 @@ function App() {
 
   const clearGuess = () => {
     const newGuessesData = [...guessesData];
-    newGuessesData[nextLetterIndex[0]] = Array(numLetters).fill("");  // blank guess
+    newGuessesData[nextLetterIndex[0]] = blankRow();  // blank guess
     setGuessesData(newGuessesData);
     setNextLetterIndex([nextLetterIndex[0], 0]);
   };
+
+  const resetGame = () => {
+    setGuessesData(blankGuessesGrid());
+    setGuessesColors(blankGuessesGrid());
+    setLetterMaxRanks(Array(26).fill('-1'));
+    setNextLetterIndex([0, 0]);
+    // const [guessesData, setGuessesData] = useState(blankGuessesGrid());
+    // const [guessesColors, setGuessesColors] = useState(blankGuessesGrid());
+    // const [letterMaxRanks, setLetterMaxRanks] = useState(Array(26).fill('-1'));
+    // const [nextLetterIndex, setNextLetterIndex] = useState([0,0]);
+  }
 
   return (
     <div className="App">
@@ -118,6 +126,7 @@ function App() {
           open={wonDialogOpen}
           handleClose={() => setWonDialogOpen(false)}
           answer={answer}
+          resetGame={resetGame}
         />
       )}
 

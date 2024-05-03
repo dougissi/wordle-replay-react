@@ -1,3 +1,5 @@
+import { numLetters, initialNumGuessesToShow } from "./constants";
+
 function getDateToday() {
     // TODO: add unit tests
     const today = new Date();
@@ -6,6 +8,14 @@ function getDateToday() {
     const day = String(today.getDate()).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
+}
+
+function blankRow(fillValue = "") {
+    return Array(numLetters).fill(fillValue);
+}
+
+function blankGuessesGrid() {
+    return Array(initialNumGuessesToShow).fill(blankRow());
 }
 
 function isSingleEnglishLetter(text) {
@@ -64,6 +74,8 @@ function getLetterAlphabetIndex(letter) {
 
 export {
     getDateToday,
+    blankRow,
+    blankGuessesGrid,
     isSingleEnglishLetter,
     getGuessRanks,
     getLetterAlphabetIndex
