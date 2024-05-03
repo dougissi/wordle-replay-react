@@ -7,3 +7,4 @@
 * [ ] update React tests for App.js
 * [ ] add unit tests for getting today's date
 * [ ] update README
+* [ ] prevent selecting text on keyboard (especially on mobile)

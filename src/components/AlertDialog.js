@@ -31,16 +31,22 @@ function AlertDialog({ open, handleClose, title, text, buttons }) {
     );
 }
 
-function NotInWordListDialog({ open, handleClose }) {
-    const okButton = <Button key="notInWordListOkButton" onClick={handleClose} autoFocus>OK</Button>;
+function InvalidGuessDialog({ open, handleClose, guess, clearGuess }) {
+    const handleClickClearButton = () => {
+        clearGuess();
+        handleClose();
+    };
+
+    const editButton = <Button key="invalidGuessEditButton" onClick={handleClose} autoFocus>Edit Manually</Button>;
+    const clearButton = <Button key="invalidGuessClearButton" onClick={handleClickClearButton}>Clear Guess</Button>;
 
     return (
         <AlertDialog
             open={open}
             handleClose={handleClose}
-            title="Word not in word list"  // TODO: specify the guess that's not in word list
-            text="Please enter a different word."
-            buttons={[okButton]}
+            title={`"${guess}" is not in the word list.`}  // TODO: specify the guess that's not in word list
+            text="Please enter a different guess."
+            buttons={[clearButton, editButton]}
         />
     )
 }
@@ -52,7 +58,7 @@ function WonDialog({ open, handleClose, answer }) {
         <AlertDialog
             open={open}
             handleClose={handleClose}
-            title={`You found '${answer}'!`}
+            title={`You found "${answer}"!`}
             text="Thanks for playing."  // TODO: update
             buttons={[okButton]}
         />
@@ -60,6 +66,6 @@ function WonDialog({ open, handleClose, answer }) {
 }
 
 export {
-    NotInWordListDialog,
+    InvalidGuessDialog,
     WonDialog
 }

@@ -8,7 +8,7 @@ import { wordleAcceptableWords } from './assets/wordle_acceptable_words';
 import ResponsiveAppBar from './components/ResponsiveAppBar';
 import GuessesBoard from './components/GuessesBoard';
 import Keyboard from './components/Keyboard';
-import { NotInWordListDialog, WonDialog } from './components/AlertDialog';
+import { InvalidGuessDialog, WonDialog } from './components/AlertDialog';
 
 
 const numLetters = 5;
@@ -22,7 +22,8 @@ function App() {
   const [guessesColors, setGuessesColors] = useState(Array(initialNumGuessesToShow).fill(Array(numLetters).fill("")));
   const [letterMaxRanks, setLetterMaxRanks] = useState(Array(26).fill('-1'));
   const [nextLetterIndex, setNextLetterIndex] = useState([0,0]);
-  const [notInWordListDialogOpen, setNotInWordListDialogOpen] = useState(false);
+  const [invalidGuess, setInvalidGuess] = useState("");
+  const [invalidGuessDialogOpen, setInvalidGuessDialogOpen] = useState(false);
   const [wonDialogOpen, setWonDialogOpen] = useState(false);
 
   // console.log(`${puzzleDate} ${answer}`);
@@ -35,7 +36,8 @@ function App() {
     if (text === 'ENTER' && nextLetterIndex[1] === numLetters) {  // ENTER at end of word
       const guess = guessesData[nextLetterIndex[0]].join("");
       if (!wordleAcceptableWords.has(guess.toLowerCase())) {
-        setNotInWordListDialogOpen(true);
+        setInvalidGuess(guess);  // TODO: never gets unset, but works fine
+        setInvalidGuessDialogOpen(true);
       } else {  // guess is an acceptable word
         // get the ranks for each letter of the guess
         // in the form of a string of 5 numbers, each [0, 2],
@@ -87,6 +89,13 @@ function App() {
     }
   };
 
+  const clearGuess = () => {
+    const newGuessesData = [...guessesData];
+    newGuessesData[nextLetterIndex[0]] = Array(numLetters).fill("");  // blank guess
+    setGuessesData(newGuessesData);
+    setNextLetterIndex([nextLetterIndex[0], 0]);
+  };
+
   return (
     <div className="App">
       <ResponsiveAppBar />
@@ -95,10 +104,12 @@ function App() {
         <p>Width: {screenSize.width}</p>
         <p>Height: {screenSize.height}</p>
       </div> */}
-      {notInWordListDialogOpen && (
-        <NotInWordListDialog 
-          open={notInWordListDialogOpen} 
-          handleClose={() => setNotInWordListDialogOpen(false)}
+      {invalidGuessDialogOpen && (
+        <InvalidGuessDialog 
+          open={invalidGuessDialogOpen} 
+          handleClose={() => setInvalidGuessDialogOpen(false)}
+          guess={invalidGuess}
+          clearGuess={clearGuess}
         />
       )}
 
