@@ -5,7 +5,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-export default function AlertDialog({ open, handleClose }) {
+function AlertDialog({ open, handleClose, title, text, buttons }) {
 
     return (
         <Dialog
@@ -17,16 +17,49 @@ export default function AlertDialog({ open, handleClose }) {
             disableEscapeKeyDown
         >
         <DialogTitle id="alert-dialog-title">
-            {"Word not in word list"}
+            {title}
         </DialogTitle>
         <DialogContent>
             <DialogContentText id="alert-dialog-description">
-            Please enter a different word.
+                {text}
             </DialogContentText>
         </DialogContent>
         <DialogActions>
-            <Button onClick={handleClose} autoFocus>OK</Button>
+            {buttons}            
         </DialogActions>
         </Dialog>
     );
+}
+
+function NotInWordListDialog({ open, handleClose }) {
+    const okButton = <Button key="notInWordListOkButton" onClick={handleClose} autoFocus>OK</Button>;
+
+    return (
+        <AlertDialog
+            open={open}
+            handleClose={handleClose}
+            title="Word not in word list"  // TODO: specify the guess that's not in word list
+            text="Please enter a different word."
+            buttons={[okButton]}
+        />
+    )
+}
+
+function WonDialog({ open, handleClose, answer }) {
+    const okButton = <Button key="wonOkButton" onClick={handleClose} autoFocus>OK</Button>;
+
+    return (
+        <AlertDialog
+            open={open}
+            handleClose={handleClose}
+            title={`You found '${answer}'!`}
+            text="Thanks for playing."  // TODO: update
+            buttons={[okButton]}
+        />
+    )
+}
+
+export {
+    NotInWordListDialog,
+    WonDialog
 }

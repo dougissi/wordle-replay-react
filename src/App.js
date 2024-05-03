@@ -8,7 +8,7 @@ import { wordleAcceptableWords } from './assets/wordle_acceptable_words';
 import ResponsiveAppBar from './components/ResponsiveAppBar';
 import GuessesBoard from './components/GuessesBoard';
 import Keyboard from './components/Keyboard';
-import AlertDialog from './components/AlertDialog';
+import { NotInWordListDialog, WonDialog } from './components/AlertDialog';
 
 
 const numLetters = 5;
@@ -22,9 +22,10 @@ function App() {
   const [guessesColors, setGuessesColors] = useState(Array(initialNumGuessesToShow).fill(Array(numLetters).fill("")));
   const [letterMaxRanks, setLetterMaxRanks] = useState(Array(26).fill('-1'));
   const [nextLetterIndex, setNextLetterIndex] = useState([0,0]);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [notInWordListDialogOpen, setNotInWordListDialogOpen] = useState(false);
+  const [wonDialogOpen, setWonDialogOpen] = useState(false);
 
-  console.log(`${puzzleDate} ${answer}`);
+  // console.log(`${puzzleDate} ${answer}`);
   // console.log(`${new Date()}`);
   // console.log(guessesData);
 
@@ -34,7 +35,7 @@ function App() {
     if (text === 'ENTER' && nextLetterIndex[1] === numLetters) {  // ENTER at end of word
       const guess = guessesData[nextLetterIndex[0]].join("");
       if (!wordleAcceptableWords.has(guess.toLowerCase())) {
-        setDialogOpen(true);
+        setNotInWordListDialogOpen(true);
       } else {  // guess is an acceptable word
         // get the ranks for each letter of the guess
         // in the form of a string of 5 numbers, each [0, 2],
@@ -56,17 +57,18 @@ function App() {
         }
         setLetterMaxRanks(newLetterMaxRanks);
 
-        if (guessRanks === '22222') {
+        if (guessRanks === '22222') {  // guess is all greens (i.e., the answer)
           console.log('TODO: winner!');
+          setWonDialogOpen(true);
+        } else {  // guess not the answer
+          // update next letter index, potentially adding a new row
+          const nextRowIndex = nextLetterIndex[0] + 1;
+          if (nextRowIndex === guessesData.length) {  // at end of all words
+            setGuessesData([...guessesData, Array(numLetters).fill("")]);  // add blank row
+            setGuessesColors([...newGuessesColors, Array(numLetters).fill("")]); // add blank row
+          }
+          setNextLetterIndex([nextRowIndex, 0]);
         }
-
-        // update next letter index, potentially adding a new row
-        const nextRowIndex = nextLetterIndex[0] + 1;
-        if (nextRowIndex === guessesData.length) {  // at end of all words
-          setGuessesData([...guessesData, Array(numLetters).fill("")]);  // add blank row
-          setGuessesColors([...newGuessesColors, Array(numLetters).fill("")]); // add blank row
-        }
-        setNextLetterIndex([nextRowIndex, 0]);
       }
     } else if ((text === 'BACKSPACE' || text === backspaceSymbol) && nextLetterIndex[1] > 0) {  // BACKSPACE with some letters
       const newGuessesData = [...guessesData];
@@ -85,10 +87,6 @@ function App() {
     }
   };
 
-  const handleDialogClose = () => {
-    setDialogOpen(false);
-  };
-
   return (
     <div className="App">
       <ResponsiveAppBar />
@@ -97,7 +95,20 @@ function App() {
         <p>Width: {screenSize.width}</p>
         <p>Height: {screenSize.height}</p>
       </div> */}
-      {dialogOpen && <AlertDialog open={dialogOpen} handleClose={handleDialogClose}/>}
+      {notInWordListDialogOpen && (
+        <NotInWordListDialog 
+          open={notInWordListDialogOpen} 
+          handleClose={() => setNotInWordListDialogOpen(false)}
+        />
+      )}
+
+      {wonDialogOpen && (
+        <WonDialog
+          open={wonDialogOpen}
+          handleClose={() => setWonDialogOpen(false)}
+          answer={answer}
+        />
+      )}
 
       <GuessesBoard
         screenSize={screenSize}
