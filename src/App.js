@@ -1,19 +1,23 @@
 import './App.css';
 import { numLetters, initialNumGuessesToShow, rankToColor, backspaceSymbol } from "./constants";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getDateToday, blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex } from './utils';
 import useScreenSize from './components/useScreenSize';
 import { dateToWord } from './assets/date_to_word';
+import { dateToPuzzleNum } from './assets/date_to_puzzle_num';
 import { wordleAcceptableWords } from './assets/wordle_acceptable_words';
 import ResponsiveAppBar from './components/ResponsiveAppBar';
 import GuessesBoard from './components/GuessesBoard';
 import Keyboard from './components/Keyboard';
 import { InvalidGuessDialog, WonDialog } from './components/AlertDialog';
+import { initDB, addItem } from './db';
 
 
 function App() {
+  const today = getDateToday();
   const screenSize = useScreenSize();
-  const [puzzleDate, setPuzzleDate] = useState(getDateToday());
+  const [puzzleDate, setPuzzleDate] = useState(today);
+  const [puzzleNum, setPuzzleNum] = useState(dateToPuzzleNum.get(puzzleDate));
   const [answer, setAnswer] = useState(dateToWord.get(puzzleDate).toUpperCase());
   const [guessesData, setGuessesData] = useState(blankGuessesGrid());
   const [guessesColors, setGuessesColors] = useState(blankGuessesGrid());
@@ -26,6 +30,15 @@ function App() {
   // console.log(`${puzzleDate} ${answer}`);
   // console.log(`${new Date()}`);
   // console.log(guessesData);
+
+  useEffect(() => {
+    initDB(); // Initialize the database
+  }, []);
+
+  const saveGuess = () => {
+    const newItem = { puzzleNum: puzzleNum, solvedDate: today, guesses: guessesData };
+    addItem(newItem); // Add item to the database
+  };
 
   const handleInputText = (text) => {
     // console.log(`entered ${text}`);
@@ -59,6 +72,7 @@ function App() {
         if (guessRanks === '22222') {  // guess is all greens (i.e., the answer)
           console.log('TODO: winner!');
           setWonDialogOpen(true);
+          saveGuess();
         } else {  // guess not the answer
           // update next letter index, potentially adding a new row
           const nextRowIndex = nextLetterIndex[0] + 1;
@@ -98,10 +112,6 @@ function App() {
     setGuessesColors(blankGuessesGrid());
     setLetterMaxRanks(Array(26).fill('-1'));
     setNextLetterIndex([0, 0]);
-    // const [guessesData, setGuessesData] = useState(blankGuessesGrid());
-    // const [guessesColors, setGuessesColors] = useState(blankGuessesGrid());
-    // const [letterMaxRanks, setLetterMaxRanks] = useState(Array(26).fill('-1'));
-    // const [nextLetterIndex, setNextLetterIndex] = useState([0,0]);
   }
 
   return (
