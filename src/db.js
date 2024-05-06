@@ -37,14 +37,15 @@ export const addItem = (item) => {
   };
 };
 
-export const getAllItems = () => {
+export const getAllItems = (callback) => {
   const transaction = db.transaction(["guesses"], "readonly");
   const store = transaction.objectStore("guesses");
   const request = store.getAll();
 
   request.onsuccess = () => {
     const items = request.result;
-    console.log("All items:", items);
+    console.log("Retrieved all items from db");
+    callback(items);
   };
 
   request.onerror = (event) => {

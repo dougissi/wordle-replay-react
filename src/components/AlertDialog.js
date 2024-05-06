@@ -4,8 +4,9 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { DistributionChart } from './DistributionChart';
 
-function AlertDialog({ open, handleClose, title, text, buttons }) {
+function AlertDialog({ open, handleClose, title, text, buttons, addlContent }) {
 
     return (
         <Dialog
@@ -23,6 +24,7 @@ function AlertDialog({ open, handleClose, title, text, buttons }) {
             <DialogContentText id="alert-dialog-description">
                 {text}
             </DialogContentText>
+            {addlContent}
         </DialogContent>
         <DialogActions>
             {buttons}            
@@ -51,7 +53,7 @@ function InvalidGuessDialog({ open, handleClose, guess, clearGuess }) {
     )
 }
 
-function WonDialog({ open, handleClose, answer, resetGame }) {
+function WonDialog({ open, handleClose, answer, resetGame, distributionData }) {
     const handleClickRestartButton = () => {
         resetGame();
         handleClose();
@@ -67,6 +69,7 @@ function WonDialog({ open, handleClose, answer, resetGame }) {
             title={`You found "${answer}"!`}
             text="Thanks for playing."  // TODO: update
             buttons={[restartButton, okButton]}
+            addlContent={<DistributionChart distributionData={distributionData} />}
         />
     )
 }

@@ -1,5 +1,5 @@
 import './App.css';
-import { numLetters, initialNumGuessesToShow, rankToColor, backspaceSymbol } from "./constants";
+import { emptyDistributionData, numLetters, rankToColor, backspaceSymbol } from "./constants";
 import { useEffect, useState } from 'react';
 import { getDateToday, blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex } from './utils';
 import useScreenSize from './components/useScreenSize';
@@ -10,7 +10,7 @@ import ResponsiveAppBar from './components/ResponsiveAppBar';
 import GuessesBoard from './components/GuessesBoard';
 import Keyboard from './components/Keyboard';
 import { InvalidGuessDialog, WonDialog } from './components/AlertDialog';
-import { initDB, addItem } from './db';
+import { initDB, addItem, getAllItems } from './db';
 
 
 function App() {
@@ -26,6 +26,7 @@ function App() {
   const [invalidGuess, setInvalidGuess] = useState("");
   const [invalidGuessDialogOpen, setInvalidGuessDialogOpen] = useState(false);
   const [wonDialogOpen, setWonDialogOpen] = useState(false);
+  const [distributionData, setDistributionData] = useState({...emptyDistributionData});
 
   // console.log(`${puzzleDate} ${answer}`);
   // console.log(`${new Date()}`);
@@ -36,7 +37,7 @@ function App() {
   }, []);
 
   const saveGuess = () => {
-    const newItem = { puzzleNum: puzzleNum, solvedDate: today, guesses: guessesData };
+    const newItem = { puzzleNum: puzzleNum, solvedDate: today, numGuesses: nextLetterIndex[0] + 1, guesses: guessesData };
     addItem(newItem); // Add item to the database
   };
 
@@ -73,6 +74,15 @@ function App() {
           console.log('TODO: winner!');
           setWonDialogOpen(true);
           saveGuess();
+          getAllItems((result) => {
+            // todo: add unit test
+            const distribution = {...distributionData};
+            result.forEach((solutionData) => {
+              const countLabel = solutionData.numGuesses < 7 ? solutionData.numGuesses : '7+';
+              distribution[countLabel] = (distribution[countLabel] || 0) + 1;
+            });
+            setDistributionData(distribution);
+          });
         } else {  // guess not the answer
           // update next letter index, potentially adding a new row
           const nextRowIndex = nextLetterIndex[0] + 1;
@@ -137,6 +147,7 @@ function App() {
           handleClose={() => setWonDialogOpen(false)}
           answer={answer}
           resetGame={resetGame}
+          distributionData={distributionData}
         />
       )}
 
