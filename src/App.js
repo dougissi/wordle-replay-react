@@ -1,21 +1,23 @@
 import './App.css';
 import { emptyDistributionData, numLetters, rankToColor, backspaceSymbol } from "./constants";
 import { useEffect, useState } from 'react';
-import { getDateToday, blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex, calculateDistribution } from './utils';
+import { blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex, calculateDistribution } from './utils';
 import useScreenSize from './components/useScreenSize';
 import { dateToWord } from './assets/date_to_word';
 import { dateToPuzzleNum } from './assets/date_to_puzzle_num';
 import { wordleAcceptableWords } from './assets/wordle_acceptable_words';
 import ResponsiveAppBar from './components/ResponsiveAppBar';
-import DatePickerValue from './components/DatePicker';
+import { DateSelector } from './components/DateSelector';
 import GuessesBoard from './components/GuessesBoard';
 import Keyboard from './components/Keyboard';
 import { InvalidGuessDialog, WonDialog } from './components/AlertDialog';
 import { initDB, addItem, getAllItems } from './db';
+import { Stack } from '@mui/material';
+import dayjs from 'dayjs';
 
 
 function App() {
-  const today = getDateToday();
+  const today = dayjs().format('YYYY-MM-DD');
   const screenSize = useScreenSize();
   const [puzzleDate, setPuzzleDate] = useState(today);
   const [puzzleNum, setPuzzleNum] = useState(dateToPuzzleNum.get(puzzleDate));
@@ -30,8 +32,6 @@ function App() {
   const [distributionData, setDistributionData] = useState({...emptyDistributionData});
 
   // console.log(`${puzzleDate} ${answer}`);
-  // console.log(`${new Date()}`);
-  // console.log(guessesData);
 
   useEffect(() => {
     initDB(); // Initialize the database
@@ -137,7 +137,18 @@ function App() {
         <p>Width: {screenSize.width}</p>
         <p>Height: {screenSize.height}</p>
       </div> */}
-      <DatePickerValue today={today} changeDate={changeDate} />
+
+      {/* Row of inputs above Guess Board */}
+      <Stack
+        direction="row"
+        spacing={2}
+        justifyContent="center"
+        alignItems="center"
+      >
+        <DateSelector today={today} changeDate={changeDate} />
+      </Stack>
+
+      {/* Dialogs, initially hidden */}
       {invalidGuessDialogOpen && (
         <InvalidGuessDialog 
           open={invalidGuessDialogOpen} 
@@ -153,6 +164,7 @@ function App() {
           handleClose={() => setWonDialogOpen(false)}
           answer={answer}
           resetGame={resetGame}
+          guessesColors={guessesColors}
           distributionData={distributionData}
         />
       )}

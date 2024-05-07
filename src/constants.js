@@ -15,5 +15,10 @@ export const rankToColor = {
     '0': 'gray',
     '-1': 'none'
 };
+export const colorToIcon = {
+    "green": "🟩",  // "&#129001;"
+    "yellow": "🟨",  // "&#129000;"
+    "gray": "⬜",  // "&#11036;"
+};
 export const backspaceSymbol = "⬅";
 export const earliestDate = "2021-06-19";

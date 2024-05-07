@@ -5,6 +5,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { DistributionChart } from './DistributionChart';
+import { Stack, Typography } from '@mui/material';
+import { colorToIcon } from '../constants';
 
 function AlertDialog({ open, handleClose, title, text, buttons, addlContent }) {
 
@@ -24,7 +26,13 @@ function AlertDialog({ open, handleClose, title, text, buttons, addlContent }) {
             <DialogContentText id="alert-dialog-description">
                 {text}
             </DialogContentText>
-            {addlContent}
+            <Stack
+                spacing={2}
+                justifyContent="center"
+                alignItems="center"
+            >
+                {addlContent}
+            </Stack>
         </DialogContent>
         <DialogActions>
             {buttons}            
@@ -46,14 +54,26 @@ function InvalidGuessDialog({ open, handleClose, guess, clearGuess }) {
         <AlertDialog
             open={open}
             handleClose={handleClose}
-            title={`"${guess}" is not in the word list.`}  // TODO: specify the guess that's not in word list
+            title={`"${guess}" is not in the word list.`}
             text="Please enter a different guess."
             buttons={[clearButton, editButton]}
         />
     )
 }
 
-function WonDialog({ open, handleClose, answer, resetGame, distributionData }) {
+function WonDialog({ open, handleClose, answer, resetGame, guessesColors, distributionData }) {
+
+
+    const guessesIcons = [];
+    for (let i = 0; i < guessesColors.length; i++) {
+        const guessColors = guessesColors[i];
+        if (guessColors[0] === "") {
+            break;
+        }
+        const guessIcons = guessColors.map((color) => colorToIcon[color]).join("");
+        guessesIcons.push(guessIcons);
+    }
+
     const handleClickRestartButton = () => {
         resetGame();
         handleClose();
@@ -69,7 +89,15 @@ function WonDialog({ open, handleClose, answer, resetGame, distributionData }) {
             title={`You found "${answer}"!`}
             text="Thanks for playing."  // TODO: update
             buttons={[restartButton, okButton]}
-            addlContent={<DistributionChart distributionData={distributionData} />}
+            addlContent={[
+                <Typography key="guesses" variant="h6">Guesses</Typography>,
+                <Stack key="guessesStack" spacing={0}>
+                    {guessesIcons.map((guessIcons, i) => (
+                        <Typography key={`guess${i}`}>{guessIcons}</Typography>
+                    ))}
+                </Stack>,
+                <DistributionChart distributionData={distributionData} />
+            ]}
         />
     )
 }

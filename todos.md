@@ -5,8 +5,13 @@
 * [ ] animate tile flips
 * [x] unit tests for utils.js
 * [ ] update React tests for App.js
-* [ ] add unit tests for getting today's date
-* [ ] update README
 * [ ] prevent selecting text on keyboard (especially on mobile)
 * [ ] add data labels to distribution
 * [ ] keep generateDateArray?
+* [x] add share icons to won dialog
+* [ ] buttons to copy shareable icons
+* [ ] add Autocomplete for selecting by puzzle number
+* [ ] custom wordle?
+* [ ] publish to GitHub pages
+* [ ] update README
+* [ ] transition to wordlereplay.com

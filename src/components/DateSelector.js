@@ -6,7 +6,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { earliestDate } from '../constants';
 
-export default function DatePickerValue({ today, changeDate }) {
+export function DateSelector({ today, changeDate }) {
     const todayDate = dayjs(today);
     const [value, setValue] = useState(todayDate);
 
