@@ -10,8 +10,9 @@ export const initDB = () => {
   request.onupgradeneeded = (event) => {
     const db = event.target.result;
     // Create object store or schema here
-    const store = db.createObjectStore("guesses", { keyPath: "puzzleNum" });
+    db.createObjectStore("guesses", { keyPath: "puzzleNum" });
     // Define indexes or additional configuration
+    // via `const store = db.createObjectStore("guesses", { keyPath: "puzzleNum" });`
   };
 
   request.onsuccess = (event) => {

@@ -16,3 +16,4 @@ export const rankToColor = {
     '-1': 'none'
 };
 export const backspaceSymbol = "⬅";
+export const earliestDate = "2021-06-19";

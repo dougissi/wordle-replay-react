@@ -1,14 +1,5 @@
 import { isSingleEnglishLetter } from "../utils";
 
-// // Example usage:
-    // console.log(isSingleEnglishLetter('A')); // true
-    // console.log(isSingleEnglishLetter('a')); // true
-    // console.log(isSingleEnglishLetter('Z')); // true
-    // console.log(isSingleEnglishLetter('z')); // true
-    // console.log(isSingleEnglishLetter('1')); // false
-    // console.log(isSingleEnglishLetter('AB')); // false
-    // console.log(isSingleEnglishLetter('@')); // false
-
 it('isSingleEnglishLetter: A', () => {
     expect(isSingleEnglishLetter('A')).toEqual(true);
 })

@@ -1,4 +1,4 @@
-import { ChartContainer, BarPlot, ChartsAxis, BarChart } from '@mui/x-charts';
+import { BarChart } from '@mui/x-charts';
 
 export function DistributionChart({ distributionData }) {
   return (

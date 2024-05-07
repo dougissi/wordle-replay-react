@@ -1,4 +1,4 @@
-import { numLetters, initialNumGuessesToShow } from "./constants";
+import { numLetters, initialNumGuessesToShow, emptyDistributionData } from "./constants";
 
 function getDateToday() {
     // TODO: add unit tests
@@ -8,6 +8,25 @@ function getDateToday() {
     const day = String(today.getDate()).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
+}
+
+// Function to generate an array of dates
+function generateDateArray(start, end) {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    if (startDate > endDate) {
+        throw new Error("start date greater than end date")
+    }
+    let currentDate = new Date(startDate);
+    const dateArray = [];
+
+    // Loop through dates until endDate is reached
+    while (currentDate <= endDate) {
+        dateArray.push(currentDate.toISOString().split('T')[0]); // Push date in 'YYYY-MM-DD' format
+        currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
+    }
+
+    return dateArray;
 }
 
 function blankRow(fillValue = "") {
@@ -72,11 +91,22 @@ function getLetterAlphabetIndex(letter) {
     return position;
 }
 
+function calculateDistribution(dbData) {
+    const distribution = {...emptyDistributionData};
+    dbData.forEach((solutionData) => {
+        const countLabel = solutionData.numGuesses < 7 ? solutionData.numGuesses : '7+';
+        distribution[countLabel] = (distribution[countLabel] || 0) + 1;
+    });
+    return distribution;
+}
+
 export {
     getDateToday,
+    generateDateArray,
     blankRow,
     blankGuessesGrid,
     isSingleEnglishLetter,
     getGuessRanks,
-    getLetterAlphabetIndex
+    getLetterAlphabetIndex,
+    calculateDistribution
 }

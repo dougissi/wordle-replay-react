@@ -1,12 +1,13 @@
 import './App.css';
 import { emptyDistributionData, numLetters, rankToColor, backspaceSymbol } from "./constants";
 import { useEffect, useState } from 'react';
-import { getDateToday, blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex } from './utils';
+import { getDateToday, blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex, calculateDistribution } from './utils';
 import useScreenSize from './components/useScreenSize';
 import { dateToWord } from './assets/date_to_word';
 import { dateToPuzzleNum } from './assets/date_to_puzzle_num';
 import { wordleAcceptableWords } from './assets/wordle_acceptable_words';
 import ResponsiveAppBar from './components/ResponsiveAppBar';
+import DatePickerValue from './components/DatePicker';
 import GuessesBoard from './components/GuessesBoard';
 import Keyboard from './components/Keyboard';
 import { InvalidGuessDialog, WonDialog } from './components/AlertDialog';
@@ -74,13 +75,8 @@ function App() {
           console.log('TODO: winner!');
           setWonDialogOpen(true);
           saveGuess();
-          getAllItems((result) => {
-            // todo: add unit test
-            const distribution = {...distributionData};
-            result.forEach((solutionData) => {
-              const countLabel = solutionData.numGuesses < 7 ? solutionData.numGuesses : '7+';
-              distribution[countLabel] = (distribution[countLabel] || 0) + 1;
-            });
+          getAllItems((results) => {
+            const distribution = calculateDistribution(results);
             setDistributionData(distribution);
           });
         } else {  // guess not the answer
@@ -122,7 +118,16 @@ function App() {
     setGuessesColors(blankGuessesGrid());
     setLetterMaxRanks(Array(26).fill('-1'));
     setNextLetterIndex([0, 0]);
-  }
+  };
+
+  const changeDate = (dateStr) => {
+    // TODO: make sure between earliest and today
+    // TODO: what if there's no date change?
+    setPuzzleDate(dateStr);
+    setPuzzleNum(dateToPuzzleNum.get(dateStr));
+    setAnswer(dateToWord.get(dateStr).toUpperCase());
+    resetGame();  // TODO: make this optional?
+  };
 
   return (
     <div className="App">
@@ -132,6 +137,7 @@ function App() {
         <p>Width: {screenSize.width}</p>
         <p>Height: {screenSize.height}</p>
       </div> */}
+      <DatePickerValue today={today} changeDate={changeDate} />
       {invalidGuessDialogOpen && (
         <InvalidGuessDialog 
           open={invalidGuessDialogOpen} 
