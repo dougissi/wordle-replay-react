@@ -13,24 +13,22 @@ export function SearchBar({ today, changeDate, solvedPuzzleNums }) {
     }
 
     const handleChange = (event, option) => {
-        if (!option) {  // handle when search bar is cleared
-            changeDate(today);
-        } else {
-            changeDate(option.date);
-        }
+        changeDate(option.date);
     };
 
     return (
         <Autocomplete
             id="search-bar"
-            sx={{ width: 200 }}
+            sx={{ width: 250 }}
+            size="small"
             options={options.sort((a,b) => b.solved.localeCompare(a.solved) || b.puzzleNum - a.puzzleNum)}
             groupBy={(option) => option.solved}
             getOptionLabel={(option) => `#${option.puzzleNum}: ${option.date}`}
             isOptionEqualToValue={(option, value) => option.puzzleNum === value.puzzleNum}
-            renderInput={(params) => <TextField {...params} label="Puzzle # and Date" />}
+            renderInput={(params) => <TextField {...params} label="Search by # or date" />}
             onChange={handleChange}
             style={{ paddingTop: '10px' }}
+            disableClearable
         />
     )
 }
