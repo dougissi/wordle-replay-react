@@ -61,7 +61,7 @@ function InvalidGuessDialog({ open, handleClose, guess, clearGuess }) {
     )
 }
 
-function WonDialog({ open, handleClose, answer, resetGame, guessesColors, distributionData }) {
+function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesColors, distributionData }) {
 
 
     const guessesIcons = [];
@@ -96,7 +96,7 @@ function WonDialog({ open, handleClose, answer, resetGame, guessesColors, distri
                         <Typography key={`guess${i}`}>{guessIcons}</Typography>
                     ))}
                 </Stack>,
-                <DistributionChart key="distributionChart" distributionData={distributionData} />
+                <DistributionChart key="distributionChart" numGuesses={numGuesses} distributionData={distributionData} />
             ]}
         />
     )

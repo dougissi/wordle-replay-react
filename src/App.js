@@ -166,6 +166,7 @@ function App() {
           open={wonDialogOpen}
           handleClose={() => setWonDialogOpen(false)}
           answer={answer}
+          numGuesses={nextLetterIndex[0] + 1}
           resetGame={resetGame}
           guessesColors={guessesColors}
           distributionData={distributionData}
