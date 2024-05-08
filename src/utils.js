@@ -1,24 +1,5 @@
 import { numLetters, initialNumGuessesToShow, emptyDistributionData } from "./constants";
 
-// Function to generate an array of dates
-function generateDateArray(start, end) {
-    const startDate = new Date(start);
-    const endDate = new Date(end);
-    if (startDate > endDate) {
-        throw new Error("start date greater than end date")
-    }
-    let currentDate = new Date(startDate);
-    const dateArray = [];
-
-    // Loop through dates until endDate is reached
-    while (currentDate <= endDate) {
-        dateArray.push(currentDate.toISOString().split('T')[0]); // Push date in 'YYYY-MM-DD' format
-        currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
-    }
-
-    return dateArray;
-}
-
 function blankRow(fillValue = "") {
     return Array(numLetters).fill(fillValue);
 }
@@ -81,21 +62,22 @@ function getLetterAlphabetIndex(letter) {
     return position;
 }
 
-function calculateDistribution(dbData) {
+function processSolvedData(allSolvedData) {
     const distribution = {...emptyDistributionData};
-    dbData.forEach((solutionData) => {
-        const countLabel = solutionData.numGuesses < 7 ? solutionData.numGuesses : '7+';
+    const solvedNums = new Set();
+    allSolvedData.forEach((solvedItem) => {
+        const countLabel = solvedItem.numGuesses < 7 ? solvedItem.numGuesses : '7+';
         distribution[countLabel] = (distribution[countLabel] || 0) + 1;
+        solvedNums.add(solvedItem.puzzleNum);
     });
-    return distribution;
+    return [distribution, solvedNums];
 }
 
 export {
-    generateDateArray,
     blankRow,
     blankGuessesGrid,
     isSingleEnglishLetter,
     getGuessRanks,
     getLetterAlphabetIndex,
-    calculateDistribution
+    processSolvedData
 }

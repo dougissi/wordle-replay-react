@@ -1,10 +1,12 @@
 // db.js
 
+import { processSolvedData } from "./utils";
+
 const DB_NAME = "wordlereplay_db";
 const DB_VERSION = 1;
 let db;
 
-export const initDB = () => {
+export const initDB = (setSolvedPuzzleNums, setDistributionData) => {
   const request = indexedDB.open(DB_NAME, DB_VERSION);
 
   request.onupgradeneeded = (event) => {
@@ -17,6 +19,7 @@ export const initDB = () => {
 
   request.onsuccess = (event) => {
     db = event.target.result;
+    setSolvedStates(setSolvedPuzzleNums, setDistributionData);
   };
 
   request.onerror = (event) => {
@@ -38,7 +41,7 @@ export const addItem = (item) => {
   };
 };
 
-export const getAllItems = (callback) => {
+export const setSolvedStates = (setSolvedPuzzleNums, setDistributionData) => {
   const transaction = db.transaction(["guesses"], "readonly");
   const store = transaction.objectStore("guesses");
   const request = store.getAll();
@@ -46,7 +49,9 @@ export const getAllItems = (callback) => {
   request.onsuccess = () => {
     const items = request.result;
     console.log("Retrieved all items from db");
-    callback(items);
+    const [dist, solvedSet] = processSolvedData(items);
+    setDistributionData(dist);
+    setSolvedPuzzleNums(solvedSet);
   };
 
   request.onerror = (event) => {

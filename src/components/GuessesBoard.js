@@ -1,11 +1,10 @@
-import { useRef, useEffect } from 'react';
+import { forwardRef } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { Stack } from '@mui/material';
 
-function GuessesBoard({ screenSize, guessesData, guessesColors, handleInputText }) {
+const GuessesBoard = forwardRef(({ screenSize, guessesData, guessesColors, handleInputText }, ref) => {
     const theme = useTheme();
-    const divRef = useRef(null);
 
     const numRows = guessesData.length;
     const numLetters = guessesData[0].length;
@@ -27,15 +26,10 @@ function GuessesBoard({ screenSize, guessesData, guessesColors, handleInputText 
         lineHeight: `${tileLenSqr}px`,  // center text
     }));
 
-    useEffect(() => {
-        // Focus the div element when the component mounts
-        divRef.current.focus();
-    }, []); // Empty dependency array ensures this effect runs only once when the component mounts
-
     return (
         <div 
             className="guessesBoard" 
-            ref={divRef} 
+            ref={ref}
             tabIndex={0}  // Make div focusable
             onKeyDown={(event) => handleInputText(event.key.toUpperCase())} 
             style={{ 
@@ -54,6 +48,6 @@ function GuessesBoard({ screenSize, guessesData, guessesColors, handleInputText 
             ))}
         </div>
     )
-}
+});
 
 export default GuessesBoard;

@@ -96,7 +96,7 @@ function WonDialog({ open, handleClose, answer, resetGame, guessesColors, distri
                         <Typography key={`guess${i}`}>{guessIcons}</Typography>
                     ))}
                 </Stack>,
-                <DistributionChart distributionData={distributionData} />
+                <DistributionChart key="distributionChart" distributionData={distributionData} />
             ]}
         />
     )

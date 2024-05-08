@@ -1,19 +1,20 @@
 import './App.css';
 import { emptyDistributionData, numLetters, rankToColor, backspaceSymbol } from "./constants";
-import { useEffect, useState } from 'react';
-import { blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex, calculateDistribution } from './utils';
+import { useEffect, useState, useRef } from 'react';
+import { blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex } from './utils';
 import useScreenSize from './components/useScreenSize';
 import { dateToWord } from './assets/date_to_word';
 import { dateToPuzzleNum } from './assets/date_to_puzzle_num';
 import { wordleAcceptableWords } from './assets/wordle_acceptable_words';
 import ResponsiveAppBar from './components/ResponsiveAppBar';
-import { DateSelector } from './components/DateSelector';
+// import { DateSelector } from './components/DateSelector';
 import GuessesBoard from './components/GuessesBoard';
 import Keyboard from './components/Keyboard';
 import { InvalidGuessDialog, WonDialog } from './components/AlertDialog';
-import { initDB, addItem, getAllItems } from './db';
+import { initDB, addItem, setSolvedStates } from './db';
 import { Stack } from '@mui/material';
 import dayjs from 'dayjs';
+import { SearchBar } from './components/SearchBar';
 
 
 function App() {
@@ -29,16 +30,19 @@ function App() {
   const [invalidGuess, setInvalidGuess] = useState("");
   const [invalidGuessDialogOpen, setInvalidGuessDialogOpen] = useState(false);
   const [wonDialogOpen, setWonDialogOpen] = useState(false);
+  const [solvedPuzzleNums, setSolvedPuzzleNums] = useState(new Set());
   const [distributionData, setDistributionData] = useState({...emptyDistributionData});
 
   // console.log(`${puzzleDate} ${answer}`);
+  const guessesBoardRef = useRef(null);
 
   useEffect(() => {
-    initDB(); // Initialize the database
+    initDB(setSolvedPuzzleNums, setDistributionData); // Initialize the database
+    guessesBoardRef.current.focus();  // focus on guesses board initially
   }, []);
 
   const saveGuess = () => {
-    const newItem = { puzzleNum: puzzleNum, solvedDate: today, numGuesses: nextLetterIndex[0] + 1, guesses: guessesData };
+    const newItem = { puzzleNum: puzzleNum, date: puzzleDate, solvedDate: today, numGuesses: nextLetterIndex[0] + 1, guesses: guessesData };
     addItem(newItem); // Add item to the database
   };
 
@@ -75,10 +79,7 @@ function App() {
           console.log('TODO: winner!');
           setWonDialogOpen(true);
           saveGuess();
-          getAllItems((results) => {
-            const distribution = calculateDistribution(results);
-            setDistributionData(distribution);
-          });
+          setSolvedStates(setSolvedPuzzleNums, setDistributionData);
         } else {  // guess not the answer
           // update next letter index, potentially adding a new row
           const nextRowIndex = nextLetterIndex[0] + 1;
@@ -118,6 +119,7 @@ function App() {
     setGuessesColors(blankGuessesGrid());
     setLetterMaxRanks(Array(26).fill('-1'));
     setNextLetterIndex([0, 0]);
+    guessesBoardRef.current.focus();
   };
 
   const changeDate = (dateStr) => {
@@ -143,9 +145,10 @@ function App() {
         direction="row"
         spacing={2}
         justifyContent="center"
-        alignItems="center"
+        alignItems="flex-end"
       >
-        <DateSelector today={today} changeDate={changeDate} />
+        {/* <DateSelector today={today} changeDate={changeDate} /> */}
+        <SearchBar today={today} changeDate={changeDate} solvedPuzzleNums={solvedPuzzleNums} />
       </Stack>
 
       {/* Dialogs, initially hidden */}
@@ -171,6 +174,7 @@ function App() {
 
       <GuessesBoard
         screenSize={screenSize}
+        ref={guessesBoardRef}
         guessesData={guessesData}
         guessesColors={guessesColors}
         handleInputText={handleInputText}
