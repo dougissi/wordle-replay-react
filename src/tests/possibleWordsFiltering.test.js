@@ -1,4 +1,4 @@
-import { getInsightsFromGuessRanks, getLetterCounts, getInsightCallback, satisfiesAllInsights } from "../possibleWordsFiltering";
+import { getInsightsFromGuessRanks, getLetterCounts, getInsightCallback, satisfiesAllInsights } from "../hardModeWordsFiltering";
 
 // getInsightsFromGuessRanks
 

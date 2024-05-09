@@ -10,13 +10,13 @@ import ResponsiveAppBar from './components/ResponsiveAppBar';
 // import { DateSelector } from './components/DateSelector';
 import GuessesBoard from './components/GuessesBoard';
 import Keyboard from './components/Keyboard';
-import { InvalidGuessDialog, PossibleWordsDialog, WonDialog } from './components/AlertDialog';
+import { InvalidGuessDialog, SuggestionsDialog, WonDialog } from './components/AlertDialog';
 import { initDB, addItem, setSolvedStates } from './db';
 import { Button, Stack } from '@mui/material';
 import dayjs from 'dayjs';
 import { SearchBar } from './components/SearchBar';
-import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallbacks } from './possibleWordsFiltering';
-
+import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallbacks } from './hardModeWordsFiltering';
+import SettingsMenu from './components/SettingsMenu';
 
 function App() {
   const today = dayjs().format('YYYY-MM-DD');
@@ -33,9 +33,11 @@ function App() {
   const [wonDialogOpen, setWonDialogOpen] = useState(false);
   const [solvedPuzzleNums, setSolvedPuzzleNums] = useState(new Set());
   const [distributionData, setDistributionData] = useState({...emptyDistributionData});
-  const [possibleWords, setPossibleWords] = useState([...wordleAcceptableWords]);
+  const [hardModeWords, setHardModeWords] = useState(new Set(wordleAcceptableWords));
+  const [possibleWords, setPossibleWords] = useState(new Set(wordleAcceptableWords));
   const [seenInsights, setSeenInsights] = useState(new Set());
-  const [possibleWordsDialogOpen, setPossibleWordsDialogOpen] = useState(false);
+  const [suggestionsDialogOpen, setSuggestionsDialogOpen] = useState(false);
+  const [hardMode, setHardMode] = useState(false);
 
   // console.log(`${puzzleDate} ${answer}`);
   const guessesBoardRef = useRef(null);
@@ -60,7 +62,7 @@ function App() {
 
     if (text === 'ENTER' && nextLetterIndex[1] === numLetters) {  // ENTER at end of word
       const guess = guessesData[nextLetterIndex[0]].join("");
-      if (!wordleAcceptableWords.has(guess.toLowerCase())) {  // TODO: adjust for hard mode
+      if (!possibleWords.has(guess.toLowerCase())) {
         setInvalidGuess(guess);  // TODO: never gets unset, but works fine
         setInvalidGuessDialogOpen(true);
       } else {  // guess is an acceptable word
@@ -99,13 +101,18 @@ function App() {
           setNextLetterIndex([nextRowIndex, 0]);
         }
 
-        // updated possible words set and seen insights
+        // update hard mode words and seen insights
         const insights = getInsightsFromGuessRanks(guess.toLowerCase(), guessRanks);
         const newInsights = insights.filter((insight) => !seenInsights.has(insight));
         const newInsightCallbacks = newInsights.map((insight) => getInsightCallback(insight));
-        const newPossibleWords = possibleWords.filter((word) => satisfiesAllInsightCallbacks(word, newInsightCallbacks));
+        const newHardModeWords = new Set([...hardModeWords].filter((word) => satisfiesAllInsightCallbacks(word, newInsightCallbacks)));
         setSeenInsights(seenInsights.union(new Set(newInsights)));
-        setPossibleWords(newPossibleWords);
+        setHardModeWords(newHardModeWords);
+
+        // update possible words set if hard mode is on
+        if (hardMode) {
+          setPossibleWords(newHardModeWords);
+        }
       }
     } else if ((text === 'BACKSPACE' || text === backspaceSymbol) && nextLetterIndex[1] > 0) {  // BACKSPACE with some letters
       const newGuessesData = [...guessesData];
@@ -136,6 +143,7 @@ function App() {
     setGuessesColors(blankGuessesGrid());
     setLetterMaxRanks(Array(26).fill('-1'));
     setNextLetterIndex([0, 0]);
+    setHardModeWords([...wordleAcceptableWords]);
     setPossibleWords([...wordleAcceptableWords]);
     setSeenInsights(new Set());
     guessesBoardRef.current.focus();
@@ -150,6 +158,12 @@ function App() {
     resetGame();  // TODO: make this optional?
   };
 
+  const handleHardModeChange = (event) => {
+    const newHardMode = event.target.checked;
+    const newPossibleWords = newHardMode ? new Set(hardModeWords) : wordleAcceptableWords;
+    setHardMode(newHardMode);
+    setPossibleWords(newPossibleWords);
+  };
 
 
   return (
@@ -169,17 +183,23 @@ function App() {
         alignItems="flex-end"
       >
         {/* <DateSelector today={today} changeDate={changeDate} /> */}
+        
         <SearchBar today={today} changeDate={changeDate} solvedPuzzleNums={solvedPuzzleNums} />
+        
         <Button
           variant="contained"
           ref={suggestionsButtonRef}
           onClick={() => {
-            setPossibleWordsDialogOpen(true);
+            setSuggestionsDialogOpen(true);
             suggestionsButtonRef.current.blur();
           }}
         >
           Suggestions
         </Button>
+
+        <SettingsMenu hardMode={hardMode} handleHardModeChange={handleHardModeChange} />
+        
+        {/* {hardMode && <div>Hard Mode Active</div>} */}
       </Stack>
 
       {/* Dialogs, initially hidden */}
@@ -189,6 +209,7 @@ function App() {
           handleClose={() => setInvalidGuessDialogOpen(false)}
           guess={invalidGuess}
           clearGuess={clearGuess}
+          hardMode={hardMode}
         />
       )}
 
@@ -204,11 +225,11 @@ function App() {
         />
       )}
 
-      {possibleWordsDialogOpen && (
-        <PossibleWordsDialog
-          open={possibleWordsDialogOpen}
-          handleClose={() => setPossibleWordsDialogOpen(false)}
-          possibleWords={possibleWords}
+      {suggestionsDialogOpen && (
+        <SuggestionsDialog
+          open={suggestionsDialogOpen}
+          handleClose={() => setSuggestionsDialogOpen(false)}
+          hardModeWords={hardModeWords}
         />
       )}
 

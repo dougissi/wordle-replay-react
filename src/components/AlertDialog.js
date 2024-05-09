@@ -41,7 +41,7 @@ function AlertDialog({ open, handleClose, title, text, buttons, addlContent }) {
     );
 }
 
-function InvalidGuessDialog({ open, handleClose, guess, clearGuess }) {
+function InvalidGuessDialog({ open, handleClose, guess, clearGuess, hardMode }) {
     const handleClickClearButton = () => {
         clearGuess();
         handleClose();
@@ -54,7 +54,7 @@ function InvalidGuessDialog({ open, handleClose, guess, clearGuess }) {
         <AlertDialog
             open={open}
             handleClose={handleClose}
-            title={`"${guess}" is not in the word list.`}
+            title={`"${guess}" is not ${hardMode ? "allowed in hard mode" : "in the word list"}.`}
             text="Please enter a different guess."
             buttons={[clearButton, editButton]}
         />
@@ -102,15 +102,15 @@ function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesCo
     )
 }
 
-function PossibleWordsDialog({ open, handleClose, possibleWords }) {
-    const okButton = <Button key="possibleWordsOkButton" onClick={handleClose} autoFocus>OK</Button>;
+function SuggestionsDialog({ open, handleClose, hardModeWords }) {
+    const okButton = <Button key="hardModeWordsOkButton" onClick={handleClose} autoFocus>OK</Button>;
 
     return (
         <AlertDialog
             open={open}
             handleClose={handleClose}
             title="Possible Guesses"  // TODO: update all to match this naming?
-            text={possibleWords.join(", ")}
+            text={[...hardModeWords].join(", ")}
             buttons={[okButton]}
         />
     )
@@ -119,5 +119,5 @@ function PossibleWordsDialog({ open, handleClose, possibleWords }) {
 export {
     InvalidGuessDialog,
     WonDialog,
-    PossibleWordsDialog
+    SuggestionsDialog
 }

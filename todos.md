@@ -19,7 +19,8 @@
 * [ ] consider adding `handleHomeEndKeys` to move focus inside the SearchBar popup with the Home and End keys
 * [x] guess possible words
 * [ ] guess suggestions
-* [ ] give option to turn on Hard Mode (instead of accepting all valid word guesses, only those of the filtered suggestions)
+* [x] give option to turn on Hard Mode (instead of accepting all valid word guesses, only those of the filtered suggestions)
+* [ ] add hard mode cookie to save state
 * [x] fix bug when pressing ENTER to close Possible Words Dialog it auto opens again -- done via blur
 * [ ] tidy suggestions button ref and general naming (vs possible words and possible guesses)
 * [ ] custom wordle?
