@@ -102,7 +102,22 @@ function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesCo
     )
 }
 
+function PossibleWordsDialog({ open, handleClose, possibleWords }) {
+    const okButton = <Button key="possibleWordsOkButton" onClick={handleClose} autoFocus>OK</Button>;
+
+    return (
+        <AlertDialog
+            open={open}
+            handleClose={handleClose}
+            title="Possible Guesses"  // TODO: update all to match this naming?
+            text={possibleWords.join(", ")}
+            buttons={[okButton]}
+        />
+    )
+}
+
 export {
     InvalidGuessDialog,
-    WonDialog
+    WonDialog,
+    PossibleWordsDialog
 }

@@ -10,11 +10,12 @@ import ResponsiveAppBar from './components/ResponsiveAppBar';
 // import { DateSelector } from './components/DateSelector';
 import GuessesBoard from './components/GuessesBoard';
 import Keyboard from './components/Keyboard';
-import { InvalidGuessDialog, WonDialog } from './components/AlertDialog';
+import { InvalidGuessDialog, PossibleWordsDialog, WonDialog } from './components/AlertDialog';
 import { initDB, addItem, setSolvedStates } from './db';
-import { Stack } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import dayjs from 'dayjs';
 import { SearchBar } from './components/SearchBar';
+import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallbacks } from './possibleWordsFiltering';
 
 
 function App() {
@@ -32,17 +33,25 @@ function App() {
   const [wonDialogOpen, setWonDialogOpen] = useState(false);
   const [solvedPuzzleNums, setSolvedPuzzleNums] = useState(new Set());
   const [distributionData, setDistributionData] = useState({...emptyDistributionData});
+  const [possibleWords, setPossibleWords] = useState([...wordleAcceptableWords]);
+  const [seenInsights, setSeenInsights] = useState(new Set());
+  const [possibleWordsDialogOpen, setPossibleWordsDialogOpen] = useState(false);
 
   // console.log(`${puzzleDate} ${answer}`);
   const guessesBoardRef = useRef(null);
+  const suggestionsButtonRef = useRef(null);
 
   useEffect(() => {
     initDB(setSolvedPuzzleNums, setDistributionData); // Initialize the database
     guessesBoardRef.current.focus();  // focus on guesses board initially
   }, []);
 
+  const numGuesses = () => {
+    return nextLetterIndex[0] + 1;
+  };
+
   const saveGuess = () => {
-    const newItem = { puzzleNum: puzzleNum, date: puzzleDate, solvedDate: today, numGuesses: nextLetterIndex[0] + 1, guesses: guessesData };
+    const newItem = { puzzleNum: puzzleNum, date: puzzleDate, solvedDate: today, numGuesses: numGuesses(), guesses: guessesData };
     addItem(newItem); // Add item to the database
   };
 
@@ -51,7 +60,7 @@ function App() {
 
     if (text === 'ENTER' && nextLetterIndex[1] === numLetters) {  // ENTER at end of word
       const guess = guessesData[nextLetterIndex[0]].join("");
-      if (!wordleAcceptableWords.has(guess.toLowerCase())) {
+      if (!wordleAcceptableWords.has(guess.toLowerCase())) {  // TODO: adjust for hard mode
         setInvalidGuess(guess);  // TODO: never gets unset, but works fine
         setInvalidGuessDialogOpen(true);
       } else {  // guess is an acceptable word
@@ -89,6 +98,14 @@ function App() {
           }
           setNextLetterIndex([nextRowIndex, 0]);
         }
+
+        // updated possible words set and seen insights
+        const insights = getInsightsFromGuessRanks(guess.toLowerCase(), guessRanks);
+        const newInsights = insights.filter((insight) => !seenInsights.has(insight));
+        const newInsightCallbacks = newInsights.map((insight) => getInsightCallback(insight));
+        const newPossibleWords = possibleWords.filter((word) => satisfiesAllInsightCallbacks(word, newInsightCallbacks));
+        setSeenInsights(seenInsights.union(new Set(newInsights)));
+        setPossibleWords(newPossibleWords);
       }
     } else if ((text === 'BACKSPACE' || text === backspaceSymbol) && nextLetterIndex[1] > 0) {  // BACKSPACE with some letters
       const newGuessesData = [...guessesData];
@@ -119,6 +136,8 @@ function App() {
     setGuessesColors(blankGuessesGrid());
     setLetterMaxRanks(Array(26).fill('-1'));
     setNextLetterIndex([0, 0]);
+    setPossibleWords([...wordleAcceptableWords]);
+    setSeenInsights(new Set());
     guessesBoardRef.current.focus();
   };
 
@@ -130,6 +149,8 @@ function App() {
     setAnswer(dateToWord.get(dateStr).toUpperCase());
     resetGame();  // TODO: make this optional?
   };
+
+
 
   return (
     <div className="App">
@@ -149,6 +170,16 @@ function App() {
       >
         {/* <DateSelector today={today} changeDate={changeDate} /> */}
         <SearchBar today={today} changeDate={changeDate} solvedPuzzleNums={solvedPuzzleNums} />
+        <Button
+          variant="contained"
+          ref={suggestionsButtonRef}
+          onClick={() => {
+            setPossibleWordsDialogOpen(true);
+            suggestionsButtonRef.current.blur();
+          }}
+        >
+          Suggestions
+        </Button>
       </Stack>
 
       {/* Dialogs, initially hidden */}
@@ -166,10 +197,18 @@ function App() {
           open={wonDialogOpen}
           handleClose={() => setWonDialogOpen(false)}
           answer={answer}
-          numGuesses={nextLetterIndex[0] + 1}
+          numGuesses={numGuesses()}
           resetGame={resetGame}
           guessesColors={guessesColors}
           distributionData={distributionData}
+        />
+      )}
+
+      {possibleWordsDialogOpen && (
+        <PossibleWordsDialog
+          open={possibleWordsDialogOpen}
+          handleClose={() => setPossibleWordsDialogOpen(false)}
+          possibleWords={possibleWords}
         />
       )}
 
@@ -180,6 +219,7 @@ function App() {
         guessesColors={guessesColors}
         handleInputText={handleInputText}
       />
+
       <Keyboard
         screenSize={screenSize}
         letterMaxRanks={letterMaxRanks}
