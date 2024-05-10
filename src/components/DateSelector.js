@@ -25,6 +25,7 @@ export function DateSelector({ today, changeDate }) {
                 maxDate={todayDate}
                 value={value}
                 onChange={handleOnChange}
+                slotProps={{ textField: { size: 'small' } }}
             />
         </DemoContainer>
         </LocalizationProvider>

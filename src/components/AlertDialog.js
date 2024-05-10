@@ -109,7 +109,7 @@ function SuggestionsDialog({ open, handleClose, hardModeWords }) {
         <AlertDialog
             open={open}
             handleClose={handleClose}
-            title="Possible Guesses"  // TODO: update all to match this naming?
+            title="Valid next guesses based on guesses so far"
             text={[...hardModeWords].join(", ")}
             buttons={[okButton]}
         />

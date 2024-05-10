@@ -7,14 +7,14 @@ import { dateToWord } from './assets/date_to_word';
 import { dateToPuzzleNum } from './assets/date_to_puzzle_num';
 import { wordleAcceptableWords } from './assets/wordle_acceptable_words';
 import ResponsiveAppBar from './components/ResponsiveAppBar';
-// import { DateSelector } from './components/DateSelector';
+import { DateSelector } from './components/DateSelector';
 import GuessesBoard from './components/GuessesBoard';
 import Keyboard from './components/Keyboard';
 import { InvalidGuessDialog, SuggestionsDialog, WonDialog } from './components/AlertDialog';
 import { initDB, addItem, setSolvedStates } from './db';
 import { Button, Stack } from '@mui/material';
 import dayjs from 'dayjs';
-import { SearchBar } from './components/SearchBar';
+// import { SearchBar } from './components/SearchBar';
 import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallbacks } from './hardModeWordsFiltering';
 import SettingsMenu from './components/SettingsMenu';
 
@@ -182,10 +182,10 @@ function App() {
         justifyContent="center"
         alignItems="flex-end"
       >
-        {/* <DateSelector today={today} changeDate={changeDate} /> */}
-        
-        <SearchBar today={today} changeDate={changeDate} solvedPuzzleNums={solvedPuzzleNums} />
-        
+        <DateSelector today={today} changeDate={changeDate} />
+
+        {/* <SearchBar today={today} changeDate={changeDate} solvedPuzzleNums={solvedPuzzleNums} /> */}
+
         <Button
           variant="contained"
           ref={suggestionsButtonRef}
@@ -198,7 +198,7 @@ function App() {
         </Button>
 
         <SettingsMenu hardMode={hardMode} handleHardModeChange={handleHardModeChange} />
-        
+
         {/* {hardMode && <div>Hard Mode Active</div>} */}
       </Stack>
 
