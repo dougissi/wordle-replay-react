@@ -37,7 +37,7 @@ function App() {
   const [possibleWords, setPossibleWords] = useState(new Set(wordleAcceptableWords));
   const [seenInsights, setSeenInsights] = useState(new Set());
   const [suggestionsDialogOpen, setSuggestionsDialogOpen] = useState(false);
-  const [hardMode, setHardMode] = useState(localStorage.getItem('hardMode') === 'true');
+  const [hardMode, setHardMode] = useState(localStorage.getItem('hardMode') === 'true');  // TODO: unit test
 
   // console.log(`${puzzleDate} ${answer}`);
   const guessesBoardRef = useRef(null);

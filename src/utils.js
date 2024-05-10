@@ -73,11 +73,16 @@ function processSolvedData(allSolvedData) {
     return [distribution, solvedNums];
 }
 
+function formatOldSolvedLocalStorageForIndexedDB(localStorage) {
+    return [];
+}
+
 export {
     blankRow,
     blankGuessesGrid,
     isSingleEnglishLetter,
     getGuessRanks,
     getLetterAlphabetIndex,
-    processSolvedData
+    processSolvedData,
+    formatOldSolvedLocalStorageForIndexedDB
 }
