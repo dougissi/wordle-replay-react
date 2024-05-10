@@ -37,7 +37,7 @@ function App() {
   const [possibleWords, setPossibleWords] = useState(new Set(wordleAcceptableWords));
   const [seenInsights, setSeenInsights] = useState(new Set());
   const [suggestionsDialogOpen, setSuggestionsDialogOpen] = useState(false);
-  const [hardMode, setHardMode] = useState(false);
+  const [hardMode, setHardMode] = useState(localStorage.getItem('hardMode') === 'true');
 
   // console.log(`${puzzleDate} ${answer}`);
   const guessesBoardRef = useRef(null);
@@ -163,6 +163,7 @@ function App() {
     const newPossibleWords = newHardMode ? new Set(hardModeWords) : wordleAcceptableWords;
     setHardMode(newHardMode);
     setPossibleWords(newPossibleWords);
+    localStorage.setItem('hardMode', newHardMode);  // persist
   };
 
 
