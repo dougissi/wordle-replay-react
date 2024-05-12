@@ -1,10 +1,9 @@
 import './App.css';
 import { emptyDistributionData, numLetters, rankToColor, backspaceSymbol } from "./constants";
 import { useEffect, useState, useRef } from 'react';
-import { blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex } from './utils';
+import { blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex, dateToPuzzleNum } from './utils';
 import useScreenSize from './components/useScreenSize';
 import { dateToWord } from './assets/date_to_word';
-import { dateToPuzzleNum } from './assets/date_to_puzzle_num';
 import { wordleAcceptableWords } from './assets/wordle_acceptable_words';
 import ResponsiveAppBar from './components/ResponsiveAppBar';
 import { DateSelector } from './components/DateSelector';
@@ -22,7 +21,7 @@ function App() {
   const today = dayjs().format('YYYY-MM-DD');
   const screenSize = useScreenSize();
   const [puzzleDate, setPuzzleDate] = useState(today);
-  const [puzzleNum, setPuzzleNum] = useState(dateToPuzzleNum.get(puzzleDate));
+  const [puzzleNum, setPuzzleNum] = useState(dateToPuzzleNum(puzzleDate));
   const [answer, setAnswer] = useState(dateToWord.get(puzzleDate).toUpperCase());
   const [guessesData, setGuessesData] = useState(blankGuessesGrid());
   const [guessesColors, setGuessesColors] = useState(blankGuessesGrid());
@@ -31,7 +30,6 @@ function App() {
   const [invalidGuess, setInvalidGuess] = useState("");
   const [invalidGuessDialogOpen, setInvalidGuessDialogOpen] = useState(false);
   const [wonDialogOpen, setWonDialogOpen] = useState(false);
-  const [solvedPuzzleNums, setSolvedPuzzleNums] = useState(new Set());
   const [distributionData, setDistributionData] = useState({...emptyDistributionData});
   const [hardModeWords, setHardModeWords] = useState(new Set(wordleAcceptableWords));
   const [possibleWords, setPossibleWords] = useState(new Set(wordleAcceptableWords));
@@ -44,16 +42,17 @@ function App() {
   const suggestionsButtonRef = useRef(null);
 
   useEffect(() => {
-    initDB(setSolvedPuzzleNums, setDistributionData); // Initialize the database
+    initDB(setDistributionData); // Initialize the database
     guessesBoardRef.current.focus();  // focus on guesses board initially
   }, []);
 
-  const numGuesses = () => {
+  const numGuesses = () => {  // TODO: convert to useEffect?
     return nextLetterIndex[0] + 1;
   };
 
   const saveGuess = () => {
-    const newItem = { puzzleNum: puzzleNum, date: puzzleDate, solvedDate: today, numGuesses: numGuesses(), guesses: guessesData };
+    const guessesDataNoBlanks = guessesData.filter((guess) => guess[0] !== "");  // remove blank rows
+    const newItem = { puzzleNum: puzzleNum, date: puzzleDate, solvedDate: today, guesses: guessesDataNoBlanks };
     addItem(newItem); // Add item to the database
   };
 
@@ -87,10 +86,9 @@ function App() {
         setLetterMaxRanks(newLetterMaxRanks);
 
         if (guessRanks === '22222') {  // guess is all greens (i.e., the answer)
-          console.log('TODO: winner!');
           setWonDialogOpen(true);
           saveGuess();
-          setSolvedStates(setSolvedPuzzleNums, setDistributionData);
+          setSolvedStates(setDistributionData);
         } else {  // guess not the answer
           // update next letter index, potentially adding a new row
           const nextRowIndex = nextLetterIndex[0] + 1;
@@ -139,12 +137,13 @@ function App() {
   };
 
   const resetGame = () => {
+    // TODO: need a more robust way of ensuring these states are the same as when the app loads
     setGuessesData(blankGuessesGrid());
     setGuessesColors(blankGuessesGrid());
     setLetterMaxRanks(Array(26).fill('-1'));
     setNextLetterIndex([0, 0]);
     setHardModeWords([...wordleAcceptableWords]);
-    setPossibleWords([...wordleAcceptableWords]);
+    setPossibleWords(new Set([...wordleAcceptableWords]));
     setSeenInsights(new Set());
     guessesBoardRef.current.focus();
   };
@@ -153,7 +152,7 @@ function App() {
     // TODO: make sure between earliest and today
     // TODO: what if there's no date change?
     setPuzzleDate(dateStr);
-    setPuzzleNum(dateToPuzzleNum.get(dateStr));
+    setPuzzleNum(dateToPuzzleNum(dateStr));
     setAnswer(dateToWord.get(dateStr).toUpperCase());
     resetGame();  // TODO: make this optional?
   };

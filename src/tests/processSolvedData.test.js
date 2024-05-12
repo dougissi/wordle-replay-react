@@ -2,11 +2,41 @@ import { processSolvedData } from "../utils";
 
 it('processSolvedData: typical', () => {
     const dbData = [
-        {puzzleNum: 1, numGuesses: 7},
-        {puzzleNum: 3, numGuesses: 3},
-        {puzzleNum: 4, numGuesses: 3},
-        {puzzleNum: 5, numGuesses: 10},
-        {puzzleNum: 5, numGuesses: 2}  // shouldn't be repeats puzzleNums, but worth testing
+        {date: '2024-05-01', guesses: [
+            ['A', 'R', 'O', 'S', 'E '],
+            ['T', 'R', 'I', 'E', 'D'],
+            ['G', 'R', 'E', 'E', 'D'],
+            ['B', 'R', 'E', 'E', 'D'],
+            ['A', 'R', 'O', 'S', 'E '],
+            ['T', 'R', 'I', 'E', 'D'],
+            ['G', 'R', 'E', 'E', 'D']
+        ]},
+        {date: '2024-05-02', guesses: [
+            ['A', 'R', 'O', 'S', 'E '],
+            ['T', 'R', 'I', 'E', 'D'],
+            ['G', 'R', 'E', 'E', 'D']
+        ]},
+        {date: '2024-05-03', guesses: [
+            ['A', 'R', 'O', 'S', 'E '],
+            ['T', 'R', 'I', 'E', 'D'],
+            ['G', 'R', 'E', 'E', 'D']
+        ]},
+        {date: '2024-05-04', guesses: [
+            ['A', 'R', 'O', 'S', 'E '],
+            ['T', 'R', 'I', 'E', 'D'],
+            ['G', 'R', 'E', 'E', 'D'],
+            ['B', 'R', 'E', 'E', 'D'],
+            ['A', 'R', 'O', 'S', 'E '],
+            ['T', 'R', 'I', 'E', 'D'],
+            ['G', 'R', 'E', 'E', 'D'],
+            ['B', 'R', 'E', 'E', 'D'],
+            ['A', 'R', 'O', 'S', 'E '],
+            ['T', 'R', 'I', 'E', 'D']
+        ]},
+        {date: '2024-05-04', guesses: [  // shouldn't be repeats dates, but worth testing
+            ['A', 'R', 'O', 'S', 'E '],
+            ['T', 'R', 'I', 'E', 'D']
+        ]}
     ];
     const expectedDistribution = {
         1: 0,
@@ -17,9 +47,14 @@ it('processSolvedData: typical', () => {
         6: 0,
         '7+': 2
     };
-    const expectedSolvedNums = new Set([1, 3, 4, 5]);
+    const expectedSolvedDates = new Set([
+        '2024-05-01',
+        '2024-05-02',
+        '2024-05-03',
+        '2024-05-04'
+    ]);
     const actual = processSolvedData(dbData);
-    expect(actual).toEqual([expectedDistribution, expectedSolvedNums]);
+    expect(actual).toEqual([expectedDistribution, expectedSolvedDates]);
 })
 
 it('processSolvedData: empty', () => {
@@ -33,7 +68,7 @@ it('processSolvedData: empty', () => {
         6: 0,
         '7+': 0
     };
-    const expectedSolvedNums = new Set();
+    const expectedSolvedDates = new Set();
     const actual = processSolvedData(dbData);
-    expect(actual).toEqual([expectedDistribution, expectedSolvedNums]);
+    expect(actual).toEqual([expectedDistribution, expectedSolvedDates]);
 })

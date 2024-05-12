@@ -1,4 +1,5 @@
-import { numLetters, initialNumGuessesToShow, emptyDistributionData } from "./constants";
+import dayjs from "dayjs";
+import { numLetters, initialNumGuessesToShow, emptyDistributionData, earliestDate } from "./constants";
 
 function blankRow(fillValue = "") {
     return Array(numLetters).fill(fillValue);
@@ -62,19 +63,41 @@ function getLetterAlphabetIndex(letter) {
     return position;
 }
 
-function processSolvedData(allSolvedData) {
-    const distribution = {...emptyDistributionData};
-    const solvedNums = new Set();
-    allSolvedData.forEach((solvedItem) => {
-        const countLabel = solvedItem.numGuesses < 7 ? solvedItem.numGuesses : '7+';
-        distribution[countLabel] = (distribution[countLabel] || 0) + 1;
-        solvedNums.add(solvedItem.puzzleNum);
-    });
-    return [distribution, solvedNums];
+function dateToPuzzleNum(date) {
+    date = dayjs(date);
+    return date.diff(dayjs(earliestDate), 'days');
 }
 
-function formatOldSolvedLocalStorageForIndexedDB(localStorage) {
-    return [];
+function puzzleNumToDate(puzzleNum) {
+    return dayjs(earliestDate).add(puzzleNum, 'days').format('YYYY-MM-DD');
+}
+
+function processSolvedData(allSolvedData) {
+    const distribution = {...emptyDistributionData};
+    const solvedDates = new Set();
+    allSolvedData.forEach((solvedItem) => {
+        const countLabel = solvedItem.guesses.length < 7 ? solvedItem.guesses.length : '7+';
+        distribution[countLabel] = (distribution[countLabel] || 0) + 1;
+        solvedDates.add(solvedItem.date);
+    });
+    return [distribution, solvedDates];
+}
+
+function formatOldDataForIndexedDB(oldData) {
+    if (!oldData) {
+        return [];
+    }
+    const parsedData = JSON.parse(oldData);
+    const newSolvedData = [];
+    for (const [puzzleNum, solvedItem] of Object.entries(parsedData)) {
+        newSolvedData.push({
+            puzzleNum: parseInt(puzzleNum),
+            date: puzzleNumToDate(puzzleNum),
+            solvedDate: solvedItem.solvedDate,
+            guesses: solvedItem.guesses.map((guess) => [...guess.toUpperCase()])
+        });
+    }
+    return newSolvedData;
 }
 
 export {
@@ -83,6 +106,8 @@ export {
     isSingleEnglishLetter,
     getGuessRanks,
     getLetterAlphabetIndex,
+    dateToPuzzleNum,
+    puzzleNumToDate,
     processSolvedData,
-    formatOldSolvedLocalStorageForIndexedDB
+    formatOldDataForIndexedDB
 }
