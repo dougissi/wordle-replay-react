@@ -62,6 +62,7 @@ function App() {
     if (text === 'ENTER' && nextLetterIndex[1] === numLetters) {  // ENTER at end of word
       const guess = guessesData[nextLetterIndex[0]].join("");
       if (!possibleWords.has(guess.toLowerCase())) {
+        console.log("invalid guess");
         setInvalidGuess(guess);  // TODO: never gets unset, but works fine
         setInvalidGuessDialogOpen(true);
       } else {  // guess is an acceptable word
@@ -86,6 +87,7 @@ function App() {
         setLetterMaxRanks(newLetterMaxRanks);
 
         if (guessRanks === '22222') {  // guess is all greens (i.e., the answer)
+          console.log("won!");
           setWonDialogOpen(true);
           saveGuess();
           setSolvedStates(setDistributionData);
