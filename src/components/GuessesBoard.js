@@ -50,4 +50,6 @@ const GuessesBoard = forwardRef(({ screenSize, guessesData, guessesColors, handl
     )
 });
 
+GuessesBoard.displayName = "GuessesBoard";
+
 export default GuessesBoard;

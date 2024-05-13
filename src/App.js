@@ -205,35 +205,29 @@ function App() {
       </Stack>
 
       {/* Dialogs, initially hidden */}
-      {invalidGuessDialogOpen && (
-        <InvalidGuessDialog 
-          open={invalidGuessDialogOpen} 
-          handleClose={() => setInvalidGuessDialogOpen(false)}
-          guess={invalidGuess}
-          clearGuess={clearGuess}
-          hardMode={hardMode}
-        />
-      )}
+      <InvalidGuessDialog
+        open={invalidGuessDialogOpen}
+        handleClose={() => setInvalidGuessDialogOpen(false)}
+        guess={invalidGuess}
+        clearGuess={clearGuess}
+        hardMode={hardMode}
+      />
 
-      {wonDialogOpen && (
-        <WonDialog
-          open={wonDialogOpen}
-          handleClose={() => setWonDialogOpen(false)}
-          answer={answer}
-          numGuesses={numGuesses()}
-          resetGame={resetGame}
-          guessesColors={guessesColors}
-          distributionData={distributionData}
-        />
-      )}
+      <WonDialog
+        open={wonDialogOpen}
+        handleClose={() => setWonDialogOpen(false)}
+        answer={answer}
+        numGuesses={numGuesses()}
+        resetGame={resetGame}
+        guessesColors={guessesColors}
+        distributionData={distributionData}
+      />
 
-      {suggestionsDialogOpen && (
-        <SuggestionsDialog
-          open={suggestionsDialogOpen}
-          handleClose={() => setSuggestionsDialogOpen(false)}
-          hardModeWords={hardModeWords}
-        />
-      )}
+      <SuggestionsDialog
+        open={suggestionsDialogOpen}
+        handleClose={() => setSuggestionsDialogOpen(false)}
+        hardModeWords={hardModeWords}
+      />
 
       <GuessesBoard
         screenSize={screenSize}

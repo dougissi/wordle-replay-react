@@ -47,7 +47,7 @@ function InvalidGuessDialog({ open, handleClose, guess, clearGuess, hardMode }) 
         handleClose();
     };
 
-    const editButton = <Button key="invalidGuessEditButton" onClick={handleClose} autoFocus>Edit Manually</Button>;
+    const editButton = <Button key="invalidGuessEditButton" onClick={handleClose}>Edit Manually</Button>;
     const clearButton = <Button key="invalidGuessClearButton" onClick={handleClickClearButton}>Clear Guess</Button>;
 
     return (
@@ -79,7 +79,7 @@ function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesCo
         handleClose();
     }
 
-    const okButton = <Button key="wonOkButton" onClick={handleClose} autoFocus>OK</Button>;
+    const okButton = <Button key="wonOkButton" onClick={handleClose}>OK</Button>;
     const restartButton = <Button key="wonRestartButton" onClick={handleClickRestartButton}>Restart</Button>;
 
     return (
@@ -103,7 +103,7 @@ function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesCo
 }
 
 function SuggestionsDialog({ open, handleClose, hardModeWords }) {
-    const okButton = <Button key="hardModeWordsOkButton" onClick={handleClose} autoFocus>OK</Button>;
+    const okButton = <Button key="hardModeWordsOkButton" onClick={handleClose}>OK</Button>;
 
     return (
         <AlertDialog
