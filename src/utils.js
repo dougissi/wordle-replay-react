@@ -1,5 +1,7 @@
 import dayjs from "dayjs";
+import isBetween from "dayjs/plugin/isBetween";
 import { numLetters, initialNumGuessesToShow, emptyDistributionData, earliestDate } from "./constants";
+dayjs.extend(isBetween);
 
 function blankRow(fillValue = "") {
     return Array(numLetters).fill(fillValue);
@@ -72,6 +74,13 @@ function puzzleNumToDate(puzzleNum) {
     return dayjs(earliestDate).add(puzzleNum, 'days').format('YYYY-MM-DD');
 }
 
+function dateIsBetween(date, start, end) {
+    if (!date) {
+        return false;
+    }
+    return dayjs(date).isBetween(start, end, 'day', '[]');
+}
+
 function processSolvedData(allSolvedData) {
     const distribution = {...emptyDistributionData};
     const solvedDates = new Set();
@@ -108,6 +117,7 @@ export {
     getLetterAlphabetIndex,
     dateToPuzzleNum,
     puzzleNumToDate,
+    dateIsBetween,
     processSolvedData,
     formatOldDataForIndexedDB
 }

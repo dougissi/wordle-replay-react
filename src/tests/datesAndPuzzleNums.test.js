@@ -1,4 +1,4 @@
-import { dateToPuzzleNum, puzzleNumToDate } from "../utils";
+import { dateToPuzzleNum, puzzleNumToDate, dateIsBetween } from "../utils";
 
 // dateToPuzzleNum
 
@@ -58,5 +58,71 @@ it('puzzleNumToDate: 365', () => {
     const puzzleNum = 365;
     const expected = '2022-06-19';
     const actual = puzzleNumToDate(puzzleNum);
+    expect(actual).toEqual(expected);
+})
+
+
+// dateIsBetween
+
+it('dateIsBetween: basic', () => {
+    const date = '2021-06-20';
+    const start = '2021-06-19';
+    const end = '2021-06-21';
+    const expected = true;
+    const actual = dateIsBetween(date, start, end);
+    expect(actual).toEqual(expected);
+})
+
+it('dateIsBetween: basic start', () => {
+    const date = '2021-06-19';
+    const start = '2021-06-19';
+    const end = '2021-06-21';
+    const expected = true;
+    const actual = dateIsBetween(date, start, end);
+    expect(actual).toEqual(expected);
+})
+
+it('dateIsBetween: basic end', () => {
+    const date = '2021-06-21';
+    const start = '2021-06-19';
+    const end = '2021-06-21';
+    const expected = true;
+    const actual = dateIsBetween(date, start, end);
+    expect(actual).toEqual(expected);
+})
+
+it('dateIsBetween: not between after end', () => {
+    const date = '2021-06-22';
+    const start = '2021-06-19';
+    const end = '2021-06-21';
+    const expected = false;
+    const actual = dateIsBetween(date, start, end);
+    expect(actual).toEqual(expected);
+})
+
+it('dateIsBetween: not between before start', () => {
+    const date = '2021-06-18';
+    const start = '2021-06-19';
+    const end = '2021-06-21';
+    const expected = false;
+    const actual = dateIsBetween(date, start, end);
+    expect(actual).toEqual(expected);
+})
+
+it('dateIsBetween: not between diff years', () => {
+    const date = '2022-06-20';
+    const start = '2021-06-19';
+    const end = '2021-06-21';
+    const expected = false;
+    const actual = dateIsBetween(date, start, end);
+    expect(actual).toEqual(expected);
+})
+
+it('dateIsBetween: null', () => {
+    const date = null;
+    const start = '2021-06-19';
+    const end = '2021-06-21';
+    const expected = false;
+    const actual = dateIsBetween(date, start, end);
     expect(actual).toEqual(expected);
 })

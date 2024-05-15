@@ -1,6 +1,6 @@
-import { emptyDistributionData, numLetters, rankToColor, backspaceSymbol } from "../constants";
+import { emptyDistributionData, numLetters, rankToColor, backspaceSymbol, earliestDate } from "../constants";
 import { useEffect, useState, useRef } from 'react';
-import { blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex, dateToPuzzleNum } from '../utils';
+import { blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex, dateToPuzzleNum, dateIsBetween } from '../utils';
 import useScreenSize from './useScreenSize';
 import { dateToWord } from '../assets/date_to_word';
 import { wordleAcceptableWords } from '../assets/wordle_acceptable_words';
@@ -14,12 +14,17 @@ import dayjs from 'dayjs';
 // import { SearchBar } from './components/SearchBar';
 import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallbacks } from '../hardModeWordsFiltering';
 import SettingsMenu from './SettingsMenu';
+import { useSearchParams } from "react-router-dom";
 
 function Game() {
-  const today = dayjs().format('YYYY-MM-DD');
+  const today = dayjs().format('YYYY-MM-DD'); 
+  const isValidDate = (dateStr) =>{
+    return dateIsBetween(dateStr, earliestDate, today);
+  }
   const screenSize = useScreenSize();
-  const [puzzleDate, setPuzzleDate] = useState(today);
-  const [puzzleNum, setPuzzleNum] = useState(dateToPuzzleNum(puzzleDate));
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [puzzleDate, setPuzzleDate] = useState(isValidDate(searchParams.get('date')) ? searchParams.get('date') : today);  // use query param date if valid, else today
+  const [puzzleNum, setPuzzleNum] = useState(dateToPuzzleNum(puzzleDate));  
   const [answer, setAnswer] = useState(dateToWord.get(puzzleDate).toUpperCase());
   const [guessesData, setGuessesData] = useState(blankGuessesGrid());
   const [guessesColors, setGuessesColors] = useState(blankGuessesGrid());
@@ -42,6 +47,9 @@ function Game() {
   useEffect(() => {
     initDB(setDistributionData); // Initialize the database
     guessesBoardRef.current.focus();  // focus on guesses board initially
+    if (searchParams.has('date') && !isValidDate(searchParams.get('date'))) {  // if query param date is invalid, reset to today
+      setSearchParams({...searchParams, date: today});
+    }
   }, []);
 
   const numGuesses = () => {  // TODO: convert to useEffect?
@@ -147,9 +155,13 @@ function Game() {
   };
 
   const changeDate = (dateStr) => {
-    // TODO: make sure between earliest and today
-    // TODO: what if there's no date change?
+    if (dateStr === puzzleDate || !isValidDate(dateStr)) {  // if no date change or invalid date, do nothing
+      return;
+    }
     setPuzzleDate(dateStr);
+    if (searchParams.has('date')) {
+      setSearchParams({...searchParams, date: dateStr});
+    }
     setPuzzleNum(dateToPuzzleNum(dateStr));
     setAnswer(dateToWord.get(dateStr).toUpperCase());
     resetGame();  // TODO: make this optional?
