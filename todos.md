@@ -23,6 +23,7 @@
 * [x] give option to turn on Hard Mode (instead of accepting all valid word guesses, only those of the filtered suggestions)
 * [x] add hard mode localStorage to save state
 * [x] fix bug when pressing ENTER to close Possible Words Dialog it auto opens again -- done via blur
+* [ ] show some sort of warning dialog when game is in progress but you're about to navigate away to another local page
 * [ ] allow autofocus on buttons within dialogs (there was a bug in production build when pressing ENTER on guesses board)
 * [ ] tidy suggestions button ref and general naming (vs possible words and possible guesses)
 * [ ] custom wordle?
