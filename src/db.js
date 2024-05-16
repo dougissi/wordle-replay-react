@@ -22,11 +22,11 @@ export const initDB = (setDistributionData) => {
 
     // copy old solved history from localStorage to indexedDB, if not already done
     const transferFlag = localStorage.getItem('transferredOldSolvedDataFlag');
-    if (!transferFlag) {
+    if (transferFlag !== 'true') {
       const oldData = localStorage.getItem('wordlereplay_solved');
       const newData = formatOldDataForIndexedDB(oldData);
       newData.forEach((item) => addItem(item));
-      localStorage.setItem('transferredOldSolvedDataFlag', true);  // Set flag in localStorage to indicate transfer is done
+      localStorage.setItem('transferredOldSolvedDataFlag', 'true');  // Set flag in localStorage to indicate transfer is done
       // TODO: consider removing old localStorage data
     }
     setSolvedStates(setDistributionData);

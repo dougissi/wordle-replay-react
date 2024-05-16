@@ -6,9 +6,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { earliestDate } from '../constants';
 
-export function DateSelector({ today, changeDate }) {
-    const todayDate = dayjs(today);
-    const [value, setValue] = useState(todayDate);
+export function DateSelector({ today, puzzleDate, changeDate }) {
+    const [value, setValue] = useState(dayjs(puzzleDate));
 
     const handleOnChange = (newDate) => {
         setValue(newDate);
@@ -22,7 +21,7 @@ export function DateSelector({ today, changeDate }) {
             <DatePicker
                 label="Puzzle Date"
                 minDate={dayjs(earliestDate)}
-                maxDate={todayDate}
+                maxDate={dayjs(today)}
                 value={value}
                 onChange={handleOnChange}
                 slotProps={{ textField: { size: 'small' } }}

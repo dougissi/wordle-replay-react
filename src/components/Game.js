@@ -191,7 +191,7 @@ function Game() {
         justifyContent="center"
         alignItems="flex-end"
       >
-        <DateSelector today={today} changeDate={changeDate} />
+        <DateSelector today={today} puzzleDate={puzzleDate} changeDate={changeDate} />
 
         {/* <SearchBar today={today} changeDate={changeDate} solvedPuzzleNums={solvedPuzzleNums} /> */}
 
