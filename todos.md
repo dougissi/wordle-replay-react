@@ -1,6 +1,7 @@
 * [x] commonize screen size sharing
 * [x] dark mode within material ui?
-* [ ] color blind mode
+* [x] color blind mode
+* [ ] color blind share icon colors
 * [ ] figure out passing "theme" styling throughout
 * [ ] animate UI keyboard when typing on a physical keyboard
 * [ ] animate tile flips

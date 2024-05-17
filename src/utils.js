@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
-import { numLetters, initialNumGuessesToShow, emptyDistributionData, earliestDate } from "./constants";
+import { numLetters, initialNumGuessesToShow, emptyDistributionData, earliestDate, colorMap, NONE } from "./constants";
 dayjs.extend(isBetween);
 
 function blankRow(fillValue = "") {
@@ -17,6 +17,23 @@ function isSingleEnglishLetter(text) {
   
     // Check if the text is exactly one character long and matches the regular expression
     return text.length === 1 && regex.test(text);
+}
+
+function getTileColor(color, isDarkMode, isColorBlindMode) {
+    // TODO: unit tests
+    if (color === NONE) {
+        return NONE;
+    }
+    if (isDarkMode && isColorBlindMode) {
+        return colorMap.colorBlindDark[color];
+    }
+    if (isDarkMode) {
+        return colorMap.dark[color];
+    }
+    if (isColorBlindMode) {
+        return colorMap.colorBlindLight[color];
+    }
+    return colorMap.light[color];
 }
 
 function getGuessRanks(guess, answer) {
@@ -113,6 +130,7 @@ export {
     blankRow,
     blankGuessesGrid,
     isSingleEnglishLetter,
+    getTileColor,
     getGuessRanks,
     getLetterAlphabetIndex,
     dateToPuzzleNum,

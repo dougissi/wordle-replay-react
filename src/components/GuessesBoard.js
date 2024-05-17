@@ -2,8 +2,9 @@ import { forwardRef } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { Stack } from '@mui/material';
+import { getTileColor } from '../utils';
 
-const GuessesBoard = forwardRef(({ screenSize, guessesData, guessesColors, handleInputText }, ref) => {
+const GuessesBoard = forwardRef(({ screenSize, guessesData, guessesColors, handleInputText, darkMode, colorBlindMode }, ref) => {
     const theme = useTheme();
 
     const numRows = guessesData.length;
@@ -39,11 +40,15 @@ const GuessesBoard = forwardRef(({ screenSize, guessesData, guessesColors, handl
         >
             {guessesData.map((guess, i) => (
                 <Stack direction="row" spacing={1} key={`BoardRow${i}`} style={{ paddingTop: "5px", justifyContent: "center"}}>
-                    {guess.map((letter, j) => (
-                        <Tile key={`guessTile-row${i}-col${j}`} style={{ backgroundColor: guessesColors[i][j] }}>
-                            {letter.toUpperCase()}
-                        </Tile>
-                    ))}
+                    {guess.map((letter, j) => {
+                        const color = guessesColors[i][j];
+                        const tileColor = getTileColor(color, darkMode, colorBlindMode);
+                        return (
+                            <Tile key={`guessTile-row${i}-col${j}`} style={{ backgroundColor: tileColor }}>
+                                {letter.toUpperCase()}
+                            </Tile>
+                        );
+                    })}
                 </Stack>
             ))}
         </div>

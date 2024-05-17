@@ -2,9 +2,9 @@ import { useTheme } from '@mui/material/styles';
 import Stack from '@mui/material/Stack';
 import Paper from '@mui/material/Paper';
 import { backspaceSymbol, rankToColor } from "../constants";
-import { getLetterAlphabetIndex } from '../utils';
+import { getLetterAlphabetIndex, getTileColor } from '../utils';
 
-function Keyboard({ screenSize, letterMaxRanks, handleInputText }) {
+function Keyboard({ screenSize, letterMaxRanks, handleInputText, darkMode, colorBlindMode }) {
     const theme = useTheme();
 
     const keyboardVerticalPctOfScreen = 0.25;
@@ -30,13 +30,13 @@ function Keyboard({ screenSize, letterMaxRanks, handleInputText }) {
         )
     };
 
-    const KeyboardKey = ({ text, width, rowHeight, fontSize, color }) => {    
+    const KeyboardKey = ({ text, width, rowHeight, fontSize, backgroundColor }) => {
         return (
             <Paper
                 onClick={() => handleInputText(text)}
                 style={{
                     // backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-                    backgroundColor: color,
+                    backgroundColor: backgroundColor,
                     ...theme.typography.body2,
                     fontSize: fontSize ? fontSize : rowHeight / 2,
                     fontWeight: 'bold',
@@ -55,9 +55,10 @@ function Keyboard({ screenSize, letterMaxRanks, handleInputText }) {
         const i = getLetterAlphabetIndex(text);
         const rank = letterMaxRanks[i];
         const color = rankToColor[rank];
+        const tileColor = getTileColor(color, darkMode, colorBlindMode);
 
         return (
-            <KeyboardKey text={text} width={normalKeyWidth} rowHeight={rowHeight} color={color} />
+            <KeyboardKey text={text} width={normalKeyWidth} rowHeight={rowHeight} backgroundColor={tileColor} />
         )
     };
 

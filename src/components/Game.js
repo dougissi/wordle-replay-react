@@ -39,7 +39,7 @@ function Game({ colorMode, toggleColorMode }) {
   const [seenInsights, setSeenInsights] = useState(new Set());
   const [suggestionsDialogOpen, setSuggestionsDialogOpen] = useState(false);
   const [hardMode, setHardMode] = useState(localStorage.getItem('hardMode') === 'true');  // TODO: unit test
-  const [darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') === 'true');  
+  const [colorBlindMode, setColorBlindMode] = useState(localStorage.getItem('colorBlindMode') === 'true');  // TODO: unit test
 
   // console.log(`${puzzleDate} ${answer}`);
   const guessesBoardRef = useRef(null);
@@ -176,6 +176,14 @@ function Game({ colorMode, toggleColorMode }) {
     localStorage.setItem('hardMode', newHardMode);  // persist
   };
 
+  const handleColorBlindModeChange = (event) => {
+    const newColorBlindMode = event.target.checked;
+    setColorBlindMode(newColorBlindMode);
+    localStorage.setItem('colorBlindMode', newColorBlindMode);  // persist
+  };
+
+  const darkMode = colorMode === 'dark';
+
 
   return (
     <div className="Game">
@@ -207,7 +215,14 @@ function Game({ colorMode, toggleColorMode }) {
           Suggestions
         </Button>
 
-        <SettingsMenu hardMode={hardMode} handleHardModeChange={handleHardModeChange} colorMode={colorMode} toggleColorMode={toggleColorMode} />
+        <SettingsMenu
+          hardMode={hardMode}
+          handleHardModeChange={handleHardModeChange}
+          colorBlindMode={colorBlindMode}
+          handleColorBlindModeChange={handleColorBlindModeChange}
+          darkMode={darkMode}
+          toggleColorMode={toggleColorMode}
+        />
 
         {/* {hardMode && <div>Hard Mode Active</div>} */}
       </Stack>
@@ -243,12 +258,16 @@ function Game({ colorMode, toggleColorMode }) {
         guessesData={guessesData}
         guessesColors={guessesColors}
         handleInputText={handleInputText}
+        darkMode={darkMode}
+        colorBlindMode={colorBlindMode}
       />
 
       <Keyboard
         screenSize={screenSize}
         letterMaxRanks={letterMaxRanks}
         handleInputText={handleInputText}
+        darkMode={darkMode}
+        colorBlindMode={colorBlindMode}
       />
     </div>
   );

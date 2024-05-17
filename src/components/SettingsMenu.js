@@ -3,9 +3,9 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { HardModeSwitch, DarkModeSwitch } from './SettingsSwitch';
+import SettingsSwitch from './SettingsSwitch';
 
-export default function SettingsMenu({ hardMode, handleHardModeChange, colorMode, toggleColorMode }) {
+export default function SettingsMenu({ hardMode, handleHardModeChange, colorBlindMode, handleColorBlindModeChange, darkMode, toggleColorMode }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -37,10 +37,25 @@ export default function SettingsMenu({ hardMode, handleHardModeChange, colorMode
         }}
       >
         <MenuItem>
-            <HardModeSwitch hardMode={hardMode} handleChange={handleHardModeChange} />
+          <SettingsSwitch
+            label="Hard Mode"
+            checked={hardMode}
+            onChange={handleHardModeChange}
+          />;
         </MenuItem>
         <MenuItem>
-            <DarkModeSwitch darkMode={colorMode} handleChange={toggleColorMode} />
+          <SettingsSwitch
+            label="Dark Mode"
+            checked={darkMode}
+            onChange={toggleColorMode}
+          />
+        </MenuItem>
+        <MenuItem>
+          <SettingsSwitch
+            label="Color Blind Mode"
+            checked={colorBlindMode}
+            onChange={handleColorBlindModeChange}
+          />
         </MenuItem>
       </Menu>
     </div>
