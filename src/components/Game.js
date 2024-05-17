@@ -16,7 +16,7 @@ import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallb
 import SettingsMenu from './SettingsMenu';
 import { useSearchParams } from "react-router-dom";
 
-function Game({ colorMode,toggleColorMode }) {
+function Game({ colorMode, toggleColorMode }) {
   const today = dayjs().format('YYYY-MM-DD'); 
   const isValidDate = (dateStr) =>{
     return dateIsBetween(dateStr, earliestDate, today);
