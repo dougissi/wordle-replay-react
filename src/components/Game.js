@@ -16,7 +16,7 @@ import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallb
 import SettingsMenu from './SettingsMenu';
 import { useSearchParams } from "react-router-dom";
 
-function Game() {
+function Game({ colorMode,toggleColorMode }) {
   const today = dayjs().format('YYYY-MM-DD'); 
   const isValidDate = (dateStr) =>{
     return dateIsBetween(dateStr, earliestDate, today);
@@ -39,6 +39,7 @@ function Game() {
   const [seenInsights, setSeenInsights] = useState(new Set());
   const [suggestionsDialogOpen, setSuggestionsDialogOpen] = useState(false);
   const [hardMode, setHardMode] = useState(localStorage.getItem('hardMode') === 'true');  // TODO: unit test
+  const [darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') === 'true');  
 
   // console.log(`${puzzleDate} ${answer}`);
   const guessesBoardRef = useRef(null);
@@ -206,7 +207,7 @@ function Game() {
           Suggestions
         </Button>
 
-        <SettingsMenu hardMode={hardMode} handleHardModeChange={handleHardModeChange} />
+        <SettingsMenu hardMode={hardMode} handleHardModeChange={handleHardModeChange} colorMode={colorMode} toggleColorMode={toggleColorMode} />
 
         {/* {hardMode && <div>Hard Mode Active</div>} */}
       </Stack>

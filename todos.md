@@ -1,5 +1,6 @@
 * [x] commonize screen size sharing
-* [ ] dark mode within material ui?
+* [x] dark mode within material ui?
+* [ ] color blind mode
 * [ ] figure out passing "theme" styling throughout
 * [ ] animate UI keyboard when typing on a physical keyboard
 * [ ] animate tile flips
@@ -27,6 +28,6 @@
 * [ ] allow autofocus on buttons within dialogs (there was a bug in production build when pressing ENTER on guesses board)
 * [ ] tidy suggestions button ref and general naming (vs possible words and possible guesses)
 * [ ] custom wordle?
-* [ ] publish to GitHub pages
+* [x] publish to GitHub pages
 * [ ] update README
 * [ ] transition to wordlereplay.com (including in package.json)
