@@ -73,30 +73,61 @@ function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesCo
         const guessIcons = guessColors.map((color) => colorBlindMode ? colorToIcon.colorBlind[color] : colorToIcon.standard[color]).join("");
         guessesIcons.push(guessIcons);
     }
+    const shareText = guessesIcons.join("\n");
 
     const handleClickRestartButton = () => {
         resetGame();
         handleClose();
     }
 
+    const isShareSupported = () => {
+        return navigator.share !== undefined;
+    };
+    
+      const handleShare = async () => {
+        if (isShareSupported()) {
+          try {
+            await navigator.share({
+                // title: 'Example Title',
+                text: shareText,
+                // url: 'https://example.com',
+            });
+            console.log('Content shared successfully');
+        } catch (error) {
+            console.error('Error sharing content', error);
+        }
+        } else {
+            console.log('Share API not supported on this browser.');
+        }
+    };
+
     const okButton = <Button key="wonOkButton" onClick={handleClose}>OK</Button>;
     const restartButton = <Button key="wonRestartButton" onClick={handleClickRestartButton}>Restart</Button>;
+    const copyButton = <Button key="copyIconsButton" onClick={() => navigator.clipboard.writeText(shareText)}>Copy</Button>;
+    const shareButton = <Button key="shareIconsButton" onClick={handleShare} disabled={!isShareSupported()}>Share</Button>;
 
     return (
         <AlertDialog
             open={open}
             handleClose={handleClose}
             title={`You found "${answer}"!`}
-            text="Thanks for playing."  // TODO: update
+            // text="Thanks for playing."  // TODO: update
             buttons={[restartButton, okButton]}
             addlContent={[
+                <DistributionChart key="distributionChart" numGuesses={numGuesses} distributionData={distributionData} />,
                 <Typography key="guesses" variant="h6">Guesses</Typography>,
                 <Stack key="guessesStack" spacing={0}>
                     {guessesIcons.map((guessIcons, i) => (
                         <Typography key={`guess${i}`}>{guessIcons}</Typography>
                     ))}
                 </Stack>,
-                <DistributionChart key="distributionChart" numGuesses={numGuesses} distributionData={distributionData} />
+                <Stack direction="row" spacing={2}>
+                    {isShareSupported() ? [
+                        copyButton,
+                        shareButton, 
+                    ] : [copyButton]}
+                </Stack>
+                
             ]}
         />
     )
