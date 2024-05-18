@@ -12,10 +12,10 @@
 * [x] change color of number of the distribution that you just solved
 * [x] keep generateDateArray? No
 * [x] add share icons to won dialog
-* [ ] allow user to close Won Dialog?
+* [x] allow user to close Won Dialog?
 * [ ] allow user to get back to Won dialog?
 * [ ] what does Won Dialog show when you've already played this puzzle before?
-* [ ] buttons to copy shareable icons
+* [x] buttons to copy shareable icons
 * [ ] give info somewhere on total solved and total remaining --> something like a stats page
 * [x] add Autocomplete for selecting by puzzle number
 * [ ] move focus to guesses board after closing / clicking anything in the input bar above guesses board

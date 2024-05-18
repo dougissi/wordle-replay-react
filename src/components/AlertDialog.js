@@ -71,7 +71,7 @@ function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesCo
         const guessIcons = guessColors.map((color) => colorBlindMode ? colorToIcon.colorBlind[color] : colorToIcon.standard[color]).join("");
         guessesIcons.push(guessIcons);
     }
-    const domain = "promisepress.com"
+    const domain = "promisepress.com";  // TODO: update upon release
     const shareText = `Wordle: #${puzzleNum} ${puzzleDate}\nGuesses: ${numGuesses}\n\n${guessesIcons.join("\n")}\n\n${domain}/?date=${puzzleDate}`;
 
     const handleClickRestartButton = () => {
@@ -85,16 +85,15 @@ function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesCo
     
       const handleShare = async () => {
         if (isShareSupported()) {
-          try {
-            await navigator.share({
-                title: 'Wordle Replay',
-                text: shareText,
-                url: `https://www.${domain}/?date=${puzzleDate}`,
-            });
-            console.log('Content shared successfully');
-        } catch (error) {
-            console.error('Error sharing content', error);
-        }
+            try {
+                await navigator.share({
+                    // title: 'Wordle Replay',
+                    text: shareText,
+                    // url: `https://www.${domain}/?date=${puzzleDate}`,
+                });
+            } catch (error) {
+                console.error('Error sharing content', error);
+            }
         } else {
             console.log('Share API not supported on this browser.');
         }
@@ -103,7 +102,7 @@ function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesCo
     const okButton = <Button key="wonOkButton" onClick={handleClose}>OK</Button>;
     const restartButton = <Button key="wonRestartButton" onClick={handleClickRestartButton}>Restart</Button>;
     const copyButton = <Button key="copyIconsButton" onClick={() => navigator.clipboard.writeText(shareText)}>Copy</Button>;
-    const shareButton = <Button key="shareIconsButton" onClick={handleShare}>Share</Button>;
+    const shareButton = <Button key="shareIconsButton" onClick={handleShare} disabled={!isShareSupported()}>Share</Button>;
 
     return (
         <AlertDialog
