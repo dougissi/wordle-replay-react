@@ -19,21 +19,21 @@ function isSingleEnglishLetter(text) {
     return text.length === 1 && regex.test(text);
 }
 
-function getTileColor(color, isDarkMode, isColorBlindMode) {
+function getTileColor(color, darkMode, colorBlindMode) {
     // TODO: unit tests
     if (color === NONE) {
         return NONE;
     }
-    if (isDarkMode && isColorBlindMode) {
-        return colorMap.colorBlindDark[color];
+    if (darkMode) {
+        if (colorBlindMode) {
+            return colorMap.dark.colorBlind[color];
+        }
+        return colorMap.dark.standard[color];
+    } // not dark mode
+    if (colorBlindMode) {
+        return colorMap.light.colorBlind[color];
     }
-    if (isDarkMode) {
-        return colorMap.dark[color];
-    }
-    if (isColorBlindMode) {
-        return colorMap.colorBlindLight[color];
-    }
-    return colorMap.light[color];
+    return colorMap.light.standard[color];
 }
 
 function getGuessRanks(guess, answer) {

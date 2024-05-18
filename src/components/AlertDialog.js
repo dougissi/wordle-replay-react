@@ -61,7 +61,7 @@ function InvalidGuessDialog({ open, handleClose, guess, clearGuess, hardMode }) 
     )
 }
 
-function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesColors, distributionData }) {
+function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesColors, distributionData, colorBlindMode }) {
 
 
     const guessesIcons = [];
@@ -70,7 +70,7 @@ function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesCo
         if (guessColors[0] === "") {
             break;
         }
-        const guessIcons = guessColors.map((color) => colorToIcon[color]).join("");
+        const guessIcons = guessColors.map((color) => colorBlindMode ? colorToIcon.colorBlind[color] : colorToIcon.standard[color]).join("");
         guessesIcons.push(guessIcons);
     }
 

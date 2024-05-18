@@ -23,28 +23,38 @@ export const rankToColor = {
 };
 
 export const colorMap = {
-    dark: {},
-    light: {},
-    colorBlindDark: {},
-    colorBlindLight: {}
+    light: {
+        standard: {},
+        colorBlind: {}
+    },
+    dark: {
+        standard: {},
+        colorBlind: {}
+    },
 }
-colorMap.dark[GREEN] =  '#538D4E';
-colorMap.dark[YELLOW] = '#B59F3B';
-colorMap.dark[GRAY] =   '#3A3A3C';
-colorMap.light[GREEN] =  '#6AAA64';
-colorMap.light[YELLOW] = '#FFC107';
-colorMap.light[GRAY] =   '#787C7E';
-colorMap.colorBlindDark[GREEN] =  '#F5793A';
-colorMap.colorBlindDark[YELLOW] = '#85C0F9';
-colorMap.colorBlindDark[GRAY] =   '#3A3A3C';
-colorMap.colorBlindLight[GREEN] =  '#F5793A';
-colorMap.colorBlindLight[YELLOW] = '#85C0F9';
-colorMap.colorBlindLight[GRAY] =   '#787C7E';
+colorMap.light.standard[GREEN] =  '#6AAA64';
+colorMap.light.standard[YELLOW] = '#FFC107';
+colorMap.light.standard[GRAY] =   '#787C7E';
+colorMap.dark.standard[GREEN] =  '#538D4E';
+colorMap.dark.standard[YELLOW] = '#B59F3B';
+colorMap.dark.standard[GRAY] =   '#3A3A3C';
+colorMap.light.colorBlind[GREEN] =  '#F5793A';
+colorMap.light.colorBlind[YELLOW] = '#85C0F9';
+colorMap.light.colorBlind[GRAY] =   '#787C7E';
+colorMap.dark.colorBlind[GREEN] =  '#F5793A';
+colorMap.dark.colorBlind[YELLOW] = '#85C0F9';
+colorMap.dark.colorBlind[GRAY] =   '#3A3A3C';
 
-export const colorToIcon = {};
-colorToIcon[GREEN] = "🟩";  // "&#129001;"
-colorToIcon[YELLOW] = "🟨";  // "&#129000;"
-colorToIcon[GRAY] = "⬜";  // "&#11036;"
+export const colorToIcon = {
+    standard: {},
+    colorBlind: {}
+};
+colorToIcon.standard[GREEN] =  "🟩";
+colorToIcon.standard[YELLOW] = "🟨";
+colorToIcon.standard[GRAY] =   "⬜";
+colorToIcon.colorBlind[GREEN] =  "🟧";
+colorToIcon.colorBlind[YELLOW] = "🟦";
+colorToIcon.colorBlind[GRAY] =   "⬜";
 
 export const backspaceSymbol = "⬅";
 export const earliestDate = "2021-06-19";

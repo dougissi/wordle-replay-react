@@ -3,6 +3,9 @@ import TextField from '@mui/material/TextField';
 import { dateToPuzzleNum } from "../assets/date_to_puzzle_num";
 
 export function SearchBar({ today, changeDate, solvedPuzzleNums }) {
+    // TODO: consider adding `handleHomeEndKeys` to move focus inside the SearchBar 
+    // popup with the Home and End keys
+
     const options = [];
     for ( const [date, puzzleNum] of dateToPuzzleNum.entries()) {
         // console.log(date, puzzleNum);

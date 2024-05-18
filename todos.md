@@ -1,8 +1,8 @@
 * [x] commonize screen size sharing
 * [x] dark mode within material ui?
 * [x] color blind mode
-* [ ] color blind share icon colors
-* [ ] figure out passing "theme" styling throughout
+* [x] color blind share icon colors
+* [x] figure out passing "theme" styling throughout
 * [ ] animate UI keyboard when typing on a physical keyboard
 * [ ] animate tile flips
 * [x] unit tests for utils.js
@@ -18,7 +18,6 @@
 * [ ] buttons to copy shareable icons
 * [ ] give info somewhere on total solved and total remaining --> something like a stats page
 * [x] add Autocomplete for selecting by puzzle number
-* [ ] consider adding `handleHomeEndKeys` to move focus inside the SearchBar popup with the Home and End keys
 * [ ] move focus to guesses board after closing / clicking anything in the input bar above guesses board
 * [x] guess possible words
 * [ ] guess suggestions

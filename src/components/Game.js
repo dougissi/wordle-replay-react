@@ -244,6 +244,7 @@ function Game({ colorMode, toggleColorMode }) {
         resetGame={resetGame}
         guessesColors={guessesColors}
         distributionData={distributionData}
+        colorBlindMode={colorBlindMode}
       />
 
       <SuggestionsDialog
