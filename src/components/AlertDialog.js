@@ -61,9 +61,7 @@ function InvalidGuessDialog({ open, handleClose, guess, clearGuess, hardMode }) 
     )
 }
 
-function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesColors, distributionData, colorBlindMode }) {
-
-
+function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesColors, distributionData, colorBlindMode, puzzleNum, puzzleDate }) {
     const guessesIcons = [];
     for (let i = 0; i < guessesColors.length; i++) {
         const guessColors = guessesColors[i];
@@ -73,7 +71,8 @@ function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesCo
         const guessIcons = guessColors.map((color) => colorBlindMode ? colorToIcon.colorBlind[color] : colorToIcon.standard[color]).join("");
         guessesIcons.push(guessIcons);
     }
-    const shareText = guessesIcons.join("\n");
+    const domain = "promisepress.com"
+    const shareText = `Wordle: #${puzzleNum} ${puzzleDate}\nGuesses: ${numGuesses}\n\n${guessesIcons.join("\n")}\n\n${domain}/?date=${puzzleDate}`;
 
     const handleClickRestartButton = () => {
         resetGame();
@@ -88,9 +87,9 @@ function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesCo
         if (isShareSupported()) {
           try {
             await navigator.share({
-                // title: 'Example Title',
+                title: 'Wordle Replay',
                 text: shareText,
-                // url: 'https://example.com',
+                url: `https://www.${domain}/?date=${puzzleDate}`,
             });
             console.log('Content shared successfully');
         } catch (error) {
@@ -104,7 +103,7 @@ function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesCo
     const okButton = <Button key="wonOkButton" onClick={handleClose}>OK</Button>;
     const restartButton = <Button key="wonRestartButton" onClick={handleClickRestartButton}>Restart</Button>;
     const copyButton = <Button key="copyIconsButton" onClick={() => navigator.clipboard.writeText(shareText)}>Copy</Button>;
-    const shareButton = <Button key="shareIconsButton" onClick={handleShare} disabled={!isShareSupported()}>Share</Button>;
+    const shareButton = <Button key="shareIconsButton" onClick={handleShare}>Share</Button>;
 
     return (
         <AlertDialog
@@ -121,13 +120,9 @@ function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesCo
                         <Typography key={`guess${i}`}>{guessIcons}</Typography>
                     ))}
                 </Stack>,
-                <Stack direction="row" spacing={2}>
-                    {isShareSupported() ? [
-                        copyButton,
-                        shareButton, 
-                    ] : [copyButton]}
+                <Stack key="guessesIconsButtons" direction="row" spacing={2}>
+                    {isShareSupported() ? [copyButton, shareButton] : [copyButton]}
                 </Stack>
-                
             ]}
         />
     )

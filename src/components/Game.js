@@ -245,6 +245,8 @@ function Game({ colorMode, toggleColorMode }) {
         guessesColors={guessesColors}
         distributionData={distributionData}
         colorBlindMode={colorBlindMode}
+        puzzleDate={puzzleDate}
+        puzzleNum={puzzleNum}
       />
 
       <SuggestionsDialog
