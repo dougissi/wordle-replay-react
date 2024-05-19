@@ -41,7 +41,7 @@ export default function SettingsMenu({ hardMode, handleHardModeChange, colorBlin
             label="Hard Mode"
             checked={hardMode}
             onChange={handleHardModeChange}
-          />;
+          />
         </MenuItem>
         <MenuItem>
           <SettingsSwitch

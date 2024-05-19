@@ -17,16 +17,16 @@ export function DateSelector({ today, puzzleDate, changeDate }) {
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DemoContainer components={['DatePicker']}>
-            <DatePicker
-                label="Puzzle Date"
-                minDate={dayjs(earliestDate)}
-                maxDate={dayjs(today)}
-                value={value}
-                onChange={handleOnChange}
-                slotProps={{ textField: { size: 'small' } }}
-            />
-        </DemoContainer>
+            <DemoContainer components={['DatePicker']}>
+                <DatePicker
+                    label="Puzzle Date"
+                    minDate={dayjs(earliestDate)}
+                    maxDate={dayjs(today)}
+                    value={value}
+                    onChange={handleOnChange}
+                    slotProps={{ textField: { size: 'small' } }}
+                />
+            </DemoContainer>
         </LocalizationProvider>
     );
 }

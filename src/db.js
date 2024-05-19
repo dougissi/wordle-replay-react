@@ -25,7 +25,7 @@ export const initDB = (setDistributionData, setGuessesDB) => {
     if (transferFlag !== 'true') {
       const oldData = localStorage.getItem('wordlereplay_solved');
       const newData = formatOldDataForIndexedDB(oldData);
-      newData.forEach((item) => addItem(item));
+      newData.forEach((item) => putItem(item));
       localStorage.setItem('transferredOldSolvedDataFlag', 'true');  // Set flag in localStorage to indicate transfer is done
       // TODO: consider removing old localStorage data
     }
@@ -37,17 +37,17 @@ export const initDB = (setDistributionData, setGuessesDB) => {
   };
 };
 
-export const addItem = (item) => {
+export const putItem = (item) => {
   const transaction = db.transaction(["guesses"], "readwrite");
   const store = transaction.objectStore("guesses");
-  const request = store.add(item);
+  const request = store.put(item);
 
   request.onsuccess = () => {
-    console.log("Item added successfully");
+    console.log("Put item successfully");
   };
 
   request.onerror = (event) => {
-    console.error("Error adding item", event.target.error);
+    console.error("Error putting item", event.target.error);
   };
 };
 

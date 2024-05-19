@@ -8,7 +8,7 @@ import { DateSelector } from './DateSelector';
 import GuessesBoard from './GuessesBoard';
 import Keyboard from './Keyboard';
 import { InvalidGuessDialog, SuggestionsDialog, WonDialog } from './AlertDialog';
-import { initDB, addItem, setSolvedStates } from '../db';
+import { initDB, putItem, setSolvedStates } from '../db';
 import { Button, Stack } from '@mui/material';
 import dayjs from 'dayjs';
 // import { SearchBar } from './components/SearchBar';
@@ -54,6 +54,7 @@ function Game({ colorMode, toggleColorMode }) {
     }
   }, []);
 
+  // load any guesses from DB for a given puzzle
   useEffect(() => {
     if (guessesDB.hasOwnProperty(puzzleDate)) {
       const row = guessesDB[puzzleDate];
@@ -83,11 +84,13 @@ function Game({ colorMode, toggleColorMode }) {
     return nextLetterIndex[0] + 1;
   };
 
-  const saveGuess = () => {
+  const saveGuess = (isSolved) => {
     const guessesDataNoBlanks = guessesData.filter((guess) => guess[0] !== "");  // remove blank rows
-    const newItem = { puzzleNum: puzzleNum, date: puzzleDate, solvedDate: today, guesses: guessesDataNoBlanks };
-    addItem(newItem); // Add item to the database
+    const newItem = { puzzleNum: puzzleNum, date: puzzleDate, solvedDate: isSolved ? today : null, guesses: guessesDataNoBlanks };
+    putItem(newItem); // Add/update item into IndexedDB
   };
+
+  console.log(answer);
 
   const handleInputText = (text) => {
     // console.log(`entered ${text}`);
@@ -120,7 +123,9 @@ function Game({ colorMode, toggleColorMode }) {
 
         if (guessRanks === '22222') {  // guess is all greens (i.e., the answer)
           setWonDialogOpen(true);
-          saveGuess();
+          if (!guessesDB.hasOwnProperty(puzzleDate) || !guessesDB[puzzleDate].solvedDate) {  // save if never saved or unsolved
+            saveGuess(true);  // including `true` will add solved date
+          }
           setSolvedStates(setDistributionData, setGuessesDB);
         } else {  // guess not the answer
           // update next letter index, potentially adding a new row
@@ -130,6 +135,7 @@ function Game({ colorMode, toggleColorMode }) {
             setGuessesColors([...newGuessesColors, blankRow()]); // add blank row
           }
           setNextLetterIndex([nextRowIndex, 0]);
+          saveGuess();  // no `true` param so no solved date will be included
         }
 
         // update hard mode words and seen insights

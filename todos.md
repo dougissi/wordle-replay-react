@@ -29,8 +29,9 @@
 * [ ] tidy suggestions button ref and general naming (vs possible words and possible guesses)
 * [ ] custom wordle?
 * [x] show previous guesses on solved puzzles
+* [ ] show which are solved on Date Picker
 * [ ] allow user to decide if they want to see previous guesses OR replay without seeing
-* [ ] save state on partially finished puzzles
+* [x] save state on partially finished puzzles
 * [x] publish to GitHub pages
 * [ ] update README
 * [ ] transition to wordlereplay.com (including in package.json)
