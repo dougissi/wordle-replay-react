@@ -1,4 +1,4 @@
-import { emptyDistributionData, numLetters, rankToColor, backspaceSymbol, earliestDate } from "../constants";
+import { emptyDistributionData, numLetters, rankToColor, backspaceSymbol, earliestDate, initialNumGuessesToShow } from "../constants";
 import { useEffect, useState, useRef } from 'react';
 import { blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex, dateToPuzzleNum, dateIsBetween } from '../utils';
 import useScreenSize from './useScreenSize';
@@ -18,7 +18,7 @@ import { useSearchParams } from "react-router-dom";
 
 function Game({ colorMode, toggleColorMode }) {
   const today = dayjs().format('YYYY-MM-DD'); 
-  const isValidDate = (dateStr) =>{
+  const isValidDate = (dateStr) => {
     return dateIsBetween(dateStr, earliestDate, today);
   }
   const screenSize = useScreenSize();
@@ -53,6 +53,31 @@ function Game({ colorMode, toggleColorMode }) {
       setSearchParams({...searchParams, date: today});
     }
   }, []);
+
+  useEffect(() => {
+    if (guessesDB.hasOwnProperty(puzzleDate)) {
+      const row = guessesDB[puzzleDate];
+      console.log(`Solved puzzle from ${puzzleDate} on ${row.solvedDate} in ${row.guesses.length} guesses`);
+      const newGuessesData = [...row.guesses];
+      setNextLetterIndex([newGuessesData.length - 1, numLetters]);  // TODO: update if partial guesses are allowed
+
+      const newGuessesColors = newGuessesData.map((guessArr) => {
+        const guess = guessArr.join("");
+        const guessRanks = getGuessRanks(guess, answer);
+        const guessColors = [...guessRanks].map((rank) => rankToColor[rank]);
+        return [...guessColors];
+      });
+
+      // add blank rows, if needed
+      while (newGuessesData.length < initialNumGuessesToShow) {
+        newGuessesData.push(blankRow());
+        newGuessesColors.push(blankRow());
+      }
+
+      setGuessesData(newGuessesData);
+      setGuessesColors(newGuessesColors);
+    }
+  }, [guessesDB, puzzleDate, answer]);
 
   const numGuesses = () => {  // TODO: convert to useEffect?
     return nextLetterIndex[0] + 1;

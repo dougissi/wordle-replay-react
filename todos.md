@@ -13,7 +13,7 @@
 * [x] keep generateDateArray? No
 * [x] add share icons to won dialog
 * [x] allow user to close Won Dialog?
-* [ ] allow user to get back to Won dialog?
+* [ ] allow user to get back to Won dialog beyond pressing "ENTER"
 * [ ] what does Won Dialog show when you've already played this puzzle before?
 * [x] buttons to copy shareable icons
 * [ ] give info somewhere on total solved and total remaining --> something like a stats page
@@ -28,6 +28,9 @@
 * [ ] allow autofocus on buttons within dialogs (there was a bug in production build when pressing ENTER on guesses board)
 * [ ] tidy suggestions button ref and general naming (vs possible words and possible guesses)
 * [ ] custom wordle?
+* [x] show previous guesses on solved puzzles
+* [ ] allow user to decide if they want to see previous guesses OR replay without seeing
+* [ ] save state on partially finished puzzles
 * [x] publish to GitHub pages
 * [ ] update README
 * [ ] transition to wordlereplay.com (including in package.json)
