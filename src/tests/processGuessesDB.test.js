@@ -1,6 +1,6 @@
-import { processSolvedData } from "../utils";
+import { processGuessesDB } from "../utils";
 
-it('processSolvedData: typical', () => {
+it('processGuessesDB: typical', () => {
     const dbData = [
         {date: '2024-05-01', guesses: [
             ['A', 'R', 'O', 'S', 'E '],
@@ -23,18 +23,6 @@ it('processSolvedData: typical', () => {
         ]},
         {date: '2024-05-04', guesses: [
             ['A', 'R', 'O', 'S', 'E '],
-            ['T', 'R', 'I', 'E', 'D'],
-            ['G', 'R', 'E', 'E', 'D'],
-            ['B', 'R', 'E', 'E', 'D'],
-            ['A', 'R', 'O', 'S', 'E '],
-            ['T', 'R', 'I', 'E', 'D'],
-            ['G', 'R', 'E', 'E', 'D'],
-            ['B', 'R', 'E', 'E', 'D'],
-            ['A', 'R', 'O', 'S', 'E '],
-            ['T', 'R', 'I', 'E', 'D']
-        ]},
-        {date: '2024-05-04', guesses: [  // shouldn't be repeats dates, but worth testing
-            ['A', 'R', 'O', 'S', 'E '],
             ['T', 'R', 'I', 'E', 'D']
         ]}
     ];
@@ -45,19 +33,14 @@ it('processSolvedData: typical', () => {
         4: 0,
         5: 0,
         6: 0,
-        '7+': 2
+        '7+': 1
     };
-    const expectedSolvedDates = new Set([
-        '2024-05-01',
-        '2024-05-02',
-        '2024-05-03',
-        '2024-05-04'
-    ]);
-    const actual = processSolvedData(dbData);
-    expect(actual).toEqual([expectedDistribution, expectedSolvedDates]);
+    const expectedGuessesDB = Object.fromEntries(dbData.map((row) => [row.date, row]));
+    const actual = processGuessesDB(dbData);
+    expect(actual).toEqual([expectedDistribution, expectedGuessesDB]);
 })
 
-it('processSolvedData: empty', () => {
+it('processGuessesDB: empty', () => {
     const dbData = [];
     const expectedDistribution = {
         1: 0,
@@ -68,7 +51,7 @@ it('processSolvedData: empty', () => {
         6: 0,
         '7+': 0
     };
-    const expectedSolvedDates = new Set();
-    const actual = processSolvedData(dbData);
-    expect(actual).toEqual([expectedDistribution, expectedSolvedDates]);
+    const expectedGuessesDB = {};
+    const actual = processGuessesDB(dbData);
+    expect(actual).toEqual([expectedDistribution, expectedGuessesDB]);
 })

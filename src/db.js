@@ -1,12 +1,12 @@
 // db.js
 
-import { processSolvedData, formatOldDataForIndexedDB } from "./utils";
+import { processGuessesDB, formatOldDataForIndexedDB } from "./utils";
 
 const DB_NAME = "wordlereplay_db";
 const DB_VERSION = 1;
 let db;
 
-export const initDB = (setDistributionData) => {
+export const initDB = (setDistributionData, setGuessesDB) => {
   const request = indexedDB.open(DB_NAME, DB_VERSION);
 
   request.onupgradeneeded = (event) => {
@@ -29,7 +29,7 @@ export const initDB = (setDistributionData) => {
       localStorage.setItem('transferredOldSolvedDataFlag', 'true');  // Set flag in localStorage to indicate transfer is done
       // TODO: consider removing old localStorage data
     }
-    setSolvedStates(setDistributionData);
+    setSolvedStates(setDistributionData, setGuessesDB);
   };
 
   request.onerror = (event) => {
@@ -51,7 +51,7 @@ export const addItem = (item) => {
   };
 };
 
-export const setSolvedStates = (setDistributionData) => {
+export const setSolvedStates = (setDistributionData, setGuessesDB) => {
   const transaction = db.transaction(["guesses"], "readonly");
   const store = transaction.objectStore("guesses");
   const request = store.getAll();
@@ -60,9 +60,9 @@ export const setSolvedStates = (setDistributionData) => {
     const items = request.result;
 
     console.log("Retrieved all items from db");
-    const processedData = processSolvedData(items);  // [dist, solvedDatesSet]
-    const dist = processedData[0];
+    const [dist, guessesDB] = processGuessesDB(items);
     setDistributionData(dist);
+    setGuessesDB(guessesDB);
   };
 
   request.onerror = (event) => {

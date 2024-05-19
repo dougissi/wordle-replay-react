@@ -98,15 +98,15 @@ function dateIsBetween(date, start, end) {
     return dayjs(date).isBetween(start, end, 'day', '[]');
 }
 
-function processSolvedData(allSolvedData) {
+function processGuessesDB(guessesDBArr) {
     const distribution = {...emptyDistributionData};
-    const solvedDates = new Set();
-    allSolvedData.forEach((solvedItem) => {
-        const countLabel = solvedItem.guesses.length < 7 ? solvedItem.guesses.length : '7+';
+    const guessesDB = {};
+    guessesDBArr.forEach((row) => {
+        const countLabel = row.guesses.length < 7 ? row.guesses.length : '7+';
         distribution[countLabel] = (distribution[countLabel] || 0) + 1;
-        solvedDates.add(solvedItem.date);
+        guessesDB[row.date] = row;
     });
-    return [distribution, solvedDates];
+    return [distribution, guessesDB];
 }
 
 function formatOldDataForIndexedDB(oldData) {
@@ -136,6 +136,6 @@ export {
     dateToPuzzleNum,
     puzzleNumToDate,
     dateIsBetween,
-    processSolvedData,
+    processGuessesDB,
     formatOldDataForIndexedDB
 }

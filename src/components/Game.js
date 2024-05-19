@@ -34,6 +34,7 @@ function Game({ colorMode, toggleColorMode }) {
   const [invalidGuessDialogOpen, setInvalidGuessDialogOpen] = useState(false);
   const [wonDialogOpen, setWonDialogOpen] = useState(false);
   const [distributionData, setDistributionData] = useState({...emptyDistributionData});
+  const [guessesDB, setGuessesDB] = useState({});
   const [hardModeWords, setHardModeWords] = useState(new Set(wordleAcceptableWords));
   const [possibleWords, setPossibleWords] = useState(new Set(wordleAcceptableWords));
   const [seenInsights, setSeenInsights] = useState(new Set());
@@ -46,7 +47,7 @@ function Game({ colorMode, toggleColorMode }) {
   const suggestionsButtonRef = useRef(null);
 
   useEffect(() => {
-    initDB(setDistributionData); // Initialize the database
+    initDB(setDistributionData, setGuessesDB); // Initialize the database
     guessesBoardRef.current.focus();  // focus on guesses board initially
     if (searchParams.has('date') && !isValidDate(searchParams.get('date'))) {  // if query param date is invalid, reset to today
       setSearchParams({...searchParams, date: today});
@@ -95,7 +96,7 @@ function Game({ colorMode, toggleColorMode }) {
         if (guessRanks === '22222') {  // guess is all greens (i.e., the answer)
           setWonDialogOpen(true);
           saveGuess();
-          setSolvedStates(setDistributionData);
+          setSolvedStates(setDistributionData, setGuessesDB);
         } else {  // guess not the answer
           // update next letter index, potentially adding a new row
           const nextRowIndex = nextLetterIndex[0] + 1;
