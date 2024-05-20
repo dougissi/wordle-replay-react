@@ -51,6 +51,21 @@ export const putItem = (item) => {
   };
 };
 
+export const getItem = (dateStr, callback) => {
+  const transaction = db.transaction(["guesses"], "readwrite");
+  const store = transaction.objectStore("guesses");
+  const request = store.get(dateStr);
+
+  request.onsuccess = () => {
+    console.log("Got item successfully");
+    callback(request.result);
+  };
+
+  request.onerror = (event) => {
+    console.error("Error getting item", event.target.error);
+  };
+};
+
 export const setSolvedStates = (setDistributionData, setGuessesDB) => {
   const transaction = db.transaction(["guesses"], "readonly");
   const store = transaction.objectStore("guesses");

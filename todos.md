@@ -32,6 +32,8 @@
 * [ ] show which are solved on Date Picker
 * [ ] allow user to decide if they want to see previous guesses OR replay without seeing
 * [x] save state on partially finished puzzles
+* [x] prevent having to push "enter" to resume puzzle play on unfinished puzzles?
+* [x] show correct keyboard colors when resuming puzzle
 * [x] publish to GitHub pages
 * [ ] update README
 * [ ] transition to wordlereplay.com (including in package.json)

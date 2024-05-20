@@ -35,6 +35,7 @@ function Game({ colorMode, toggleColorMode }) {
   const [wonDialogOpen, setWonDialogOpen] = useState(false);
   const [distributionData, setDistributionData] = useState({...emptyDistributionData});
   const [guessesDB, setGuessesDB] = useState({});
+  const [lastLoadedDate, setLastLoadedDate] = useState(null);
   const [hardModeWords, setHardModeWords] = useState(new Set(wordleAcceptableWords));
   const [possibleWords, setPossibleWords] = useState(new Set(wordleAcceptableWords));
   const [seenInsights, setSeenInsights] = useState(new Set());
@@ -55,19 +56,49 @@ function Game({ colorMode, toggleColorMode }) {
   }, []);
 
   // load any guesses from DB for a given puzzle
+  // TODO: commonize?
   useEffect(() => {
-    if (guessesDB.hasOwnProperty(puzzleDate)) {
+    if (
+      lastLoadedDate !== puzzleDate  // prevent rebuilding after every guess
+      && guessesDB.hasOwnProperty(puzzleDate)
+    ) {
+      console.log("rebuilding");
       const row = guessesDB[puzzleDate];
-      console.log(`Solved puzzle from ${puzzleDate} on ${row.solvedDate} in ${row.guesses.length} guesses`);
       const newGuessesData = [...row.guesses];
-      setNextLetterIndex([newGuessesData.length - 1, numLetters]);  // TODO: update if partial guesses are allowed
 
-      const newGuessesColors = newGuessesData.map((guessArr) => {
+      const newLetterMaxRanks = [...letterMaxRanks];
+      const newGuessesColors = [];
+      let isSolved = false;
+      let newSeenInsights = new Set();
+
+      newGuessesData.forEach((guessArr) => {
         const guess = guessArr.join("");
         const guessRanks = getGuessRanks(guess, answer);
         const guessColors = [...guessRanks].map((rank) => rankToColor[rank]);
-        return [...guessColors];
+        newGuessesColors.push(guessColors);
+
+        // update keyboard max ranks
+        for (let i = 0; i < guess.length; i++) {
+          const letter = guess[i];
+          const j = getLetterAlphabetIndex(letter);
+          newLetterMaxRanks[j] = Math.max(newLetterMaxRanks[j], guessRanks[i])
+        }
+
+        // keep all unique insights (for hard mode word tracking)
+        const insights = getInsightsFromGuessRanks(guess.toLowerCase(), guessRanks);
+        newSeenInsights = newSeenInsights.union(new Set(insights));
+
+        // track if solved
+        if (guessRanks === '22222') {
+          isSolved = true;
+        }
       });
+
+      // update hard mode words
+      const insightCallbacks = [...newSeenInsights].map((insight) => getInsightCallback(insight));
+      const newHardModeWords = new Set([...hardModeWords].filter((word) => satisfiesAllInsightCallbacks(word, insightCallbacks)));
+      setSeenInsights(newSeenInsights);
+      setHardModeWords(newHardModeWords);
 
       // add blank rows, if needed
       while (newGuessesData.length < initialNumGuessesToShow) {
@@ -75,10 +106,22 @@ function Game({ colorMode, toggleColorMode }) {
         newGuessesColors.push(blankRow());
       }
 
+      if (isSolved) {
+        setNextLetterIndex([row.guesses.length - 1, numLetters]);
+      } else {
+        setNextLetterIndex([row.guesses.length, 0]);
+        if (row.guesses.length >= initialNumGuessesToShow) {
+          newGuessesData.push(blankRow());
+          newGuessesColors.push(blankRow());
+        }
+      }
+
       setGuessesData(newGuessesData);
       setGuessesColors(newGuessesColors);
+      setLetterMaxRanks(newLetterMaxRanks);
+      setLastLoadedDate(puzzleDate);
     }
-  }, [guessesDB, puzzleDate, answer]);
+  }, [lastLoadedDate, guessesDB, puzzleDate, answer, hardModeWords, letterMaxRanks]);
 
   const numGuesses = () => {  // TODO: convert to useEffect?
     return nextLetterIndex[0] + 1;
@@ -88,9 +131,12 @@ function Game({ colorMode, toggleColorMode }) {
     const guessesDataNoBlanks = guessesData.filter((guess) => guess[0] !== "");  // remove blank rows
     const newItem = { puzzleNum: puzzleNum, date: puzzleDate, solvedDate: isSolved ? today : null, guesses: guessesDataNoBlanks };
     putItem(newItem); // Add/update item into IndexedDB
-  };
 
-  console.log(answer);
+    // update guessesDB state
+    const newGuessesDB = {...guessesDB};
+    newGuessesDB[puzzleDate] = newItem;
+    setGuessesDB(newGuessesDB);
+  };
 
   const handleInputText = (text) => {
     // console.log(`entered ${text}`);
