@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import IconButton from '@mui/material/IconButton';
+import { IconButton, MenuItem, Tooltip } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SettingsSwitch from './SettingsSwitch';
 
@@ -17,16 +16,18 @@ export default function SettingsMenu({ hardMode, handleHardModeChange, colorBlin
 
   return (
     <div>
-      <IconButton
-        id="basic-button"
-        aria-label="settings-button"
-        aria-controls={open ? 'basic-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        onClick={handleClick}
-      >
-        <SettingsIcon />
-      </IconButton>
+      <Tooltip title="Game Settings">
+        <IconButton
+          id="basic-button"
+          aria-label="settings-button"
+          aria-controls={open ? 'basic-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+          onClick={handleClick}
+        >
+          <SettingsIcon />
+        </IconButton>
+      </Tooltip>
       <Menu
         id="basic-menu"
         anchorEl={anchorEl}

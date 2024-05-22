@@ -4,17 +4,19 @@ import { blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLe
 import useScreenSize from './useScreenSize';
 import { dateToWord } from '../assets/date_to_word';
 import { wordleAcceptableWords } from '../assets/wordle_acceptable_words';
-import { DateSelector } from './DateSelector';
+// import { DateSelector } from './DateSelector';
+// import { SearchBar } from './components/SearchBar';
 import GuessesBoard from './GuessesBoard';
 import Keyboard from './Keyboard';
 import { InvalidGuessDialog, SuggestionsDialog, WonDialog } from './AlertDialog';
 import { initDB, putItem, setSolvedStates } from '../db';
-import { Button, Stack } from '@mui/material';
+import { Button, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import dayjs from 'dayjs';
-// import { SearchBar } from './components/SearchBar';
 import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallbacks } from '../hardModeWordsFiltering';
 import SettingsMenu from './SettingsMenu';
 import { useSearchParams } from "react-router-dom";
+import Calendar from "./Calendar";
+import BoltIcon from '@mui/icons-material/Bolt';
 
 function Game({ colorMode, toggleColorMode }) {
   const today = dayjs().format('YYYY-MM-DD'); 
@@ -42,6 +44,7 @@ function Game({ colorMode, toggleColorMode }) {
   const [suggestionsDialogOpen, setSuggestionsDialogOpen] = useState(false);
   const [hardMode, setHardMode] = useState(localStorage.getItem('hardMode') === 'true');  // TODO: unit test
   const [colorBlindMode, setColorBlindMode] = useState(localStorage.getItem('colorBlindMode') === 'true');  // TODO: unit test
+  const [showCalendar, setShowCalendar] = useState(false);
 
   // console.log(`${puzzleDate} ${answer}`);
   const guessesBoardRef = useRef(null);
@@ -274,24 +277,38 @@ function Game({ colorMode, toggleColorMode }) {
       {/* Row of inputs above Guess Board */}
       <Stack
         direction="row"
-        spacing={2}
+        spacing={1}
         justifyContent="center"
         alignItems="flex-end"
       >
-        <DateSelector today={today} puzzleDate={puzzleDate} changeDate={changeDate} />
-
         {/* <SearchBar today={today} changeDate={changeDate} solvedPuzzleNums={solvedPuzzleNums} /> */}
+        {/* <DateSelector today={today} puzzleDate={puzzleDate} changeDate={changeDate} /> */}
 
-        <Button
-          variant="contained"
-          ref={suggestionsButtonRef}
-          onClick={() => {
-            setSuggestionsDialogOpen(true);
-            suggestionsButtonRef.current.blur();
-          }}
-        >
-          Suggestions
+        {/* Puzzle Number */}
+        <Button disabled>
+          <Typography>{`#${puzzleNum}`}</Typography>
         </Button>
+
+        {/* Puzzle Date */}
+        <Tooltip title="Choose Puzzle Date">
+          <Button onClick={() => setShowCalendar(prev => !prev)}>
+            <Typography>{puzzleDate}</Typography>
+          </Button>
+        </Tooltip>
+
+        {/* Suggestions Icon */}
+        <Tooltip title="Suggestions">
+          <IconButton
+            variant="contained"
+            ref={suggestionsButtonRef}
+            onClick={() => {
+              setSuggestionsDialogOpen(true);
+              suggestionsButtonRef.current.blur();
+            }}
+          >
+            <BoltIcon />
+          </IconButton>
+        </Tooltip>
 
         <SettingsMenu
           hardMode={hardMode}
@@ -304,6 +321,18 @@ function Game({ colorMode, toggleColorMode }) {
 
         {/* {hardMode && <div>Hard Mode Active</div>} */}
       </Stack>
+
+      {showCalendar && (
+        <Calendar
+          today={today}
+          puzzleDate={puzzleDate}
+          guessesDB={guessesDB}
+          changeDate={changeDate}
+          setShowCalendar={setShowCalendar}
+          darkMode={darkMode}
+          colorBlindMode={colorBlindMode}
+        />
+      )}
 
       {/* Dialogs, initially hidden */}
       <InvalidGuessDialog
