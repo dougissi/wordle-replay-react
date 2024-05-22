@@ -2,6 +2,11 @@
   text-align: center;
 }
 
+.Markdown {
+  text-align: left;
+  padding-left: 2%;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

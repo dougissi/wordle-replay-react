@@ -5,6 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import ResponsiveAppBar from './components/ResponsiveAppBar';
 import Game from './components/Game';
 import CssBaseline from '@mui/material/CssBaseline';
+import Markdown from './components/Markdown';
 
 const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
@@ -27,15 +28,22 @@ function App() {
     [mode],
   );
 
+  const pages = [
+    { path: '/', label: 'Play', element: <Game colorMode={mode} toggleColorMode={toggleColorMode} /> },
+    { path: '/about', label: 'About', element: <Markdown fileName='about.md' /> },
+    { path: '/test', label: 'Test', element: <div>Doug test</div> },
+  ]
+
   return (
     <ColorModeContext.Provider value={{ mode, toggleColorMode }}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className="App">
-          <ResponsiveAppBar />
+          <ResponsiveAppBar pages={pages} />
           <Routes>
-            <Route path='/' element={<Game colorMode={mode} toggleColorMode={toggleColorMode} />} />
-            <Route path='/test' element={<div>Doug test</div>} />
+            {pages.map((page) => (
+              <Route key={`${page.label}-page`} path={page.path} element={page.element} />
+            ))}
           </Routes>
         </div>
       </ThemeProvider>
