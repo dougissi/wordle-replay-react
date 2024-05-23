@@ -89,11 +89,13 @@ function ResponsiveAppBar({ pages }) {
             >
               {pages.map((page) => (
                 <MenuItem key={`${page.label}-menu-item`} onClick={handleCloseNavMenu}>
-                  <Link to={page.path} style={{ textDecoration: 'none' }}>
-                    <Typography textAlign="center" >
-                      {page.label}
-                    </Typography>
-                  </Link>
+                  <Typography
+                    component={Link}  // react-router-dom Link faster than @mui Link
+                    to={page.path}
+                    style={{ color: 'inherit', textAlign: 'center', textDecoration: 'none' }}
+                  >
+                    {page.label}
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -119,14 +121,16 @@ function ResponsiveAppBar({ pages }) {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
-              <Link key={`${page.label}-nav-link`} to={page.path} style={{ textDecoration: 'none' }}>
-                <Button
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                  {page.label}
-                </Button>
-              </Link>
+              <Button
+                key={`${page.label}-nav-link`}
+                component={Link}  // react-router-dom Link faster than @mui Link
+                to={page.path}
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+                style={{ textDecoration: 'none' }}
+              >
+                {page.label}
+              </Button>
             ))}
           </Box>
 
