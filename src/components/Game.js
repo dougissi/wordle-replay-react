@@ -37,7 +37,8 @@ function Game({ colorMode, toggleColorMode }) {
   const [wonDialogOpen, setWonDialogOpen] = useState(false);
   const [distributionData, setDistributionData] = useState({...emptyDistributionData});
   const [guessesDB, setGuessesDB] = useState({});
-  const [lastLoadedDate, setLastLoadedDate] = useState(null);
+  const [lastLoadedDate, setLastLoadedDate] = useState();
+  const [lastLoadAttemptDate, setLastLoadAttemptDate] = useState();
   const [hardModeWords, setHardModeWords] = useState(new Set(wordleAcceptableWords));
   const [possibleWords, setPossibleWords] = useState(new Set(wordleAcceptableWords));
   const [seenInsights, setSeenInsights] = useState(new Set());
@@ -58,14 +59,17 @@ function Game({ colorMode, toggleColorMode }) {
     }
   }, []);
 
-  // load any guesses from DB for a given puzzle
+  // load any previous guesses from DB for a given puzzle
   // TODO: commonize?
   useEffect(() => {
     if (
-      lastLoadedDate !== puzzleDate  // prevent rebuilding after every guess
-      && guessesDB.hasOwnProperty(puzzleDate)
+      (
+        lastLoadAttemptDate !== puzzleDate     // last attempt wasn't this date
+        || lastLoadedDate !== puzzleDate       // last successful load wasn't this date
+      )
+      && guessesDB.hasOwnProperty(puzzleDate)  // DB has this date
     ) {
-      console.log("rebuilding");
+      console.log("loading board");
       const row = guessesDB[puzzleDate];
       const newGuessesData = [...row.guesses];
 
@@ -118,13 +122,13 @@ function Game({ colorMode, toggleColorMode }) {
           newGuessesColors.push(blankRow());
         }
       }
-
       setGuessesData(newGuessesData);
       setGuessesColors(newGuessesColors);
       setLetterMaxRanks(newLetterMaxRanks);
       setLastLoadedDate(puzzleDate);
     }
-  }, [lastLoadedDate, guessesDB, puzzleDate, answer, hardModeWords, letterMaxRanks]);
+    setLastLoadAttemptDate(puzzleDate);
+  }, [puzzleDate, lastLoadAttemptDate, lastLoadedDate, guessesDB, answer, hardModeWords, letterMaxRanks]);
 
   const numGuesses = () => {  // TODO: convert to useEffect?
     return nextLetterIndex[0] + 1;

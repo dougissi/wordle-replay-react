@@ -34,6 +34,9 @@
 * [ ] allow query param by puzzle number
 * [ ] move game inputs to App bar
 * [ ] allow user to decide if they want to see previous guesses OR replay without seeing
+* [x] render additional pages as markdown
+* [x] bugfix: if nav from a solved puzzle to not-started then back to solved, guesses don't show up (due to lastLoadedDate not changing)
+* [ ] bugfix: nav links in hamburger too dark when in dark mode -- figure out how to better use MUI Typography styling here rather than react-router-dom
 * [x] save state on partially finished puzzles
 * [x] prevent having to push "enter" to resume puzzle play on unfinished puzzles?
 * [x] show correct keyboard colors when resuming puzzle
