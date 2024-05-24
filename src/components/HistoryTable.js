@@ -21,6 +21,7 @@ import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
+import { Autocomplete, Stack, TextField } from '@mui/material';
 
 const headCells = [
   {
@@ -171,7 +172,7 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected } = props;
+  const { numSelected, toggleShowFilterOptions } = props;
 
   return (
     <Toolbar
@@ -200,7 +201,7 @@ function EnhancedTableToolbar(props) {
           id="tableTitle"
           component="div"
         >
-          Nutrition
+          History
         </Typography>
       )}
 
@@ -212,7 +213,7 @@ function EnhancedTableToolbar(props) {
         </Tooltip>
       ) : (
         <Tooltip title="Filter list">
-          <IconButton>
+          <IconButton onClick={toggleShowFilterOptions}>
             <FilterListIcon />
           </IconButton>
         </Tooltip>
@@ -225,13 +226,17 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-export default function EnhancedTable({ rows }) {
+export default function EnhancedTable({ historyData }) {
   const [order, setOrder] = React.useState('desc');
   const [orderBy, setOrderBy] = React.useState('puzzleNum');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
+  const [rows, setRows] = React.useState(historyData);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [filterColumn, setFilterColumn] = React.useState('id');
+  const [filterValues, setFilterValues] = React.useState([]);
+  const [showFilterOptions, setShowFilterOptions] = React.useState(false);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -298,10 +303,48 @@ export default function EnhancedTable({ rows }) {
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected.length} toggleShowFilterOptions={() => setShowFilterOptions(!showFilterOptions)}/>
+        {showFilterOptions &&
+          <Stack direction="row" spacing={2}>
+            <Autocomplete
+              disablePortal
+              id="filter-column"
+              options={headCells.filter((cell) => cell.id !== 'id')}
+              sx={{ width: 300 }}
+              renderInput={(params) => <TextField {...params} label="Select column to filter" />}
+              onChange={(event, option) => {
+                if (option) {
+                  setFilterColumn(option.id);
+                  const allValues = new Set(rows.map((row) => String(row[option.id])));
+                  const sortedValues = Array.from(allValues).sort();
+                  setFilterValues(sortedValues);
+                } else {
+                  setFilterValues([]);
+                  setRows(historyData);
+                }
+              }}
+            />
+            {filterValues.length > 0 && 
+              <Autocomplete
+                disablePortal
+                id="filter-values"
+                options={filterValues}
+                sx={{ width: 300 }}
+                renderInput={(params) => <TextField {...params} label="Values" />}
+                onChange={(event, option) => {
+                  if (option) {
+                    setRows(rows.filter((row) => row[filterColumn] === option))
+                  } else {
+                    setRows(historyData);
+                  }
+                }}
+              />
+            }
+          </Stack>
+        }
         <TableContainer>
           <Table
-            sx={{ minWidth: 750 }}
+            // sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
             size={dense ? 'small' : 'medium'}
           >

@@ -19,7 +19,7 @@
 * [x] give info somewhere on total solved and total remaining --> something like a stats page
 * [ ] allow deleting of history in table, and delete all history
 * [ ] mechanism to save history
-* [ ] filter history table
+* [x] filter history table
 * [ ] tidy stats page styling
 * [x] add Autocomplete for selecting by puzzle number
 * [ ] move focus to guesses board after closing / clicking anything in the input bar above guesses board

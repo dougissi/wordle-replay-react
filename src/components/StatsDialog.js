@@ -94,7 +94,7 @@ export default function StatsDialog({ open, setOpen, today, distributionData, gu
             <Stack>
                 <DistributionChart distributionData={distributionData} />
                 <HistoryPieChart data={historyPieData} />
-                <HistoryTable rows={historyData} />
+                <HistoryTable historyData={historyData} />
             </Stack>
             
             {/* <List>
