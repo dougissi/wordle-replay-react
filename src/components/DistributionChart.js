@@ -1,6 +1,6 @@
 import { BarChart } from '@mui/x-charts';
 
-export function DistributionChart({ numGuesses, distributionData }) {
+export default function DistributionChart({ numGuesses, distributionData }) {
   const countLabels = Object.keys(distributionData);
   const barColors = [];
   for (let i = 1; i <= 7; i++) {

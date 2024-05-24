@@ -4,7 +4,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { DistributionChart } from './DistributionChart';
+import DistributionChart from './DistributionChart';
 import { Stack, Typography } from '@mui/material';
 import { colorToIcon } from '../constants';
 

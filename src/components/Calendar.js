@@ -8,7 +8,7 @@ import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { DayCalendarSkeleton } from '@mui/x-date-pickers/DayCalendarSkeleton';
 import CheckIcon from '@mui/icons-material/Check';
 import CircleIcon from '@mui/icons-material/Circle';
-import { GREEN, YELLOW, colorMap, earliestDate } from '../constants';
+import { earliestDate } from '../constants';
 
 /**
  * Mimic fetch with abort controller https://developer.mozilla.org/en-US/docs/Web/API/AbortController/abort
@@ -36,17 +36,12 @@ function fakeFetch(date, db, { signal }) {
 // const initialValue = dayjs('2024-05-17');
 
 function ServerDay(props) {
-  const { highlightedDays = [], solvedDays = [], darkMode = false, colorBlindMode = false, day, outsideCurrentMonth, ...other } = props;
+  const { highlightedDays = [], solvedDays = [], green, yellow, day, outsideCurrentMonth, ...other } = props;
 
   const isSelected =
     !props.outsideCurrentMonth && highlightedDays.indexOf(props.day.date()) >= 0;
 
   const isNotDone = isSelected && solvedDays.indexOf(props.day.date()) < 0;
-
-  const colorModeDesc = darkMode ? 'dark' : 'light';
-  const colorBlindModeDesc = colorBlindMode ? 'colorBlind' : 'standard';
-  const green = colorMap[colorModeDesc][colorBlindModeDesc][GREEN];
-  const yellow = colorMap[colorModeDesc][colorBlindModeDesc][YELLOW];
 
   return (
     <Badge
@@ -59,7 +54,7 @@ function ServerDay(props) {
   );
 }
 
-export default function Calendar({ today, puzzleDate, guessesDB, changeDate, setShowCalendar, darkMode, colorBlindMode }) {
+export default function Calendar({ today, puzzleDate, guessesDB, changeDate, setShowCalendar, green, yellow }) {
   const [value, setValue] = React.useState(dayjs(puzzleDate));
   const requestAbortController = React.useRef(null);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -130,8 +125,8 @@ export default function Calendar({ today, puzzleDate, guessesDB, changeDate, set
           day: {
             highlightedDays,
             solvedDays,
-            darkMode,
-            colorBlindMode
+            green,
+            yellow
           },
         }}
       />

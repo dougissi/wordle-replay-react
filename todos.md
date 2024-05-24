@@ -16,7 +16,11 @@
 * [ ] allow user to get back to Won dialog beyond pressing "ENTER"
 * [ ] what does Won Dialog show when you've already played this puzzle before?
 * [x] buttons to copy shareable icons
-* [ ] give info somewhere on total solved and total remaining --> something like a stats page
+* [x] give info somewhere on total solved and total remaining --> something like a stats page
+* [ ] allow deleting of history in table, and delete all history
+* [ ] mechanism to save history
+* [ ] filter history table
+* [ ] tidy stats page styling
 * [x] add Autocomplete for selecting by puzzle number
 * [ ] move focus to guesses board after closing / clicking anything in the input bar above guesses board
 * [x] guess possible words
@@ -41,5 +45,6 @@
 * [x] prevent having to push "enter" to resume puzzle play on unfinished puzzles?
 * [x] show correct keyboard colors when resuming puzzle
 * [x] publish to GitHub pages
+* [ ] add favicon and other metadata
 * [ ] update README
 * [ ] transition to wordlereplay.com (including in package.json)

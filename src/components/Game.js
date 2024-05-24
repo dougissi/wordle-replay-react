@@ -1,4 +1,4 @@
-import { emptyDistributionData, numLetters, rankToColor, backspaceSymbol, earliestDate, initialNumGuessesToShow } from "../constants";
+import { emptyDistributionData, numLetters, rankToColor, backspaceSymbol, earliestDate, initialNumGuessesToShow, colorMap, GREEN, YELLOW, GRAY } from "../constants";
 import { useEffect, useState, useRef } from 'react';
 import { blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex, dateToPuzzleNum, dateIsBetween } from '../utils';
 import useScreenSize from './useScreenSize';
@@ -17,6 +17,8 @@ import SettingsMenu from './SettingsMenu';
 import { useSearchParams } from "react-router-dom";
 import Calendar from "./Calendar";
 import BoltIcon from '@mui/icons-material/Bolt';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import StatsDialog from './StatsDialog';
 
 function Game({ colorMode, toggleColorMode }) {
   const today = dayjs().format('YYYY-MM-DD'); 
@@ -43,6 +45,7 @@ function Game({ colorMode, toggleColorMode }) {
   const [possibleWords, setPossibleWords] = useState(new Set(wordleAcceptableWords));
   const [seenInsights, setSeenInsights] = useState(new Set());
   const [suggestionsDialogOpen, setSuggestionsDialogOpen] = useState(false);
+  const [statsDialogOpen, setStatsDialogOpen] = useState(false);
   const [hardMode, setHardMode] = useState(localStorage.getItem('hardMode') === 'true');  // TODO: unit test
   const [colorBlindMode, setColorBlindMode] = useState(localStorage.getItem('colorBlindMode') === 'true');  // TODO: unit test
   const [showCalendar, setShowCalendar] = useState(false);
@@ -269,6 +272,11 @@ function Game({ colorMode, toggleColorMode }) {
 
   const darkMode = colorMode === 'dark';
 
+  const colorBlindModeDesc = colorBlindMode ? 'colorBlind' : 'standard';
+  const green = colorMap[colorMode][colorBlindModeDesc][GREEN];
+  const yellow = colorMap[colorMode][colorBlindModeDesc][YELLOW];
+  const gray = colorMap[colorMode][colorBlindModeDesc][GRAY];
+
 
   return (
     <div className="Game">
@@ -307,10 +315,22 @@ function Game({ colorMode, toggleColorMode }) {
             ref={suggestionsButtonRef}
             onClick={() => {
               setSuggestionsDialogOpen(true);
-              suggestionsButtonRef.current.blur();
+              suggestionsButtonRef.current.blur();  // TODO: update
             }}
           >
             <BoltIcon />
+          </IconButton>
+        </Tooltip>
+
+        {/* Stats Icon */}
+        <Tooltip title="Stats & History">
+          <IconButton
+            variant="contained"
+            onClick={() => {
+              setStatsDialogOpen(true);
+            }}
+          >
+            <BarChartIcon />
           </IconButton>
         </Tooltip>
 
@@ -335,6 +355,8 @@ function Game({ colorMode, toggleColorMode }) {
           setShowCalendar={setShowCalendar}
           darkMode={darkMode}
           colorBlindMode={colorBlindMode}
+          green={green}
+          yellow={yellow}
         />
       )}
 
@@ -364,6 +386,18 @@ function Game({ colorMode, toggleColorMode }) {
         open={suggestionsDialogOpen}
         handleClose={() => setSuggestionsDialogOpen(false)}
         hardModeWords={hardModeWords}
+      />
+
+      <StatsDialog
+        open={statsDialogOpen}
+        setOpen={setStatsDialogOpen}
+        today={today}
+        distributionData={distributionData}
+        guessesDB={guessesDB}
+        changeDate={changeDate}
+        green={green}
+        yellow={yellow}
+        gray={gray}
       />
 
       <GuessesBoard
