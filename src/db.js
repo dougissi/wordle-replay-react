@@ -66,6 +66,20 @@ export const getItem = (dateStr, callback) => {
   };
 };
 
+export const deleteItem = (dateStr) => {
+  const transaction = db.transaction(["guesses"], "readwrite");
+  const store = transaction.objectStore("guesses");
+  const request = store.delete(dateStr);
+
+  request.onsuccess = () => {
+    console.log("Deleted item successfully");
+  };
+
+  request.onerror = (event) => {
+    console.error("Error deleting item", event.target.error);
+  };
+};
+
 export const setSolvedStates = (setDistributionData, setGuessesDB) => {
   const transaction = db.transaction(["guesses"], "readonly");
   const store = transaction.objectStore("guesses");

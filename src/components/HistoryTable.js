@@ -22,6 +22,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import { Autocomplete, Stack, TextField } from '@mui/material';
+import { puzzleNumToDate } from '../utils';
 
 const headCells = [
   {
@@ -166,7 +167,7 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected, toggleShowFilterOptions } = props;
+  const { numSelected, toggleShowFilterOptions, deleteSelected } = props;
 
   return (
     <Toolbar
@@ -201,7 +202,7 @@ function EnhancedTableToolbar(props) {
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton onClick={deleteSelected}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
@@ -220,7 +221,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-export default function EnhancedTable({ historyData }) {
+export default function EnhancedTable({ historyData, deleteDBDates }) {
   const [order, setOrder] = React.useState('desc');
   const [orderBy, setOrderBy] = React.useState('puzzleNum');
   const [selected, setSelected] = React.useState([]);
@@ -306,6 +307,19 @@ export default function EnhancedTable({ historyData }) {
               setRows(historyData);
             }
             setShowFilterOptions(!showFilterOptions);
+          }}
+          deleteSelected={() => {
+            const datesToDelete = selected.map(puzzleNum => puzzleNumToDate(puzzleNum));
+            deleteDBDates(datesToDelete);
+
+            // update history shown in table after delete
+            const newRows = [...rows];
+            selected.forEach(i => {
+              const row = newRows[i];
+              row.status = 'To Do';
+              row.numGuesses = null;
+            })
+            setRows(newRows);
           }}
         />
         {showFilterOptions &&

@@ -17,7 +17,7 @@
 * [ ] what does Won Dialog show when you've already played this puzzle before?
 * [x] buttons to copy shareable icons
 * [x] give info somewhere on total solved and total remaining --> something like a stats page
-* [ ] allow deleting of history in table, and delete all history
+* [x] allow deleting of history in table, and delete all history
 * [ ] mechanism to save history
 * [x] filter history table
 * [ ] tidy stats page styling
@@ -48,3 +48,6 @@
 * [ ] add favicon and other metadata
 * [ ] update README
 * [ ] transition to wordlereplay.com (including in package.json)
+
+Instructions:
+* how to delete history (including all)

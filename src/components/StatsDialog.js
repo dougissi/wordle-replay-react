@@ -22,7 +22,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function StatsDialog({ open, setOpen, today, distributionData, guessesDB, changeDate, green, yellow, gray }) {
+export default function StatsDialog({ open, setOpen, today, distributionData, guessesDB, changeDate, deleteDBDates, green, yellow, gray }) {
     const puzzleNumToday = dateToPuzzleNum(today);
 
     const handleClose = () => {
@@ -49,17 +49,6 @@ export default function StatsDialog({ open, setOpen, today, distributionData, gu
         } else {
             historyPieData[1].value++;
             status = 'Unfinished';
-        }
-
-        const PlayButton = ({ text }) => {
-            return (
-                <Button onClick={() => {
-                    changeDate(date);
-                    setOpen(false);
-                }}>
-                    {text}
-                </Button>
-            );
         }
 
         historyData.push({
@@ -104,7 +93,7 @@ export default function StatsDialog({ open, setOpen, today, distributionData, gu
             <Stack>
                 <DistributionChart distributionData={distributionData} />
                 <HistoryPieChart data={historyPieData} />
-                <HistoryTable historyData={historyData} />
+                <HistoryTable historyData={historyData} deleteDBDates={deleteDBDates} />
             </Stack>
             
             {/* <List>

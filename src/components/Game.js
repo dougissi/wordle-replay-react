@@ -9,7 +9,7 @@ import { wordleAcceptableWords } from '../assets/wordle_acceptable_words';
 import GuessesBoard from './GuessesBoard';
 import Keyboard from './Keyboard';
 import { InvalidGuessDialog, SuggestionsDialog, WonDialog } from './AlertDialog';
-import { initDB, putItem, setSolvedStates } from '../db';
+import { deleteItem, initDB, putItem, setSolvedStates } from '../db';
 import { Button, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallbacks } from '../hardModeWordsFiltering';
@@ -147,6 +147,20 @@ function Game({ colorMode, toggleColorMode }) {
     newGuessesDB[puzzleDate] = newItem;
     setGuessesDB(newGuessesDB);
   };
+
+  const deleteDBDates = (dateStrs) => {
+    const newGuessesDB = {...guessesDB};
+    dateStrs.forEach(dateStr => {
+      deleteItem(dateStr);  // delete from indexedDB
+      delete newGuessesDB[dateStr];  // update DB state
+    });
+    setGuessesDB(newGuessesDB);
+
+    // reset game if deleting current puzzle
+    if (dateStrs.includes(puzzleDate)) {
+      resetGame();
+    }
+  }
 
   const handleInputText = (text) => {
     // console.log(`entered ${text}`);
@@ -395,6 +409,7 @@ function Game({ colorMode, toggleColorMode }) {
         distributionData={distributionData}
         guessesDB={guessesDB}
         changeDate={changeDate}
+        deleteDBDates={deleteDBDates}
         green={green}
         yellow={yellow}
         gray={gray}
