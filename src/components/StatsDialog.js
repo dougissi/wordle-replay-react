@@ -51,20 +51,30 @@ export default function StatsDialog({ open, setOpen, today, distributionData, gu
             status = 'Unfinished';
         }
 
-        historyData.push({
-            id: i,
-            puzzleNum: i,
-            date: date,
-            status: status,
-            numGuesses: guessesDB[date] ? guessesDB[date].guesses.length : null,
-            play: (
+        const PlayButton = ({ text }) => {
+            return (
                 <Button onClick={() => {
                     changeDate(date);
                     setOpen(false);
                 }}>
-                    Play
+                    {text}
                 </Button>
-            )
+            );
+        }
+
+        historyData.push({
+            id: i,
+            puzzleNum: i,
+            date: (
+                <Button onClick={() => {
+                    changeDate(date);
+                    setOpen(false);
+                }}>
+                    {date}
+                </Button>
+            ),
+            status: status,
+            numGuesses: guessesDB[date] ? guessesDB[date].guesses.length : null,
         });
     }
     

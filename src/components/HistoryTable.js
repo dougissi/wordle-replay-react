@@ -47,13 +47,7 @@ const headCells = [
     numeric: true,
     disablePadding: false,
     label: 'Number of Guesses',
-  },
-  {
-    id: 'play',
-    numeric: false,
-    disablePadding: false,
-    label: 'Play',
-  },
+  }
 ];
 
 // function createData(id, name, calories, fat, carbs, protein) {
@@ -234,7 +228,7 @@ export default function EnhancedTable({ historyData }) {
   const [dense, setDense] = React.useState(false);
   const [rows, setRows] = React.useState(historyData);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [filterColumn, setFilterColumn] = React.useState('id');
+  const [filterColumn, setFilterColumn] = React.useState();
   const [filterValues, setFilterValues] = React.useState([]);
   const [showFilterOptions, setShowFilterOptions] = React.useState(false);
 
@@ -303,7 +297,17 @@ export default function EnhancedTable({ historyData }) {
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} toggleShowFilterOptions={() => setShowFilterOptions(!showFilterOptions)}/>
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          toggleShowFilterOptions={() => {
+            if (showFilterOptions) {  // will close, clear filters
+              setFilterColumn('');
+              setFilterValues([]);
+              setRows(historyData);
+            }
+            setShowFilterOptions(!showFilterOptions);
+          }}
+        />
         {showFilterOptions &&
           <Stack direction="row" spacing={2}>
             <Autocomplete
@@ -392,7 +396,6 @@ export default function EnhancedTable({ historyData }) {
                     <TableCell align="right">{row.date}</TableCell>
                     <TableCell align="right">{row.status}</TableCell>
                     <TableCell align="right">{row.numGuesses}</TableCell>
-                    <TableCell align="right">{row.play}</TableCell>
                   </TableRow>
                 );
               })}
