@@ -19,12 +19,17 @@ import Calendar from "./Calendar";
 import BoltIcon from '@mui/icons-material/Bolt';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import StatsDialog from './StatsDialog';
+import PuzzleNumSelector from "./PuzzleNumSelector";
 
 function Game({ colorMode, toggleColorMode }) {
   const today = dayjs().format('YYYY-MM-DD'); 
   const isValidDate = (dateStr) => {
     return dateIsBetween(dateStr, earliestDate, today);
   }
+  const isValidPuzzleNum = (num) => {
+    return num >= 0 && num <= dateToPuzzleNum(today);
+  }
+
   const screenSize = useScreenSize();
   const [searchParams, setSearchParams] = useSearchParams();
   const [puzzleDate, setPuzzleDate] = useState(isValidDate(searchParams.get('date')) ? searchParams.get('date') : today);  // use query param date if valid, else today
@@ -48,6 +53,7 @@ function Game({ colorMode, toggleColorMode }) {
   const [statsDialogOpen, setStatsDialogOpen] = useState(false);
   const [hardMode, setHardMode] = useState(localStorage.getItem('hardMode') === 'true');  // TODO: unit test
   const [colorBlindMode, setColorBlindMode] = useState(localStorage.getItem('colorBlindMode') === 'true');  // TODO: unit test
+  const [showPuzzleSelector, setShowPuzzleSelector] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
 
   // console.log(`${puzzleDate} ${answer}`);
@@ -311,9 +317,11 @@ function Game({ colorMode, toggleColorMode }) {
         {/* <DateSelector today={today} puzzleDate={puzzleDate} changeDate={changeDate} /> */}
 
         {/* Puzzle Number */}
-        <Button disabled>
-          <Typography>{`#${puzzleNum}`}</Typography>
-        </Button>
+        <Tooltip title="Enter Puzzle Number">
+          <Button onClick={() => setShowPuzzleSelector(prev => !prev)}>
+            <Typography>{`#${puzzleNum}`}</Typography>
+          </Button>
+        </Tooltip>
 
         {/* Puzzle Date */}
         <Tooltip title="Choose Puzzle Date">
@@ -359,6 +367,15 @@ function Game({ colorMode, toggleColorMode }) {
 
         {/* {hardMode && <div>Hard Mode Active</div>} */}
       </Stack>
+
+      {showPuzzleSelector && (
+        <PuzzleNumSelector
+          puzzleNum={puzzleNum}
+          isValidPuzzleNum={isValidPuzzleNum}
+          changeDate={changeDate}
+          setShowPuzzleSelector={setShowPuzzleSelector}
+        />
+      )}
 
       {showCalendar && (
         <Calendar
