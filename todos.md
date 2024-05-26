@@ -8,7 +8,7 @@
 * [x] unit tests for utils.js
 * [ ] update React tests for App.js
 * [ ] prevent selecting text on keyboard (especially on mobile)
-* [ ] add data labels to distribution
+* [x] add data labels to distribution
 * [x] change color of number of the distribution that you just solved
 * [x] keep generateDateArray? No
 * [x] add share icons to won dialog
@@ -51,3 +51,6 @@
 
 Instructions:
 * how to delete history (including all)
+
+For later
+* [ ] fix error showing up due to distribution chart throwing an error with bar labels (not [Custom Labels](https://mui.com/x/react-charts/bars/#custom-labels) doesn't do this)

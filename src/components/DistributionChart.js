@@ -28,6 +28,7 @@ export default function DistributionChart({ numGuesses, distributionData }) {
         }
       }]}
       bottomAxis={null}
+      barLabel="value"
     />
   );
 }
