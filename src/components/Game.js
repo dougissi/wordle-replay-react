@@ -24,22 +24,25 @@ import PuzzleNumSelector from "./PuzzleNumSelector";
 const today = dayjs().format('YYYY-MM-DD');
 const todayPuzzleNum = dateToPuzzleNum(today);
 const earliestPuzzleNum = dateToPuzzleNum(earliestDate);
+
 const isValidDate = (dateStr) => {
   return dateIsBetween(dateStr, earliestDate, today);
 };
+
 const isValidPuzzleNum = (num) => {
   return numIsBetween(num, earliestPuzzleNum, todayPuzzleNum);
 };
+
 
 function Game({ colorMode, toggleColorMode }) {
   const screenSize = useScreenSize();
   const [searchParams, setSearchParams] = useSearchParams();
   const [puzzleDate, setPuzzleDate] = useState(  // try use param date, otherwise try use param num, else today
-    isValidDate(searchParams.get('date')) 
-    ? dayjs(searchParams.get('date')).format('YYYY-MM-DD')
+    isValidDate(searchParams.get('date'))
+    ? dayjs(searchParams.get('date')).format('YYYY-MM-DD')  // ensure proper format if valid
     : (
       isValidPuzzleNum(searchParams.get('num'))
-      ? puzzleNumToDate(searchParams.get('num')) 
+      ? puzzleNumToDate(searchParams.get('num'))
       : today
     )
   );
