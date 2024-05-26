@@ -95,7 +95,18 @@ function dateIsBetween(date, start, end) {
     if (!date) {
         return false;
     }
-    return dayjs(date).isBetween(start, end, 'day', '[]');
+    const d = dayjs(date);
+    if (d.isValid()) {
+        return d.isBetween(start, end, 'day', '[]');
+    }
+    return false;
+}
+
+function numIsBetween(num, start, end) {
+    if (num === null) {
+        return false;
+    }
+    return num >= start && num <= end;
 }
 
 function processGuessesDB(guessesDBArr) {
@@ -136,6 +147,7 @@ export {
     dateToPuzzleNum,
     puzzleNumToDate,
     dateIsBetween,
+    numIsBetween,
     processGuessesDB,
     formatOldDataForIndexedDB
 }

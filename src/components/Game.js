@@ -1,6 +1,6 @@
 import { emptyDistributionData, numLetters, rankToColor, backspaceSymbol, earliestDate, initialNumGuessesToShow, colorMap, GREEN, YELLOW, GRAY } from "../constants";
 import { useEffect, useState, useRef } from 'react';
-import { blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex, dateToPuzzleNum, dateIsBetween } from '../utils';
+import { blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex, dateToPuzzleNum, dateIsBetween, puzzleNumToDate, numIsBetween } from '../utils';
 import useScreenSize from './useScreenSize';
 import { dateToWord } from '../assets/date_to_word';
 import { wordleAcceptableWords } from '../assets/wordle_acceptable_words';
@@ -21,18 +21,28 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import StatsDialog from './StatsDialog';
 import PuzzleNumSelector from "./PuzzleNumSelector";
 
-function Game({ colorMode, toggleColorMode }) {
-  const today = dayjs().format('YYYY-MM-DD'); 
-  const isValidDate = (dateStr) => {
-    return dateIsBetween(dateStr, earliestDate, today);
-  }
-  const isValidPuzzleNum = (num) => {
-    return num >= 0 && num <= dateToPuzzleNum(today);
-  }
+const today = dayjs().format('YYYY-MM-DD');
+const todayPuzzleNum = dateToPuzzleNum(today);
+const earliestPuzzleNum = dateToPuzzleNum(earliestDate);
+const isValidDate = (dateStr) => {
+  return dateIsBetween(dateStr, earliestDate, today);
+};
+const isValidPuzzleNum = (num) => {
+  return numIsBetween(num, earliestPuzzleNum, todayPuzzleNum);
+};
 
+function Game({ colorMode, toggleColorMode }) {
   const screenSize = useScreenSize();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [puzzleDate, setPuzzleDate] = useState(isValidDate(searchParams.get('date')) ? searchParams.get('date') : today);  // use query param date if valid, else today
+  const [puzzleDate, setPuzzleDate] = useState(  // try use param date, otherwise try use param num, else today
+    isValidDate(searchParams.get('date')) 
+    ? dayjs(searchParams.get('date')).format('YYYY-MM-DD')
+    : (
+      isValidPuzzleNum(searchParams.get('num'))
+      ? puzzleNumToDate(searchParams.get('num')) 
+      : today
+    )
+  );
   const [puzzleNum, setPuzzleNum] = useState(dateToPuzzleNum(puzzleDate));  
   const [answer, setAnswer] = useState(dateToWord.get(puzzleDate).toUpperCase());
   const [guessesData, setGuessesData] = useState(blankGuessesGrid());
@@ -63,10 +73,28 @@ function Game({ colorMode, toggleColorMode }) {
   useEffect(() => {
     initDB(setDistributionData, setGuessesDB); // Initialize the database
     guessesBoardRef.current.focus();  // focus on guesses board initially
-    if (searchParams.has('date') && !isValidDate(searchParams.get('date'))) {  // if query param date is invalid, reset to today
-      setSearchParams({...searchParams, date: today});
-    }
   }, []);
+
+  // ensure search params match puzzleDate and puzzleNum
+  useEffect(() => {
+    const hasParamDate = searchParams.has('date');
+    const hasParamNum = searchParams.has('num');
+    const paramDate = searchParams.get('date');
+    const paramNum = searchParams.get('num');
+    if (hasParamDate && hasParamNum) {  // has both
+      if (paramDate !== puzzleDate || paramNum !== puzzleNum) {  // if either not right, set both
+        setSearchParams({...searchParams, date: puzzleDate, num: puzzleNum})
+      }
+    } else if (hasParamDate) {  // just date
+      if (paramDate !== puzzleDate) {
+        setSearchParams({...searchParams, date: puzzleDate})
+      }
+    } else if (hasParamNum) {  // just num
+      if (paramNum !== puzzleNum) {
+        setSearchParams({...searchParams, num: puzzleNum})
+      }
+    }
+  }, [searchParams, setSearchParams, puzzleDate, puzzleNum]);
 
   // load any previous guesses from DB for a given puzzle
   // TODO: commonize?

@@ -13,8 +13,10 @@
 * [x] keep generateDateArray? No
 * [x] add share icons to won dialog
 * [x] allow user to close Won Dialog?
+* [ ] play "next" unsolved puzzle in Won Dialog
 * [ ] allow user to get back to Won dialog beyond pressing "ENTER"
 * [ ] what does Won Dialog show when you've already played this puzzle before?
+* [ ] bugfix: update distribution after delete
 * [x] buttons to copy shareable icons
 * [x] give info somewhere on total solved and total remaining --> something like a stats page
 * [x] allow deleting of history in table, and delete all history
@@ -29,7 +31,6 @@
 * [x] add hard mode localStorage to save state
 * [x] fix bug when pressing ENTER to close Possible Words Dialog it auto opens again -- done via blur
 * [x] (probably unneeded now that each guess is saved) show some sort of warning dialog when game is in progress but you're about to navigate away to another local page
-* [ ] allow autofocus on buttons within dialogs (there was a bug in production build when pressing ENTER on guesses board)
 * [ ] tidy suggestions button ref and general naming (vs possible words and possible guesses)
 * [ ] custom wordle?
 * [x] show previous guesses on solved puzzles
@@ -51,6 +52,8 @@
 
 Instructions:
 * how to delete history (including all)
+* how to use URL query/search params (date take precedence)
 
 For later
 * [ ] fix error showing up due to distribution chart throwing an error with bar labels (not [Custom Labels](https://mui.com/x/react-charts/bars/#custom-labels) doesn't do this)
+* [ ] allow autofocus on buttons within dialogs (there was a bug in production build when pressing ENTER on guesses board)
