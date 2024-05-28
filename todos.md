@@ -36,7 +36,7 @@
 * [x] show previous guesses on solved puzzles
 * [x] show which are solved on Date Picker
 * [x] add tooltips to game inputs
-* [ ] allow query param by puzzle number
+* [x] allow query param by puzzle number
 * [ ] move game inputs to App bar
 * [ ] populate additional pages in App bar
 * [x] remove placeholder LOGO from App bar
@@ -50,7 +50,7 @@
 * [x] publish to GitHub pages
 * [ ] add favicon and other metadata
 * [ ] update README
-* [ ] transition to wordlereplay.com (including in package.json)
+* [ ] transition to wordlereplay.com (including in package.json, share link)
 
 Instructions:
 * how to delete history (including all)
