@@ -9,7 +9,7 @@ import { wordleAcceptableWords } from '../assets/wordle_acceptable_words';
 import GuessesBoard from './GuessesBoard';
 import Keyboard from './Keyboard';
 import { InvalidGuessDialog, SuggestionsDialog, WonDialog } from './AlertDialog';
-import { deleteItem, initDB, putItem, setSolvedStates } from '../db';
+import { deleteItem, initDB, putItem } from '../db';
 import { Button, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallbacks } from '../hardModeWordsFiltering';

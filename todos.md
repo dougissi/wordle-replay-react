@@ -38,7 +38,7 @@
 * [ ] allow query param by puzzle number
 * [ ] move game inputs to App bar
 * [ ] populate additional pages in App bar
-* [ ] remove placeholder LOGO from App bar
+* [x] remove placeholder LOGO from App bar
 * [ ] allow user to decide if they want to see previous guesses OR replay without seeing
 * [x] render additional pages as markdown
 * [x] bugfix: if nav from a solved puzzle to not-started then back to solved, guesses don't show up (due to lastLoadedDate not changing)
