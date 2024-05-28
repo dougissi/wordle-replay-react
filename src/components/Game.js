@@ -1,6 +1,6 @@
 import { emptyDistributionData, numLetters, rankToColor, backspaceSymbol, earliestDate, initialNumGuessesToShow, colorMap, GREEN, YELLOW, GRAY } from "../constants";
 import { useEffect, useState, useRef } from 'react';
-import { blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex, dateToPuzzleNum, dateIsBetween, puzzleNumToDate, numIsBetween } from '../utils';
+import { blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex, dateToPuzzleNum, dateIsBetween, puzzleNumToDate, numIsBetween, getDistCountLabel } from '../utils';
 import useScreenSize from './useScreenSize';
 import { dateToWord } from '../assets/date_to_word';
 import { wordleAcceptableWords } from '../assets/wordle_acceptable_words';
@@ -187,11 +187,17 @@ function Game({ colorMode, toggleColorMode }) {
 
   const deleteDBDates = (dateStrs) => {
     const newGuessesDB = {...guessesDB};
+    const newDistributionData = {...distributionData};
     dateStrs.forEach(dateStr => {
       deleteItem(dateStr);  // delete from indexedDB
       delete newGuessesDB[dateStr];  // update DB state
+      if (guessesDB[dateStr]?.solvedDate) {  // update distribution counts state if solved
+        const countLabel = getDistCountLabel(guessesDB[dateStr].guesses.length);
+        newDistributionData[countLabel]--;
+      }
     });
     setGuessesDB(newGuessesDB);
+    setDistributionData(newDistributionData);
 
     // reset game if deleting current puzzle
     if (dateStrs.includes(puzzleDate)) {
@@ -232,8 +238,13 @@ function Game({ colorMode, toggleColorMode }) {
           setWonDialogOpen(true);
           if (!guessesDB.hasOwnProperty(puzzleDate) || !guessesDB[puzzleDate].solvedDate) {  // save if never saved or unsolved
             saveGuess(true);  // including `true` will add solved date
+
+            // update distribution
+            const countLabel = getDistCountLabel(numGuesses());
+            const newDistributionData = {...distributionData};
+            newDistributionData[countLabel]++;
+            setDistributionData(newDistributionData);
           }
-          setSolvedStates(setDistributionData, setGuessesDB);
         } else {  // guess not the answer
           // update next letter index, potentially adding a new row
           const nextRowIndex = nextLetterIndex[0] + 1;

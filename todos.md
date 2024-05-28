@@ -16,7 +16,7 @@
 * [ ] play "next" unsolved puzzle in Won Dialog
 * [ ] allow user to get back to Won dialog beyond pressing "ENTER"
 * [ ] what does Won Dialog show when you've already played this puzzle before?
-* [ ] bugfix: update distribution after delete
+* [x] bugfix: update distribution after delete
 * [x] buttons to copy shareable icons
 * [x] give info somewhere on total solved and total remaining --> something like a stats page
 * [x] allow deleting of history in table, and delete all history
@@ -32,12 +32,13 @@
 * [x] fix bug when pressing ENTER to close Possible Words Dialog it auto opens again -- done via blur
 * [x] (probably unneeded now that each guess is saved) show some sort of warning dialog when game is in progress but you're about to navigate away to another local page
 * [ ] tidy suggestions button ref and general naming (vs possible words and possible guesses)
-* [ ] custom wordle?
 * [x] show previous guesses on solved puzzles
 * [x] show which are solved on Date Picker
 * [x] add tooltips to game inputs
 * [ ] allow query param by puzzle number
 * [ ] move game inputs to App bar
+* [ ] populate additional pages in App bar
+* [ ] remove placeholder LOGO from App bar
 * [ ] allow user to decide if they want to see previous guesses OR replay without seeing
 * [x] render additional pages as markdown
 * [x] bugfix: if nav from a solved puzzle to not-started then back to solved, guesses don't show up (due to lastLoadedDate not changing)
@@ -57,3 +58,4 @@ Instructions:
 For later
 * [ ] fix error showing up due to distribution chart throwing an error with bar labels (not [Custom Labels](https://mui.com/x/react-charts/bars/#custom-labels) doesn't do this)
 * [ ] allow autofocus on buttons within dialogs (there was a bug in production build when pressing ENTER on guesses board)
+* [ ] custom wordle?

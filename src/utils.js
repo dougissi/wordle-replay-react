@@ -109,12 +109,18 @@ function numIsBetween(num, start, end) {
     return num >= start && num <= end;
 }
 
+function getDistCountLabel(numGuesses) {
+    return numGuesses < 7 ? numGuesses : '7+';
+}
+
 function processGuessesDB(guessesDBArr) {
     const distribution = {...emptyDistributionData};
     const guessesDB = {};
     guessesDBArr.forEach((row) => {
-        const countLabel = row.guesses.length < 7 ? row.guesses.length : '7+';
-        distribution[countLabel] = (distribution[countLabel] || 0) + 1;
+        if (row.solvedDate) {  // only included solved in distribution
+            const countLabel = getDistCountLabel(row.guesses.length);
+            distribution[countLabel] = (distribution[countLabel] || 0) + 1;
+        }
         guessesDB[row.date] = row;
     });
     return [distribution, guessesDB];
@@ -148,6 +154,7 @@ export {
     puzzleNumToDate,
     dateIsBetween,
     numIsBetween,
+    getDistCountLabel,
     processGuessesDB,
     formatOldDataForIndexedDB
 }

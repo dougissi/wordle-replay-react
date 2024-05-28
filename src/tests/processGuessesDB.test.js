@@ -1,8 +1,8 @@
 import { processGuessesDB } from "../utils";
 
-it('processGuessesDB: typical', () => {
+it('processGuessesDB: all solved', () => {
     const dbData = [
-        {date: '2024-05-01', guesses: [
+        {date: '2024-05-01', solvedDate: '2024-05-01', guesses: [
             ['A', 'R', 'O', 'S', 'E '],
             ['T', 'R', 'I', 'E', 'D'],
             ['G', 'R', 'E', 'E', 'D'],
@@ -11,17 +11,17 @@ it('processGuessesDB: typical', () => {
             ['T', 'R', 'I', 'E', 'D'],
             ['G', 'R', 'E', 'E', 'D']
         ]},
-        {date: '2024-05-02', guesses: [
+        {date: '2024-05-02', solvedDate: '2024-05-02', guesses: [
             ['A', 'R', 'O', 'S', 'E '],
             ['T', 'R', 'I', 'E', 'D'],
             ['G', 'R', 'E', 'E', 'D']
         ]},
-        {date: '2024-05-03', guesses: [
+        {date: '2024-05-03', solvedDate: '2024-05-03', guesses: [
             ['A', 'R', 'O', 'S', 'E '],
             ['T', 'R', 'I', 'E', 'D'],
             ['G', 'R', 'E', 'E', 'D']
         ]},
-        {date: '2024-05-04', guesses: [
+        {date: '2024-05-04', solvedDate: '2024-05-04', guesses: [
             ['A', 'R', 'O', 'S', 'E '],
             ['T', 'R', 'I', 'E', 'D']
         ]}
@@ -30,6 +30,46 @@ it('processGuessesDB: typical', () => {
         1: 0,
         2: 1,
         3: 2,
+        4: 0,
+        5: 0,
+        6: 0,
+        '7+': 1
+    };
+    const expectedGuessesDB = Object.fromEntries(dbData.map((row) => [row.date, row]));
+    const actual = processGuessesDB(dbData);
+    expect(actual).toEqual([expectedDistribution, expectedGuessesDB]);
+})
+
+it('processGuessesDB: some unsolved', () => {
+    const dbData = [
+        {date: '2024-05-01', solvedDate: '2024-05-01', guesses: [
+            ['A', 'R', 'O', 'S', 'E '],
+            ['T', 'R', 'I', 'E', 'D'],
+            ['G', 'R', 'E', 'E', 'D'],
+            ['B', 'R', 'E', 'E', 'D'],
+            ['A', 'R', 'O', 'S', 'E '],
+            ['T', 'R', 'I', 'E', 'D'],
+            ['G', 'R', 'E', 'E', 'D']
+        ]},
+        {date: '2024-05-02', solvedDate: null, guesses: [
+            ['A', 'R', 'O', 'S', 'E '],
+            ['T', 'R', 'I', 'E', 'D'],
+            ['G', 'R', 'E', 'E', 'D']
+        ]},
+        {date: '2024-05-03', solvedDate: '2024-05-03', guesses: [
+            ['A', 'R', 'O', 'S', 'E '],
+            ['T', 'R', 'I', 'E', 'D'],
+            ['G', 'R', 'E', 'E', 'D']
+        ]},
+        {date: '2024-05-04', solvedDate: null, guesses: [
+            ['A', 'R', 'O', 'S', 'E '],
+            ['T', 'R', 'I', 'E', 'D']
+        ]}
+    ];
+    const expectedDistribution = {
+        1: 0,
+        2: 0,
+        3: 1,
         4: 0,
         5: 0,
         6: 0,
