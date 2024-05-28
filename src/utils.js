@@ -143,6 +143,37 @@ function formatOldDataForIndexedDB(oldData) {
     return newSolvedData;
 }
 
+const getNextUnsolvedDate = (puzzleDate, today, guessesDB) => {
+    let currDateStr = puzzleDate;
+    let currDate = dayjs(currDateStr);
+
+    // look forward from current
+    while (currDateStr <= today) {
+      if (!guessesDB[currDateStr]?.solvedDate) {
+        return currDateStr;
+      }
+
+      // add day
+      currDate = currDate.add(1, 'day');
+      currDateStr = currDate.format('YYYY-MM-DD');
+    }
+
+    // nothing found going forward, instead look back
+    currDateStr = puzzleDate;
+    currDate = dayjs(currDateStr);
+    while (currDateStr >= earliestDate) {
+      if (!guessesDB[currDateStr]?.solvedDate) {
+        return currDateStr;
+      }
+
+      // subtract day
+      currDate = currDate.subtract(1, 'day');
+      currDateStr = currDate.format('YYYY-MM-DD');
+    }
+
+    return null;  // all solved
+  }
+
 export {
     blankRow,
     blankGuessesGrid,
@@ -156,5 +187,6 @@ export {
     numIsBetween,
     getDistCountLabel,
     processGuessesDB,
-    formatOldDataForIndexedDB
+    formatOldDataForIndexedDB,
+    getNextUnsolvedDate
 }

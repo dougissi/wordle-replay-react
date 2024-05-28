@@ -61,7 +61,7 @@ function InvalidGuessDialog({ open, handleClose, guess, clearGuess, hardMode }) 
     )
 }
 
-function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesColors, distributionData, colorBlindMode, puzzleNum, puzzleDate }) {
+function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesColors, distributionData, colorBlindMode, puzzleNum, puzzleDate, nextUnsolvedDate, changeDate }) {
     const guessesIcons = [];
     for (let i = 0; i < guessesColors.length; i++) {
         const guessColors = guessesColors[i];
@@ -73,11 +73,6 @@ function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesCo
     }
     const domain = "promisepress.com";  // TODO: update upon release
     const shareText = `Wordle: #${puzzleNum} ${puzzleDate}\nGuesses: ${numGuesses}\n\n${guessesIcons.join("\n")}\n\n${domain}/?date=${puzzleDate}`;
-
-    const handleClickRestartButton = () => {
-        resetGame();
-        handleClose();
-    }
 
     const isShareSupported = () => {
         return navigator.share !== undefined;
@@ -99,10 +94,16 @@ function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesCo
         }
     };
 
-    const okButton = <Button key="wonOkButton" onClick={handleClose}>OK</Button>;
-    const restartButton = <Button key="wonRestartButton" onClick={handleClickRestartButton}>Restart</Button>;
+    const handleClickPlayNextButton = () => {
+        if (nextUnsolvedDate) {
+            changeDate(nextUnsolvedDate);
+            handleClose();
+        }
+    }
+
     const copyButton = <Button key="copyIconsButton" onClick={() => navigator.clipboard.writeText(shareText)}>Copy</Button>;
     const shareButton = <Button key="shareIconsButton" onClick={handleShare} disabled={!isShareSupported()}>Share</Button>;
+    const playNextButton = <Button key="playNextButton" onClick={handleClickPlayNextButton} disabled={!nextUnsolvedDate}>Play Next</Button>
 
     return (
         <AlertDialog
@@ -110,7 +111,7 @@ function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesCo
             handleClose={handleClose}
             title={`You found "${answer}"!`}
             // text="Thanks for playing."  // TODO: update
-            buttons={[restartButton, okButton]}
+            buttons={[playNextButton]}
             addlContent={[
                 <DistributionChart key="distributionChart" numGuesses={numGuesses} distributionData={distributionData} />,
                 <Typography key="guesses" variant="h6">Guesses</Typography>,

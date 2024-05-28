@@ -13,7 +13,7 @@
 * [x] keep generateDateArray? No
 * [x] add share icons to won dialog
 * [x] allow user to close Won Dialog?
-* [ ] play "next" unsolved puzzle in Won Dialog
+* [x] play "next" unsolved puzzle in Won Dialog
 * [ ] allow user to get back to Won dialog beyond pressing "ENTER"
 * [ ] what does Won Dialog show when you've already played this puzzle before?
 * [x] bugfix: update distribution after delete
@@ -25,6 +25,7 @@
 * [ ] tidy stats page styling
 * [x] add Autocomplete for selecting by puzzle number
 * [ ] move focus to guesses board after closing / clicking anything in the input bar above guesses board
+* [ ] convert calendar and puzzle num inputs to Dialogs (so that they can't both be open at same time)
 * [x] guess possible words
 * [ ] guess suggestions
 * [x] give option to turn on Hard Mode (instead of accepting all valid word guesses, only those of the filtered suggestions)

@@ -1,6 +1,6 @@
 import { emptyDistributionData, numLetters, rankToColor, backspaceSymbol, earliestDate, initialNumGuessesToShow, colorMap, GREEN, YELLOW, GRAY } from "../constants";
 import { useEffect, useState, useRef } from 'react';
-import { blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex, dateToPuzzleNum, dateIsBetween, puzzleNumToDate, numIsBetween, getDistCountLabel } from '../utils';
+import { blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex, dateToPuzzleNum, dateIsBetween, puzzleNumToDate, numIsBetween, getDistCountLabel, getNextUnsolvedDate } from '../utils';
 import useScreenSize from './useScreenSize';
 import { dateToWord } from '../assets/date_to_word';
 import { wordleAcceptableWords } from '../assets/wordle_acceptable_words';
@@ -453,6 +453,8 @@ function Game({ colorMode, toggleColorMode }) {
         colorBlindMode={colorBlindMode}
         puzzleDate={puzzleDate}
         puzzleNum={puzzleNum}
+        nextUnsolvedDate={getNextUnsolvedDate(puzzleDate, today, guessesDB)}
+        changeDate={changeDate}
       />
 
       <SuggestionsDialog
