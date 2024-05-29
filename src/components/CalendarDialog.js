@@ -11,7 +11,6 @@ import CircleIcon from '@mui/icons-material/Circle';
 import { earliestDate } from '../constants';
 import { AlertDialog } from './AlertDialog';
 import { Typography } from '@mui/material';
-import { Stack } from '@mui/material';
 
 /**
  * Mimic fetch with abort controller https://developer.mozilla.org/en-US/docs/Web/API/AbortController/abort

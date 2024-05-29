@@ -23,9 +23,9 @@
 * [ ] mechanism to save history
 * [x] filter history table
 * [x] add Autocomplete for selecting by puzzle number
-* [ ] move focus to guesses board after closing / clicking anything in the input bar above guesses board
+* [x] move focus to guesses board after closing / clicking anything in the input bar above guesses board
 * [x] convert calendar and puzzle num inputs to Dialogs (so that they can't both be open at same time)
-* [ ] better handle what specific key presses will exit you from puzzle num selector dialog
+* [x] better handle what specific key presses will exit you from puzzle num selector dialog
 * [x] some indication or button that have to press "enter"/"return" to submit puzzle num on mobile -- perhaps a submit button is easiest?
 * [x] move focus to puzzle num selector text field initially
 * [x] guess possible words
@@ -36,6 +36,7 @@
 * [x] (probably unneeded now that each guess is saved) show some sort of warning dialog when game is in progress but you're about to navigate away to another local page
 * [x] tidy suggestions button ref and general naming (vs possible words and possible guesses)
 * [ ] tidy stats page styling
+  * [ ] explanations for each section
   * [ ] update coloring of distribution bars
   * [ ] make better title for distribution chart
   * [ ] more details when hovering over a distribution bars as to what it means
@@ -71,3 +72,4 @@ For later
 * [ ] fix error showing up due to distribution chart throwing an error with bar labels (not [Custom Labels](https://mui.com/x/react-charts/bars/#custom-labels) doesn't do this)
 * [ ] allow autofocus on buttons within dialogs (there was a bug in production build when pressing ENTER on guesses board)
 * [ ] custom wordle?
+* [ ] figure out how to change focus back to guesses board after changing, say, dark mode and then exiting settings menu or editing history in stats dialog

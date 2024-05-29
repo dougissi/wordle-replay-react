@@ -18,6 +18,7 @@ import { useSearchParams } from "react-router-dom";
 import CalendarDialog from "./CalendarDialog";
 import BoltIcon from '@mui/icons-material/Bolt';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import SettingsIcon from '@mui/icons-material/Settings';
 import StatsDialog from './StatsDialog';
 import PuzzleNumSelectorDialog from "./PuzzleNumSelectorDialog";
 
@@ -68,6 +69,7 @@ function Game({ colorMode, toggleColorMode }) {
   const [colorBlindMode, setColorBlindMode] = useState(localStorage.getItem('colorBlindMode') === 'true');  // TODO: unit test
   const [showPuzzleSelectorDialog, setShowPuzzleSelectorDialog] = useState(false);
   const [showCalendarDialog, setShowCalendarDialog] = useState(false);
+  const [anchorElSettings, setAnchorElSettings] = useState(null);
 
   // console.log(`${puzzleDate} ${answer}`);
   const guessesBoardRef = useRef(null);
@@ -75,6 +77,7 @@ function Game({ colorMode, toggleColorMode }) {
   const calendarButtonRef = useRef(null);
   const suggestionsButtonRef = useRef(null);
   const statsButtonRef = useRef(null);
+  const settingsButtonRef = useRef(null);
 
   useEffect(() => {
     initDB(setDistributionData, setGuessesDB); // Initialize the database
@@ -171,6 +174,7 @@ function Game({ colorMode, toggleColorMode }) {
       setLastLoadedDate(puzzleDate);
     }
     setLastLoadAttemptDate(puzzleDate);
+    guessesBoardRef.current.focus();
   }, [puzzleDate, lastLoadAttemptDate, lastLoadedDate, guessesDB, answer, hardModeWords, letterMaxRanks]);
 
   const numGuesses = () => {  // TODO: convert to useEffect?
@@ -351,7 +355,7 @@ function Game({ colorMode, toggleColorMode }) {
         <p>Height: {screenSize.height}</p>
       </div> */}
 
-      {/* Row of inputs above Guess Board */}
+      {/* Row of input icons/buttons above Guess Board */}
       <Stack
         direction="row"
         spacing={1}
@@ -367,7 +371,7 @@ function Game({ colorMode, toggleColorMode }) {
             ref={puzzleNumSelectorButtonRef}
             onClick={() => {
               setShowPuzzleSelectorDialog(prev => !prev);
-              puzzleNumSelectorButtonRef.current.blur();  // TODO: update
+              puzzleNumSelectorButtonRef.current.blur();
             }}
           >
             <Typography>{`#${puzzleNum}`}</Typography>
@@ -380,7 +384,7 @@ function Game({ colorMode, toggleColorMode }) {
             ref={calendarButtonRef}
             onClick={() => {
               setShowCalendarDialog(prev => !prev);
-              calendarButtonRef.current.blur();  // TODO:update
+              calendarButtonRef.current.blur();
             }}
           >
             <Typography>{puzzleDate}</Typography>
@@ -394,7 +398,7 @@ function Game({ colorMode, toggleColorMode }) {
             ref={suggestionsButtonRef}
             onClick={() => {
               setSuggestionsDialogOpen(true);
-              suggestionsButtonRef.current.blur();  // TODO: update
+              suggestionsButtonRef.current.blur();
             }}
           >
             <BoltIcon />
@@ -408,24 +412,51 @@ function Game({ colorMode, toggleColorMode }) {
             ref={statsButtonRef}
             onClick={() => {
               setStatsDialogOpen(true);
-              statsButtonRef.current.blur();  // TODO:update
+              statsButtonRef.current.blur();
             }}
           >
             <BarChartIcon />
           </IconButton>
         </Tooltip>
 
-        <SettingsMenu
-          hardMode={hardMode}
-          handleHardModeChange={handleHardModeChange}
-          colorBlindMode={colorBlindMode}
-          handleColorBlindModeChange={handleColorBlindModeChange}
-          darkMode={darkMode}
-          toggleColorMode={toggleColorMode}
-          // TODO: blur
-        />
+        {/* Settings Icon */}
+        <Tooltip title="Game Settings">
+          <IconButton
+            id="basic-button"
+            ref={settingsButtonRef}
+            aria-label="settings-button"
+            aria-controls={Boolean(anchorElSettings) ? 'basic-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={Boolean(anchorElSettings) ? 'true' : undefined}
+            onClick={(event) => {
+              setAnchorElSettings(event.currentTarget);
+              settingsButtonRef.current.blur();
+            }}
+          >
+            <SettingsIcon />
+          </IconButton>
+        </Tooltip>
 
       </Stack>
+      {/* END row of input icons/buttons */}
+
+      <GuessesBoard
+        screenSize={screenSize}
+        ref={guessesBoardRef}
+        guessesData={guessesData}
+        guessesColors={guessesColors}
+        handleInputText={handleInputText}
+        darkMode={darkMode}
+        colorBlindMode={colorBlindMode}
+      />
+
+      <Keyboard
+        screenSize={screenSize}
+        letterMaxRanks={letterMaxRanks}
+        handleInputText={handleInputText}
+        darkMode={darkMode}
+        colorBlindMode={colorBlindMode}
+      />
 
       {/* Dialogs, initially hidden */}
       <InvalidGuessDialog
@@ -451,15 +482,46 @@ function Game({ colorMode, toggleColorMode }) {
         changeDate={changeDate}
       />
 
+      <PuzzleNumSelectorDialog
+        open={showPuzzleSelectorDialog}
+        handleClose={() => {
+          setShowPuzzleSelectorDialog(false);
+          guessesBoardRef.current.focus();
+        }}
+        puzzleNum={puzzleNum}
+        isValidPuzzleNum={isValidPuzzleNum}
+        changeDate={changeDate}
+      />
+
+      <CalendarDialog
+        open={showCalendarDialog}
+        handleClose={() => {
+          setShowCalendarDialog(false);
+          guessesBoardRef.current.focus();
+        }}
+        today={today}
+        puzzleDate={puzzleDate}
+        guessesDB={guessesDB}
+        changeDate={changeDate}
+        green={green}
+        yellow={yellow}
+      />
+
       <SuggestionsDialog
         open={suggestionsDialogOpen}
-        handleClose={() => setSuggestionsDialogOpen(false)}
+        handleClose={() => {
+          setSuggestionsDialogOpen(false);
+          guessesBoardRef.current.focus();
+        }}
         hardModeWords={hardModeWords}
       />
 
       <StatsDialog
         open={statsDialogOpen}
-        setOpen={setStatsDialogOpen}
+        handleClose={() => {
+          setStatsDialogOpen(false);
+          guessesBoardRef.current.focus();
+        }}
         today={today}
         distributionData={distributionData}
         guessesDB={guessesDB}
@@ -470,42 +532,21 @@ function Game({ colorMode, toggleColorMode }) {
         gray={gray}
       />
 
-      <PuzzleNumSelectorDialog
-        open={showPuzzleSelectorDialog}
-        handleClose={() => setShowPuzzleSelectorDialog(false)}
-        puzzleNum={puzzleNum}
-        isValidPuzzleNum={isValidPuzzleNum}
-        changeDate={changeDate}
-      />
-
-      <CalendarDialog
-        open={showCalendarDialog}
-        handleClose={() => setShowCalendarDialog(false)}
-        today={today}
-        puzzleDate={puzzleDate}
-        guessesDB={guessesDB}
-        changeDate={changeDate}
-        green={green}
-        yellow={yellow}
-      />
-
-      <GuessesBoard
-        screenSize={screenSize}
-        ref={guessesBoardRef}
-        guessesData={guessesData}
-        guessesColors={guessesColors}
-        handleInputText={handleInputText}
-        darkMode={darkMode}
+      <SettingsMenu
+        handleClose={() => {
+          setAnchorElSettings(null);
+          settingsButtonRef.current.blur();  // prevent focusing on button
+          guessesBoardRef.current.focus();
+        }}
+        anchorEl={anchorElSettings}
+        hardMode={hardMode}
+        handleHardModeChange={handleHardModeChange}
         colorBlindMode={colorBlindMode}
-      />
-
-      <Keyboard
-        screenSize={screenSize}
-        letterMaxRanks={letterMaxRanks}
-        handleInputText={handleInputText}
+        handleColorBlindModeChange={handleColorBlindModeChange}
         darkMode={darkMode}
-        colorBlindMode={colorBlindMode}
+        toggleColorMode={toggleColorMode}
       />
+      {/* END, dialogs */}
     </div>
   );
 }

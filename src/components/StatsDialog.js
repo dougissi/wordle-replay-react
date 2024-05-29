@@ -22,12 +22,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function StatsDialog({ open, setOpen, today, distributionData, guessesDB, changeDate, deleteDBDates, green, yellow, gray }) {
+export default function StatsDialog({ open, handleClose, today, distributionData, guessesDB, changeDate, deleteDBDates, green, yellow, gray }) {
     const puzzleNumToday = dateToPuzzleNum(today);
-
-    const handleClose = () => {
-        setOpen(false);
-    };
 
     const historyPieData = [  // initialize
         { id: 0, value: 0, label: 'Solved', color: green },
@@ -57,7 +53,7 @@ export default function StatsDialog({ open, setOpen, today, distributionData, gu
             date: (
                 <Button onClick={() => {
                     changeDate(date);
-                    setOpen(false);
+                    handleClose();
                 }}>
                     {date}
                 </Button>
