@@ -9,6 +9,9 @@ import { DayCalendarSkeleton } from '@mui/x-date-pickers/DayCalendarSkeleton';
 import CheckIcon from '@mui/icons-material/Check';
 import CircleIcon from '@mui/icons-material/Circle';
 import { earliestDate } from '../constants';
+import { AlertDialog } from './AlertDialog';
+import { Typography } from '@mui/material';
+import { Stack } from '@mui/material';
 
 /**
  * Mimic fetch with abort controller https://developer.mozilla.org/en-US/docs/Web/API/AbortController/abort
@@ -36,7 +39,7 @@ function fakeFetch(date, db, { signal }) {
 // const initialValue = dayjs('2024-05-17');
 
 function ServerDay(props) {
-  const { highlightedDays = [], solvedDays = [], green, yellow, day, outsideCurrentMonth, ...other } = props;
+  const { highlightedDays = [], solvedDays = [], unfinishedIcon, solvedIcon, day, outsideCurrentMonth, ...other } = props;
 
   const isSelected =
     !props.outsideCurrentMonth && highlightedDays.indexOf(props.day.date()) >= 0;
@@ -47,14 +50,14 @@ function ServerDay(props) {
     <Badge
       key={props.day.toString()}
       overlap="circular"
-      badgeContent={isSelected ? (isNotDone ? <CircleIcon fontSize='small' style={{ color: yellow }} /> : <CheckIcon fontSize='small' style={{ color: green }} />) : undefined}
+      badgeContent={isSelected ? (isNotDone ? unfinishedIcon : solvedIcon) : undefined}
     >
       <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
     </Badge>
   );
 }
 
-export default function Calendar({ today, puzzleDate, guessesDB, changeDate, setShowCalendar, green, yellow }) {
+function Calendar({ today, puzzleDate, guessesDB, changeDate, handleClose, unfinishedIcon, solvedIcon }) {
   const [value, setValue] = React.useState(dayjs(puzzleDate));
   const requestAbortController = React.useRef(null);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -94,7 +97,7 @@ export default function Calendar({ today, puzzleDate, guessesDB, changeDate, set
       requestAbortController.current.abort();
     }
 
-    console.log("month change date:", date.format("YYYY-MM-DD"));
+    // console.log("month change date:", date.format("YYYY-MM-DD"));
     setIsLoading(true);
     setHighlightedDays([]);
     fetchHighlightedDays(date, guessesDB);
@@ -112,8 +115,8 @@ export default function Calendar({ today, puzzleDate, guessesDB, changeDate, set
           if (selectionComplete) {
             // console.log("selected:", date.format('YYYY-MM-DD'));
             changeDate(date.format('YYYY-MM-DD'));
-            setShowCalendar(false);
             setValue(date);
+            handleClose();
           }
         }}
         onMonthChange={handleMonthChange}
@@ -125,11 +128,43 @@ export default function Calendar({ today, puzzleDate, guessesDB, changeDate, set
           day: {
             highlightedDays,
             solvedDays,
-            green,
-            yellow
+            unfinishedIcon,
+            solvedIcon
           },
         }}
       />
     </LocalizationProvider>
+  );
+}
+
+export default function CalendarDialog({ open, handleClose, today, puzzleDate, guessesDB, changeDate, green, yellow }) {
+  const unfinishedIcon = <CircleIcon fontSize='small' style={{ color: yellow }} />;
+  const solvedIcon = <CheckIcon fontSize='small' style={{ color: green }} />;
+
+  return (
+    <AlertDialog
+      open={open}
+      handleClose={handleClose}
+      title="Calendar"
+      text={
+        <Typography component={'span'}>
+          {solvedIcon} = solved<br></br>
+          {unfinishedIcon} = unfinished
+        </Typography>
+      }
+      buttons={[]}
+      addlContent={[
+        <Calendar
+          key="dialog-calendar"
+          today={today}
+          puzzleDate={puzzleDate}
+          guessesDB={guessesDB}
+          changeDate={changeDate}
+          handleClose={handleClose}
+          unfinishedIcon={unfinishedIcon}
+          solvedIcon={solvedIcon}
+        />
+      ]}
+    />
   );
 }

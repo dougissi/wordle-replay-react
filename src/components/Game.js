@@ -15,11 +15,11 @@ import dayjs from 'dayjs';
 import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallbacks } from '../hardModeWordsFiltering';
 import SettingsMenu from './SettingsMenu';
 import { useSearchParams } from "react-router-dom";
-import Calendar from "./Calendar";
+import CalendarDialog from "./CalendarDialog";
 import BoltIcon from '@mui/icons-material/Bolt';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import StatsDialog from './StatsDialog';
-import PuzzleNumSelector from "./PuzzleNumSelector";
+import PuzzleNumSelectorDialog from "./PuzzleNumSelectorDialog";
 
 const today = dayjs().format('YYYY-MM-DD');
 const todayPuzzleNum = dateToPuzzleNum(today);
@@ -66,12 +66,15 @@ function Game({ colorMode, toggleColorMode }) {
   const [statsDialogOpen, setStatsDialogOpen] = useState(false);
   const [hardMode, setHardMode] = useState(localStorage.getItem('hardMode') === 'true');  // TODO: unit test
   const [colorBlindMode, setColorBlindMode] = useState(localStorage.getItem('colorBlindMode') === 'true');  // TODO: unit test
-  const [showPuzzleSelector, setShowPuzzleSelector] = useState(false);
-  const [showCalendar, setShowCalendar] = useState(false);
+  const [showPuzzleSelectorDialog, setShowPuzzleSelectorDialog] = useState(false);
+  const [showCalendarDialog, setShowCalendarDialog] = useState(false);
 
   // console.log(`${puzzleDate} ${answer}`);
   const guessesBoardRef = useRef(null);
+  const puzzleNumSelectorButtonRef = useRef(null);
+  const calendarButtonRef = useRef(null);
   const suggestionsButtonRef = useRef(null);
+  const statsButtonRef = useRef(null);
 
   useEffect(() => {
     initDB(setDistributionData, setGuessesDB); // Initialize the database
@@ -360,14 +363,26 @@ function Game({ colorMode, toggleColorMode }) {
 
         {/* Puzzle Number */}
         <Tooltip title="Enter Puzzle Number">
-          <Button onClick={() => setShowPuzzleSelector(prev => !prev)}>
+          <Button
+            ref={puzzleNumSelectorButtonRef}
+            onClick={() => {
+              setShowPuzzleSelectorDialog(prev => !prev);
+              puzzleNumSelectorButtonRef.current.blur();  // TODO: update
+            }}
+          >
             <Typography>{`#${puzzleNum}`}</Typography>
           </Button>
         </Tooltip>
 
         {/* Puzzle Date */}
         <Tooltip title="Choose Puzzle Date">
-          <Button onClick={() => setShowCalendar(prev => !prev)}>
+          <Button
+            ref={calendarButtonRef}
+            onClick={() => {
+              setShowCalendarDialog(prev => !prev);
+              calendarButtonRef.current.blur();  // TODO:update
+            }}
+          >
             <Typography>{puzzleDate}</Typography>
           </Button>
         </Tooltip>
@@ -390,8 +405,10 @@ function Game({ colorMode, toggleColorMode }) {
         <Tooltip title="Stats & History">
           <IconButton
             variant="contained"
+            ref={statsButtonRef}
             onClick={() => {
               setStatsDialogOpen(true);
+              statsButtonRef.current.blur();  // TODO:update
             }}
           >
             <BarChartIcon />
@@ -405,33 +422,10 @@ function Game({ colorMode, toggleColorMode }) {
           handleColorBlindModeChange={handleColorBlindModeChange}
           darkMode={darkMode}
           toggleColorMode={toggleColorMode}
+          // TODO: blur
         />
 
-        {/* {hardMode && <div>Hard Mode Active</div>} */}
       </Stack>
-
-      {showPuzzleSelector && (
-        <PuzzleNumSelector
-          puzzleNum={puzzleNum}
-          isValidPuzzleNum={isValidPuzzleNum}
-          changeDate={changeDate}
-          setShowPuzzleSelector={setShowPuzzleSelector}
-        />
-      )}
-
-      {showCalendar && (
-        <Calendar
-          today={today}
-          puzzleDate={puzzleDate}
-          guessesDB={guessesDB}
-          changeDate={changeDate}
-          setShowCalendar={setShowCalendar}
-          darkMode={darkMode}
-          colorBlindMode={colorBlindMode}
-          green={green}
-          yellow={yellow}
-        />
-      )}
 
       {/* Dialogs, initially hidden */}
       <InvalidGuessDialog
@@ -474,6 +468,25 @@ function Game({ colorMode, toggleColorMode }) {
         green={green}
         yellow={yellow}
         gray={gray}
+      />
+
+      <PuzzleNumSelectorDialog
+        open={showPuzzleSelectorDialog}
+        handleClose={() => setShowPuzzleSelectorDialog(false)}
+        puzzleNum={puzzleNum}
+        isValidPuzzleNum={isValidPuzzleNum}
+        changeDate={changeDate}
+      />
+
+      <CalendarDialog
+        open={showCalendarDialog}
+        handleClose={() => setShowCalendarDialog(false)}
+        today={today}
+        puzzleDate={puzzleDate}
+        guessesDB={guessesDB}
+        changeDate={changeDate}
+        green={green}
+        yellow={yellow}
       />
 
       <GuessesBoard

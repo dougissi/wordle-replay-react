@@ -8,13 +8,13 @@ import DistributionChart from './DistributionChart';
 import { Stack, Typography } from '@mui/material';
 import { colorToIcon } from '../constants';
 
-function AlertDialog({ open, handleClose, title, text, buttons, addlContent }) {
+function AlertDialog({ open, handleClose, title, text, buttons, addlContent, onKeyDown }) {
 
     return (
         <Dialog
             open={open}
             onClose={handleClose}
-            onKeyDown={handleClose}
+            onKeyDown={ onKeyDown || handleClose}  // TODO: make more robust
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
             disableEscapeKeyDown
@@ -143,6 +143,7 @@ function SuggestionsDialog({ open, handleClose, hardModeWords }) {
 }
 
 export {
+    AlertDialog,
     InvalidGuessDialog,
     WonDialog,
     SuggestionsDialog

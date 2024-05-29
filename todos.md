@@ -25,7 +25,9 @@
 * [ ] tidy stats page styling
 * [x] add Autocomplete for selecting by puzzle number
 * [ ] move focus to guesses board after closing / clicking anything in the input bar above guesses board
-* [ ] convert calendar and puzzle num inputs to Dialogs (so that they can't both be open at same time)
+* [x] convert calendar and puzzle num inputs to Dialogs (so that they can't both be open at same time)
+* [ ] better handle what specific key presses will exit you from puzzle num selector dialog
+* [ ] move focus to puzzle num selector text field initially
 * [x] guess possible words
 * [ ] guess suggestions
 * [x] give option to turn on Hard Mode (instead of accepting all valid word guesses, only those of the filtered suggestions)
