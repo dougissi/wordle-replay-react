@@ -11,10 +11,11 @@ function PuzzleNumSelector({ puzzleNum, isValidPuzzleNum, changeDate, handleClos
         <TextField
             id="puzzle-selector-text-field"
             label="Puzzle Number"
+            autoFocus
             size="small"
             error={isError}
             style={{ margin: "10px 0px" }}
-            helperText={isError ? "Invalid puzzle number" : null }
+            helperText={isError ? "Invalid puzzle number" : "Press 'enter' or 'return' key to submit" }
             value={value}
             onKeyDown={event => {
                 if (event.key === 'Enter' && !isError) {
@@ -39,7 +40,11 @@ export default function PuzzleNumSelectorDialog({ open, handleClose, puzzleNum, 
         <AlertDialog
             open={open}
             handleClose={handleClose}
-            onKeyDown={() => void(0)}  // TODO: make more robust
+            onKeyDown={(event) => {  // close on Escape key but nothing else
+                if (event.key === 'Escape') {
+                    handleClose();
+                }
+            }}
             title="Enter Puzzle Number"
             addlContent={[
                 <PuzzleNumSelector

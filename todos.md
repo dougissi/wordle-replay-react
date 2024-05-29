@@ -15,32 +15,40 @@
 * [x] allow user to close Won Dialog?
 * [x] play "next" unsolved puzzle in Won Dialog
 * [ ] allow user to get back to Won dialog beyond pressing "ENTER"
-* [ ] what does Won Dialog show when you've already played this puzzle before?
+* [x] what does Won Dialog show when you've already played this puzzle before?
 * [x] bugfix: update distribution after delete
 * [x] buttons to copy shareable icons
 * [x] give info somewhere on total solved and total remaining --> something like a stats page
 * [x] allow deleting of history in table, and delete all history
 * [ ] mechanism to save history
 * [x] filter history table
-* [ ] tidy stats page styling
 * [x] add Autocomplete for selecting by puzzle number
 * [ ] move focus to guesses board after closing / clicking anything in the input bar above guesses board
 * [x] convert calendar and puzzle num inputs to Dialogs (so that they can't both be open at same time)
 * [ ] better handle what specific key presses will exit you from puzzle num selector dialog
-* [ ] move focus to puzzle num selector text field initially
+* [x] some indication or button that have to press "enter"/"return" to submit puzzle num on mobile -- perhaps a submit button is easiest?
+* [x] move focus to puzzle num selector text field initially
 * [x] guess possible words
 * [ ] guess suggestions
 * [x] give option to turn on Hard Mode (instead of accepting all valid word guesses, only those of the filtered suggestions)
 * [x] add hard mode localStorage to save state
 * [x] fix bug when pressing ENTER to close Possible Words Dialog it auto opens again -- done via blur
 * [x] (probably unneeded now that each guess is saved) show some sort of warning dialog when game is in progress but you're about to navigate away to another local page
-* [ ] tidy suggestions button ref and general naming (vs possible words and possible guesses)
+* [x] tidy suggestions button ref and general naming (vs possible words and possible guesses)
+* [ ] tidy stats page styling
+  * [ ] update coloring of distribution bars
+  * [ ] make better title for distribution chart
+  * [ ] more details when hovering over a distribution bars as to what it means
 * [x] show previous guesses on solved puzzles
 * [x] show which are solved on Date Picker
 * [x] add tooltips to game inputs
 * [x] allow query param by puzzle number
-* [ ] move game inputs to App bar
+* [ ] move game inputs to App bar, especially the settings
 * [ ] populate additional pages in App bar
+  * [ ] About
+  * [ ] Instructions
+  * [ ] Updates (Blog)
+  * [ ] Feedback
 * [x] remove placeholder LOGO from App bar
 * [ ] allow user to decide if they want to see previous guesses OR replay without seeing
 * [x] render additional pages as markdown
@@ -51,6 +59,7 @@
 * [x] show correct keyboard colors when resuming puzzle
 * [x] publish to GitHub pages
 * [ ] add favicon and other metadata
+* [ ] test on windows laptop (particularly if "Enter" and "Escape" keys are same as expected)
 * [ ] update README
 * [ ] transition to wordlereplay.com (including in package.json, share link)
 
