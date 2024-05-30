@@ -48,8 +48,10 @@
 * [ ] populate additional pages in App bar
   * [ ] About
   * [ ] Instructions
-  * [ ] Updates (Blog)
+  * [ ] News (Blog)
   * [ ] Feedback
+* [x] simple version of News blog
+* [ ] add Badge when there's new News
 * [x] remove placeholder LOGO from App bar
 * [ ] allow user to decide if they want to see previous guesses OR replay without seeing
 * [x] render additional pages as markdown
@@ -59,9 +61,11 @@
 * [x] prevent having to push "enter" to resume puzzle play on unfinished puzzles?
 * [x] show correct keyboard colors when resuming puzzle
 * [x] publish to GitHub pages
+* [ ] AWS dynamoDB?
 * [ ] add favicon and other metadata
 * [ ] test on windows laptop (particularly if "Enter" and "Escape" keys are same as expected)
 * [ ] update README
+  * [ ] steps on how to add new News post
 * [ ] transition to wordlereplay.com (including in package.json, share link)
 
 Instructions:

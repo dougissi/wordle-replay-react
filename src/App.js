@@ -6,6 +6,7 @@ import ResponsiveAppBar from './components/ResponsiveAppBar';
 import Game from './components/Game';
 import CssBaseline from '@mui/material/CssBaseline';
 import Markdown from './components/Markdown';
+import News from './components/News';
 
 const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
@@ -31,7 +32,7 @@ function App() {
   const pages = [
     { path: '/', label: 'Play', element: <Game colorMode={mode} toggleColorMode={toggleColorMode} /> },
     { path: '/about', label: 'About', element: <Markdown fileName='about.md' /> },
-    { path: '/test', label: 'Test', element: <div>Doug test</div> },
+    { path: '/news', label: 'News', element: <News /> },
   ]
 
   return (
