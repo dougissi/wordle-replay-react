@@ -1,7 +1,1 @@
-# About WordleReplay.com
-
-## Section 1
-Doug is cool
-
-## Section 2
-Doug is cool
+Wordle Replay was originally created by Doug Issichopoulos ([dougissi.com](https://www.dougissi.com)) in late January 2022. It was substantially updated and converted to a [React app](https://react.dev/) in late May 2024.
