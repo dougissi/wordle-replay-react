@@ -1,14 +1,10 @@
 import { BarChart } from '@mui/x-charts';
 
-export default function DistributionChart({ numGuesses, distributionData }) {
+export default function DistributionChart({ numGuesses, distributionData, green, gray }) {
   const countLabels = Object.keys(distributionData);
-  const barColors = [];
-  for (let i = 1; i <= 7; i++) {
-    if (numGuesses === i) {
-      barColors.push("green");
-    } else {
-      barColors.push(null);
-    }
+  const barColors = Array(7).fill(gray);
+  if (numGuesses) {
+    barColors[numGuesses] = green;
   }
 
   return (
@@ -16,7 +12,14 @@ export default function DistributionChart({ numGuesses, distributionData }) {
       width={300}  // TODO: make customizable
       height={300}
       series={[
-        { data: Object.values(distributionData), label: 'GuessDistribution', id: 'distDataId', layout: 'horizontal' },
+        {
+          data: Object.values(distributionData),
+          label: 'Guess Distribution',
+          id: 'distDataId',
+          color: gray,
+          layout: 'horizontal',
+          valueFormatter: (value) => `${value} ${value === 1 ? "game" : "games"}`
+        },
       ]}
       yAxis={[{
         data: countLabels,

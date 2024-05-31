@@ -82,7 +82,7 @@ export default function StatsDialog({ open, handleClose, today, distributionData
                 </Toolbar>
             </AppBar>
             <Stack>
-                <DistributionChart distributionData={distributionData} />
+                <DistributionChart distributionData={distributionData} green={green} gray={gray} />
                 <HistoryPieChart data={historyPieData} />
                 <HistoryTable historyData={historyData} deleteDBDates={deleteDBDates} />
             </Stack>

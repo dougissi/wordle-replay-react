@@ -37,9 +37,10 @@
 * [x] tidy suggestions button ref and general naming (vs possible words and possible guesses)
 * [ ] tidy stats page styling
   * [ ] explanations for each section
-  * [ ] update coloring of distribution bars
-  * [ ] make better title for distribution chart
-  * [ ] more details when hovering over a distribution bars as to what it means
+  * [x] update coloring of distribution bars
+  * [x] make better title for distribution chart
+  * [x] more details when hovering over a distribution bars as to what it means
+  * [ ] have history table match background color when in dark mode
 * [x] show previous guesses on solved puzzles
 * [x] show which are solved on Date Picker
 * [x] add tooltips to game inputs
@@ -77,3 +78,4 @@ For later
 * [ ] allow autofocus on buttons within dialogs (there was a bug in production build when pressing ENTER on guesses board)
 * [ ] custom wordle?
 * [ ] figure out how to change focus back to guesses board after changing, say, dark mode and then exiting settings menu or editing history in stats dialog
+* [ ] archive DateSelector and SearchBar components since unused

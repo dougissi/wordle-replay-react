@@ -37,13 +37,13 @@ colorMap.light.standard[YELLOW] = '#FFC107';
 colorMap.light.standard[GRAY] =   '#787C7E';
 colorMap.dark.standard[GREEN] =  '#538D4E';
 colorMap.dark.standard[YELLOW] = '#B59F3B';
-colorMap.dark.standard[GRAY] =   '#3A3A3C';
+colorMap.dark.standard[GRAY] =   '#515154';
 colorMap.light.colorBlind[GREEN] =  '#F5793A';
 colorMap.light.colorBlind[YELLOW] = '#85C0F9';
 colorMap.light.colorBlind[GRAY] =   '#787C7E';
 colorMap.dark.colorBlind[GREEN] =  '#F5793A';
 colorMap.dark.colorBlind[YELLOW] = '#85C0F9';
-colorMap.dark.colorBlind[GRAY] =   '#3A3A3C';
+colorMap.dark.colorBlind[GRAY] =   '#515154';
 
 export const colorToIcon = {
     standard: {},

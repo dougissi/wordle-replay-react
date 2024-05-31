@@ -61,7 +61,7 @@ function InvalidGuessDialog({ open, handleClose, guess, clearGuess, hardMode }) 
     )
 }
 
-function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesColors, distributionData, colorBlindMode, puzzleNum, puzzleDate, nextUnsolvedDate, changeDate }) {
+function WonDialog({ open, handleClose, answer, numGuesses, guessesColors, distributionData, colorBlindMode, puzzleNum, puzzleDate, nextUnsolvedDate, changeDate, green, gray }) {
     const guessesIcons = [];
     for (let i = 0; i < guessesColors.length; i++) {
         const guessColors = guessesColors[i];
@@ -113,7 +113,7 @@ function WonDialog({ open, handleClose, answer, numGuesses, resetGame, guessesCo
             // text="Thanks for playing."  // TODO: update
             buttons={[playNextButton]}
             addlContent={[
-                <DistributionChart key="distributionChart" numGuesses={numGuesses} distributionData={distributionData} />,
+                <DistributionChart key="distributionChart" numGuesses={numGuesses} distributionData={distributionData} green={green} gray={gray} />,
                 <Typography key="guesses" variant="h6">Guesses</Typography>,
                 <Stack key="guessesStack" spacing={0}>
                     {guessesIcons.map((guessIcons, i) => (

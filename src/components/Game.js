@@ -480,6 +480,8 @@ function Game({ colorMode, toggleColorMode }) {
         puzzleNum={puzzleNum}
         nextUnsolvedDate={getNextUnsolvedDate(puzzleDate, today, guessesDB)}
         changeDate={changeDate}
+        green={green}
+        gray={gray}
       />
 
       <PuzzleNumSelectorDialog
