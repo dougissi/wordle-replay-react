@@ -50,8 +50,9 @@
   * [ ] About
   * [ ] Instructions
   * [ ] News (Blog)
-  * [ ] Feedback
-  * [ ] Donate
+  * [x] Feedback
+  * [x] Donate
+* [ ] brighter links in markdown when on dark mode (consider [stack overflow answer](https://stackoverflow.com/questions/66356329/how-to-add-styling-for-elements-in-react-markdown))
 * [x] simple version of News blog
 * [ ] add Badge when there's new News
 * [x] remove placeholder LOGO from App bar
@@ -64,6 +65,7 @@
 * [x] show correct keyboard colors when resuming puzzle
 * [x] publish to GitHub pages
 * [ ] AWS dynamoDB?
+* [ ] open Feedback and Donate links in new tab
 * [ ] make sure really fits on phone screen
 * [ ] add favicon and other metadata
 * [ ] test on windows laptop (particularly if "Enter" and "Escape" keys are same as expected)
@@ -81,4 +83,8 @@ For later
 * [ ] allow autofocus on buttons within dialogs (there was a bug in production build when pressing ENTER on guesses board)
 * [ ] custom wordle?
 * [ ] figure out how to change focus back to guesses board after changing, say, dark mode and then exiting settings menu or editing history in stats dialog
-* [ ] archive DateSelector and SearchBar components since unused
+* [ ] archive 
+  * [ ] DateSelector
+  * [ ] SearchBar
+  * [ ] IFrame
+  * [ ] FeedbackPage, DonatePage

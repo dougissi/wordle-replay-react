@@ -20,18 +20,6 @@ export default function NewsPage() {
             date: "2024-05-31",
             title: "NYT Launches Wordle Archive",
             fileName: "2024-05-31_nyt_wordlearchive.md"
-        },
-        {
-            id: 2,
-            date: "2024-03-18",
-            title: "Doug is Cool",
-            fileName: "news2.md"
-        },
-        {
-            id: 3,
-            date: "2020-10-10",
-            title: "Something Else",
-            fileName: "news10.md"
         }
     ];
 
@@ -40,27 +28,31 @@ export default function NewsPage() {
 
     const NewsContent = () => (
         <>
-            {/* TOC */}
-            <List style={{ padding: '20px' }}>
-                {posts.map(post => (
-                    <ListItemButton 
-                        key={`news-post-toc-button${post.id}`} 
-                        onClick={() => scrollToElement(newsPostId(post))}
-                    >
-                        <ListItemText>{postTitleWithDate(post)}</ListItemText>
-                    </ListItemButton>
-                ))}
-            </List>
+            {/* TOC, if more than one post */}
+            {posts.length > 1 &&
+                <List style={{ padding: '20px' }}>
+                    {posts.map(post => (
+                        <ListItemButton 
+                            key={`news-post-toc-button${post.id}`} 
+                            onClick={() => scrollToElement(newsPostId(post))}
+                        >
+                            <ListItemText>{postTitleWithDate(post)}</ListItemText>
+                        </ListItemButton>
+                    ))}
+                </List>
+            }
             
             {/* Posts */}
             <List>
-                {posts.map(post => (
+                {posts.map((post, i) => (
                     <div key={`news-post-div${post.id}`}>
                         <h2 id={newsPostId(post)}>
                             {postTitleWithDate(post)}
                         </h2>
                         <Markdown fileName={`news/${post.fileName}`} />
-                        <Divider />
+                        
+                        {/* add divider if not last post */}
+                        { (i < posts.length - 1) && <Divider /> }
                     </div>
                 ))}
             </List>

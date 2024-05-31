@@ -33,6 +33,8 @@ function App() {
     { path: '/', label: 'Play', element: <Game colorMode={mode} toggleColorMode={toggleColorMode} /> },
     { path: '/about', label: 'About', element: <AboutPage /> },
     { path: '/news', label: 'News', element: <NewsPage /> },
+    { path: 'https://docs.google.com/forms/d/e/1FAIpQLSfKeTZCnnicWaVnn0PpGWvUjZvjrXeA7rx1wZUKCNnJJbIthA/viewform?usp=sf_link', label: 'Feedback' },
+    { path: 'https://www.paypal.com/donate/?hosted_button_id=JWHYPBKUV6FQE', label: 'Donate' },
   ]
 
   return (
@@ -43,7 +45,7 @@ function App() {
           <ResponsiveAppBar pages={pages} />
           <Routes>
             {pages.map((page) => (
-              <Route key={`${page.label}-page`} path={page.path} element={page.element} />
+              <Route key={`${page.label}-page`} {...page} />
             ))}
           </Routes>
         </div>
