@@ -51,6 +51,7 @@
   * [ ] Instructions
   * [ ] News (Blog)
   * [ ] Feedback
+  * [ ] Donate
 * [x] simple version of News blog
 * [ ] add Badge when there's new News
 * [x] remove placeholder LOGO from App bar
@@ -63,8 +64,10 @@
 * [x] show correct keyboard colors when resuming puzzle
 * [x] publish to GitHub pages
 * [ ] AWS dynamoDB?
+* [ ] make sure really fits on phone screen
 * [ ] add favicon and other metadata
 * [ ] test on windows laptop (particularly if "Enter" and "Escape" keys are same as expected)
+* [ ] test on android phone
 * [ ] update README
   * [ ] steps on how to add new News post
 * [ ] transition to wordlereplay.com (including in package.json, share link)

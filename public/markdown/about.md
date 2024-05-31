@@ -1,5 +1,3 @@
-# About WordleReplay.com
-
 ## Section 1
 Doug is cool
 

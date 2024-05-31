@@ -1,8 +1,9 @@
+import Page from './Page';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemButton from '@mui/material/ListItemButton';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
-import Markdown from './Markdown';
+import Markdown from '../Markdown';
 import dayjs from 'dayjs';
 
 function scrollToElement(id) {
@@ -12,13 +13,13 @@ function scrollToElement(id) {
     }
 }
 
-export default function News() {
+export default function NewsPage() {
     const posts = [
         {
             id: 1,
-            date: "2024-05-29",
-            title: "Wordle Replay React",
-            fileName: "news1.md"
+            date: "2024-05-31",
+            title: "NYT Launches Wordle Archive",
+            fileName: "2024-05-31_nyt_wordlearchive.md"
         },
         {
             id: 2,
@@ -37,10 +38,8 @@ export default function News() {
     const newsPostId = (post) => `news-post${post.id}`;
     const postTitleWithDate = (post) => `${post.title} — ${dayjs(post.date).format('LL')}`;
 
-    return (
-        <div className="News">
-            <h1>News</h1>
-
+    const NewsContent = () => (
+        <>
             {/* TOC */}
             <List style={{ padding: '20px' }}>
                 {posts.map(post => (
@@ -65,6 +64,13 @@ export default function News() {
                     </div>
                 ))}
             </List>
-        </div>
+        </>
+    )
+
+    return (
+        <Page
+            title="News"
+            content={<NewsContent />}
+        />
     );
 }
