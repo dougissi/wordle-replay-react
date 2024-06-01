@@ -11,26 +11,26 @@ import NewsPage from './components/Pages/NewsPage';
 const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
 function App() {
-  const [mode, setMode] = useState(localStorage.getItem('colorMode') || 'light');  // TODO: unit test and set in localStorage
+  const [colorMode, setColorMode] = useState(localStorage.getItem('colorMode') || 'light');  // TODO: unit test
   
   const toggleColorMode = () => {
-    const newMode = mode === 'light' ? 'dark' : 'light';
-    localStorage.setItem('colorMode', newMode);  // persist
-    setMode(newMode);
+    const newColorMode = colorMode === 'light' ? 'dark' : 'light';
+    localStorage.setItem('colorMode', newColorMode);  // persist
+    setColorMode(newColorMode);
   };
 
   const theme = useMemo(
     () =>
       createTheme({
         palette: {
-          mode,
+          mode: colorMode,
         },
       }),
-    [mode],
+    [colorMode],
   );
 
   const pages = [
-    { path: '/', label: 'Play', element: <Game colorMode={mode} toggleColorMode={toggleColorMode} /> },
+    { path: '/', label: 'Play', element: <Game colorMode={colorMode} toggleColorMode={toggleColorMode} /> },
     { path: '/about', label: 'About', element: <AboutPage /> },
     { path: '/news', label: 'News', element: <NewsPage /> },
     { path: 'https://docs.google.com/forms/d/e/1FAIpQLSfKeTZCnnicWaVnn0PpGWvUjZvjrXeA7rx1wZUKCNnJJbIthA/viewform?usp=sf_link', label: 'Feedback' },
@@ -38,7 +38,7 @@ function App() {
   ]
 
   return (
-    <ColorModeContext.Provider value={{ mode, toggleColorMode }}>
+    <ColorModeContext.Provider value={{ colorMode, toggleColorMode }}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className="App">
