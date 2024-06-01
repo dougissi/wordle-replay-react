@@ -48,7 +48,7 @@
 * [ ] move game inputs to App bar
   * [x] especially the settings
   * [ ] other inputs
-* [ ] bugfix: won dialog highlighting the one higher guess number
+* [x] bugfix: won dialog highlighting the one higher guess number
 * [ ] populate additional pages in App bar
   * [ ] About
   * [ ] Instructions
