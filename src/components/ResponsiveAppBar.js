@@ -11,24 +11,38 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from "react-router-dom";
 import { Tooltip } from '@mui/material';
-import SettingsMenu from './SettingsMenu';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import StatsDialog from './StatsDialog';
 import SettingsIcon from '@mui/icons-material/Settings';
+import SettingsMenu from './SettingsMenu';
 
-const title = "WORDLE REPLAY"
+
+const title = "WORDLE REPLAY";
+const textColor = 'white';
 
 function ResponsiveAppBar({
   pages,
+  today,
   hardMode,
   handleHardModeChange,
   colorBlindMode,
   handleColorBlindModeChange,
   darkMode,
+  distributionData,
+  guessesDB,
   toggleColorMode,
-  focusGuessesBoard
+  focusGuessesBoard,
+  changeDate,
+  deleteDBDates,
+  green,
+  yellow,
+  gray,
 }) {
   const [anchorElNav, setAnchorElNav] = useState(null);
+  const [statsDialogOpen, setStatsDialogOpen] = useState(false);
   const [anchorElSettings, setAnchorElSettings] = useState(null);
 
+  const statsButtonRef = useRef(null);
   const settingsButtonRef = useRef(null);
 
   const handleOpenNavMenu = (event) => {
@@ -131,7 +145,7 @@ function ResponsiveAppBar({
                 component={Link}  // react-router-dom Link faster than @mui Link
                 to={page.path}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                sx={{ my: 2, color: textColor, display: 'block' }}
                 style={{ textDecoration: 'none' }}
               >
                 {page.label}
@@ -139,8 +153,37 @@ function ResponsiveAppBar({
             ))}
           </Box>
 
-          {/* Settings Icon */}
-          <Tooltip title="Game Settings">
+          {/* Stats & History */}
+          <Tooltip title="Stats & History">
+            <IconButton
+              variant="contained"
+              ref={statsButtonRef}
+              onClick={() => {
+                setStatsDialogOpen(true);
+                statsButtonRef.current.blur();
+              }}
+            >
+              <BarChartIcon sx={{ color: textColor }} />
+            </IconButton>
+          </Tooltip>
+          <StatsDialog
+            open={statsDialogOpen}
+            handleClose={() => {
+              setStatsDialogOpen(false);
+              focusGuessesBoard();
+            }}
+            today={today}
+            distributionData={distributionData}
+            guessesDB={guessesDB}
+            changeDate={changeDate}
+            deleteDBDates={deleteDBDates}
+            green={green}
+            yellow={yellow}
+            gray={gray}
+          />
+
+          {/* Settings */}
+          <Tooltip title="Settings">
             <IconButton
               id="basic-button"
               ref={settingsButtonRef}
@@ -153,10 +196,9 @@ function ResponsiveAppBar({
                 settingsButtonRef.current.blur();
               }}
             >
-              <SettingsIcon sx={{ color: 'white' }} />
+              <SettingsIcon sx={{ color: textColor }} />
             </IconButton>
           </Tooltip>
-
           <SettingsMenu
             handleClose={() => {
               setAnchorElSettings(null);

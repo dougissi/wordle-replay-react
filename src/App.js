@@ -1,21 +1,56 @@
 import './App.css';
-import { createContext, useState, useMemo, useRef } from 'react';
+import dayjs from 'dayjs';
+import { createContext, useEffect, useState, useMemo, useRef } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useSearchParams } from "react-router-dom";
 import ResponsiveAppBar from './components/ResponsiveAppBar';
 import Game from './components/Game';
 import CssBaseline from '@mui/material/CssBaseline';
 import AboutPage from './components/Pages/AboutPage';
 import NewsPage from './components/Pages/NewsPage';
+import { dateToWord } from './assets/date_to_word';
 import { wordleAcceptableWords } from './assets/wordle_acceptable_words';
+import { blankGuessesGrid, dateIsBetween, dateToPuzzleNum, getDistCountLabel, numIsBetween, puzzleNumToDate } from './utils';
+import { colorMap, earliestDate, emptyDistributionData, GREEN, YELLOW, GRAY } from './constants';
+import { initDB, deleteItem } from './db';
+
 
 const gamePath = '/';
 const ColorModeContext = createContext({ toggleColorMode: () => {} });
+const today = dayjs().format('YYYY-MM-DD');
+const todayPuzzleNum = dateToPuzzleNum(today);
+const earliestPuzzleNum = dateToPuzzleNum(earliestDate);
+const isValidDate = (dateStr) => {
+  return dateIsBetween(dateStr, earliestDate, today);
+};
+const isValidPuzzleNum = (num) => {
+  return numIsBetween(num, earliestPuzzleNum, todayPuzzleNum);
+};
+
 
 function App() {
   const [colorMode, setColorMode] = useState(localStorage.getItem('colorMode') || 'light');  // TODO: unit test
   const [hardMode, setHardMode] = useState(localStorage.getItem('hardMode') === 'true');  // TODO: unit test
   const [colorBlindMode, setColorBlindMode] = useState(localStorage.getItem('colorBlindMode') === 'true');  // TODO: unit test
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [puzzleDate, setPuzzleDate] = useState(  // try use param date, otherwise try use param num, else today
+    isValidDate(searchParams.get('date'))
+    ? dayjs(searchParams.get('date')).format('YYYY-MM-DD')  // ensure proper format if valid
+    : (
+      isValidPuzzleNum(searchParams.get('num'))
+      ? puzzleNumToDate(searchParams.get('num'))
+      : today
+    )
+  );
+  const [puzzleNum, setPuzzleNum] = useState(dateToPuzzleNum(puzzleDate));
+  const [answer, setAnswer] = useState(dateToWord.get(puzzleDate).toUpperCase());
+  const [guessesData, setGuessesData] = useState(blankGuessesGrid());
+  const [guessesColors, setGuessesColors] = useState(blankGuessesGrid());
+  const [letterMaxRanks, setLetterMaxRanks] = useState(Array(26).fill('-1'));
+  const [nextLetterIndex, setNextLetterIndex] = useState([0, 0]);
+  const [seenInsights, setSeenInsights] = useState(new Set());
+  const [distributionData, setDistributionData] = useState({...emptyDistributionData});
+  const [guessesDB, setGuessesDB] = useState({});
   const [hardModeWords, setHardModeWords] = useState(new Set(wordleAcceptableWords));
   const [possibleWords, setPossibleWords] = useState(new Set(wordleAcceptableWords));
   
@@ -35,7 +70,22 @@ function App() {
     [colorMode],
   );
 
+  const focusGuessesBoard = () => {  // focus on guesses board if at the game
+    if (window.location.pathname === gamePath) {
+      guessesBoardRef.current.focus();
+    }
+  }
+
+  useEffect(() => {
+    initDB(setDistributionData, setGuessesDB); // Initialize the database
+    focusGuessesBoard();  // TODO: can this move to Game? focus on guesses board initially
+  }, []);
+
   const darkMode = colorMode === 'dark';  // TODO: useEffect?
+  const colorBlindModeDesc = colorBlindMode ? 'colorBlind' : 'standard';
+  const green = colorMap[colorMode][colorBlindModeDesc][GREEN];
+  const yellow = colorMap[colorMode][colorBlindModeDesc][YELLOW];
+  const gray = colorMap[colorMode][colorBlindModeDesc][GRAY];
 
   const guessesBoardRef = useRef(null);
 
@@ -53,9 +103,48 @@ function App() {
     localStorage.setItem('colorBlindMode', newColorBlindMode);  // persist
   };
 
-  const focusGuessesBoard = () => {  // focus on guesses board if at the game
-    if (window.location.pathname === gamePath) {
-      guessesBoardRef.current.focus();
+  const resetGame = () => {
+    // TODO: need a more robust way of ensuring these states are the same as when the app loads
+    setGuessesData(blankGuessesGrid());
+    setGuessesColors(blankGuessesGrid());
+    setLetterMaxRanks(Array(26).fill('-1'));
+    setNextLetterIndex([0, 0]);
+    setHardModeWords([...wordleAcceptableWords]);
+    setPossibleWords(new Set([...wordleAcceptableWords]));
+    setSeenInsights(new Set());
+    focusGuessesBoard();
+  };
+
+  const changeDate = (dateStr) => {
+    if (dateStr === puzzleDate || !isValidDate(dateStr)) {  // if no date change or invalid date, do nothing
+      return;
+    }
+    setPuzzleDate(dateStr);
+    if (searchParams.has('date')) {
+      setSearchParams({...searchParams, date: dateStr});
+    }
+    setPuzzleNum(dateToPuzzleNum(dateStr));
+    setAnswer(dateToWord.get(dateStr).toUpperCase());
+    resetGame();  // TODO: make this optional?
+  };
+
+  const deleteDBDates = (dateStrs) => {
+    const newGuessesDB = {...guessesDB};
+    const newDistributionData = {...distributionData};
+    dateStrs.forEach(dateStr => {
+      deleteItem(dateStr);  // delete from indexedDB
+      delete newGuessesDB[dateStr];  // update DB state
+      if (guessesDB[dateStr]?.solvedDate) {  // update distribution counts state if solved
+        const countLabel = getDistCountLabel(guessesDB[dateStr].guesses.length);
+        newDistributionData[countLabel]--;
+      }
+    });
+    setGuessesDB(newGuessesDB);
+    setDistributionData(newDistributionData);
+
+    // reset game if deleting current puzzle
+    if (dateStrs.includes(puzzleDate)) {
+      resetGame();
     }
   }
 
@@ -65,15 +154,40 @@ function App() {
       label: 'Play',
       element: (
         <Game
-          colorMode={colorMode}
+          today={today}
+          puzzleDate={puzzleDate}
+          searchParams={searchParams}
+          setSearchParams={setSearchParams}
+          isValidPuzzleNum={isValidPuzzleNum}
           hardMode={hardMode}
           colorBlindMode={colorBlindMode}
           darkMode={darkMode}
+          puzzleNum={puzzleNum}
+          answer={answer}
+          guessesData={guessesData}
+          setGuessesData={setGuessesData}
+          guessesColors={guessesColors}
+          setGuessesColors={setGuessesColors}
+          letterMaxRanks={letterMaxRanks}
+          setLetterMaxRanks={setLetterMaxRanks}
+          nextLetterIndex={nextLetterIndex}
+          setNextLetterIndex={setNextLetterIndex}
+          seenInsights={seenInsights}
+          setSeenInsights={setSeenInsights}
+          distributionData={distributionData}
+          setDistributionData={setDistributionData}
+          guessesDB={guessesDB}
+          setGuessesDB={setGuessesDB}
           hardModeWords={hardModeWords}
           setHardModeWords={setHardModeWords}
           possibleWords={possibleWords}
           setPossibleWords={setPossibleWords}
           focusGuessesBoard={focusGuessesBoard}
+          changeDate={changeDate}
+          resetGame={resetGame}
+          green={green}
+          yellow={yellow}
+          gray={gray}
           ref={guessesBoardRef}
         />
       )
@@ -91,13 +205,21 @@ function App() {
         <div className="App">
           <ResponsiveAppBar
             pages={pages}
+            today={today}
             hardMode={hardMode}
             handleHardModeChange={handleHardModeChange}
             colorBlindMode={colorBlindMode}
             handleColorBlindModeChange={handleColorBlindModeChange}
             darkMode={darkMode}
+            distributionData={distributionData}
+            guessesDB={guessesDB}
             toggleColorMode={toggleColorMode}
             focusGuessesBoard={focusGuessesBoard}
+            changeDate={changeDate}
+            deleteDBDates={deleteDBDates}
+            green={green}
+            yellow={yellow}
+            gray={gray}
           />
           <Routes>
             {pages.map((page) => (

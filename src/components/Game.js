@@ -1,76 +1,63 @@
-import { emptyDistributionData, numLetters, rankToColor, backspaceSymbol, earliestDate, initialNumGuessesToShow, colorMap, GREEN, YELLOW, GRAY } from "../constants";
+import { numLetters, rankToColor, backspaceSymbol, initialNumGuessesToShow } from "../constants";
 import { useEffect, useState, useRef, forwardRef } from 'react';
-import { blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex, dateToPuzzleNum, dateIsBetween, puzzleNumToDate, numIsBetween, getDistCountLabel, getNextUnsolvedDate } from '../utils';
+import { blankRow, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex, getDistCountLabel, getNextUnsolvedDate } from '../utils';
 import useScreenSize from './useScreenSize';
-import { dateToWord } from '../assets/date_to_word';
-import { wordleAcceptableWords } from '../assets/wordle_acceptable_words';
 // import { DateSelector } from './DateSelector';
 // import { SearchBar } from './components/SearchBar';
 import GuessesBoard from './GuessesBoard';
 import Keyboard from './Keyboard';
 import { InvalidGuessDialog, SuggestionsDialog, WonDialog } from './AlertDialog';
-import { deleteItem, initDB, putItem } from '../db';
+import { putItem } from '../db';
 import { Button, IconButton, Stack, Tooltip, Typography } from '@mui/material';
-import dayjs from 'dayjs';
 import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallbacks } from '../hardModeWordsFiltering';
-import { useSearchParams } from "react-router-dom";
 import CalendarDialog from "./CalendarDialog";
 import BoltIcon from '@mui/icons-material/Bolt';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import StatsDialog from './StatsDialog';
 import PuzzleNumSelectorDialog from "./PuzzleNumSelectorDialog";
-
-const today = dayjs().format('YYYY-MM-DD');
-const todayPuzzleNum = dateToPuzzleNum(today);
-const earliestPuzzleNum = dateToPuzzleNum(earliestDate);
-
-const isValidDate = (dateStr) => {
-  return dateIsBetween(dateStr, earliestDate, today);
-};
-
-const isValidPuzzleNum = (num) => {
-  return numIsBetween(num, earliestPuzzleNum, todayPuzzleNum);
-};
 
 
 const Game = forwardRef(({
-  colorMode,
+  today,
+  puzzleDate,
+  searchParams,
+  setSearchParams,
+  isValidPuzzleNum,
   hardMode,
   colorBlindMode,
   darkMode,
+  puzzleNum,
+  answer,
+  guessesData,
+  setGuessesData,
+  guessesColors,
+  setGuessesColors,
+  letterMaxRanks,
+  setLetterMaxRanks,
+  nextLetterIndex,
+  setNextLetterIndex,
+  seenInsights,
+  setSeenInsights,
+  distributionData,
+  setDistributionData,
+  guessesDB,
+  setGuessesDB,
   hardModeWords,
   setHardModeWords,
   possibleWords,
   setPossibleWords,
   focusGuessesBoard,
+  changeDate,
+  resetGame,
+  green,
+  yellow,
+  gray,
 }, guessesBoardRef) => {
   const screenSize = useScreenSize();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [puzzleDate, setPuzzleDate] = useState(  // try use param date, otherwise try use param num, else today
-    isValidDate(searchParams.get('date'))
-    ? dayjs(searchParams.get('date')).format('YYYY-MM-DD')  // ensure proper format if valid
-    : (
-      isValidPuzzleNum(searchParams.get('num'))
-      ? puzzleNumToDate(searchParams.get('num'))
-      : today
-    )
-  );
-  const [puzzleNum, setPuzzleNum] = useState(dateToPuzzleNum(puzzleDate));  
-  const [answer, setAnswer] = useState(dateToWord.get(puzzleDate).toUpperCase());
-  const [guessesData, setGuessesData] = useState(blankGuessesGrid());
-  const [guessesColors, setGuessesColors] = useState(blankGuessesGrid());
-  const [letterMaxRanks, setLetterMaxRanks] = useState(Array(26).fill('-1'));
-  const [nextLetterIndex, setNextLetterIndex] = useState([0, 0]);
   const [invalidGuess, setInvalidGuess] = useState("");
   const [invalidGuessDialogOpen, setInvalidGuessDialogOpen] = useState(false);
   const [wonDialogOpen, setWonDialogOpen] = useState(false);
-  const [distributionData, setDistributionData] = useState({...emptyDistributionData});
-  const [guessesDB, setGuessesDB] = useState({});
   const [lastLoadedDate, setLastLoadedDate] = useState();
   const [lastLoadAttemptDate, setLastLoadAttemptDate] = useState();
-  const [seenInsights, setSeenInsights] = useState(new Set());
   const [suggestionsDialogOpen, setSuggestionsDialogOpen] = useState(false);
-  const [statsDialogOpen, setStatsDialogOpen] = useState(false);
   const [showPuzzleSelectorDialog, setShowPuzzleSelectorDialog] = useState(false);
   const [showCalendarDialog, setShowCalendarDialog] = useState(false);
 
@@ -78,12 +65,6 @@ const Game = forwardRef(({
   const puzzleNumSelectorButtonRef = useRef(null);
   const calendarButtonRef = useRef(null);
   const suggestionsButtonRef = useRef(null);
-  const statsButtonRef = useRef(null);
-
-  useEffect(() => {
-    initDB(setDistributionData, setGuessesDB); // Initialize the database
-    focusGuessesBoard();  // focus on guesses board initially
-  }, [focusGuessesBoard]);
 
   // ensure search params match puzzleDate and puzzleNum
   useEffect(() => {
@@ -176,7 +157,7 @@ const Game = forwardRef(({
     }
     setLastLoadAttemptDate(puzzleDate);
     focusGuessesBoard();
-  }, [puzzleDate, lastLoadAttemptDate, lastLoadedDate, guessesDB, answer, hardModeWords, setHardModeWords, letterMaxRanks, focusGuessesBoard]);
+  }, [puzzleDate, lastLoadAttemptDate, lastLoadedDate, guessesDB, answer, hardModeWords, setHardModeWords, letterMaxRanks, focusGuessesBoard, setGuessesColors, setGuessesData, setLetterMaxRanks, setNextLetterIndex, setSeenInsights]);
 
   const numGuesses = () => {  // TODO: convert to useEffect?
     return nextLetterIndex[0] + 1;
@@ -192,26 +173,6 @@ const Game = forwardRef(({
     newGuessesDB[puzzleDate] = newItem;
     setGuessesDB(newGuessesDB);
   };
-
-  const deleteDBDates = (dateStrs) => {
-    const newGuessesDB = {...guessesDB};
-    const newDistributionData = {...distributionData};
-    dateStrs.forEach(dateStr => {
-      deleteItem(dateStr);  // delete from indexedDB
-      delete newGuessesDB[dateStr];  // update DB state
-      if (guessesDB[dateStr]?.solvedDate) {  // update distribution counts state if solved
-        const countLabel = getDistCountLabel(guessesDB[dateStr].guesses.length);
-        newDistributionData[countLabel]--;
-      }
-    });
-    setGuessesDB(newGuessesDB);
-    setDistributionData(newDistributionData);
-
-    // reset game if deleting current puzzle
-    if (dateStrs.includes(puzzleDate)) {
-      resetGame();
-    }
-  }
 
   const handleInputText = (text) => {
     // console.log(`entered ${text}`);
@@ -301,36 +262,6 @@ const Game = forwardRef(({
     setNextLetterIndex([nextLetterIndex[0], 0]);
   };
 
-  const resetGame = () => {
-    // TODO: need a more robust way of ensuring these states are the same as when the app loads
-    setGuessesData(blankGuessesGrid());
-    setGuessesColors(blankGuessesGrid());
-    setLetterMaxRanks(Array(26).fill('-1'));
-    setNextLetterIndex([0, 0]);
-    setHardModeWords([...wordleAcceptableWords]);
-    setPossibleWords(new Set([...wordleAcceptableWords]));
-    setSeenInsights(new Set());
-    focusGuessesBoard();
-  };
-
-  const changeDate = (dateStr) => {
-    if (dateStr === puzzleDate || !isValidDate(dateStr)) {  // if no date change or invalid date, do nothing
-      return;
-    }
-    setPuzzleDate(dateStr);
-    if (searchParams.has('date')) {
-      setSearchParams({...searchParams, date: dateStr});
-    }
-    setPuzzleNum(dateToPuzzleNum(dateStr));
-    setAnswer(dateToWord.get(dateStr).toUpperCase());
-    resetGame();  // TODO: make this optional?
-  };
-
-  const colorBlindModeDesc = colorBlindMode ? 'colorBlind' : 'standard';
-  const green = colorMap[colorMode][colorBlindModeDesc][GREEN];
-  const yellow = colorMap[colorMode][colorBlindModeDesc][YELLOW];
-  const gray = colorMap[colorMode][colorBlindModeDesc][GRAY];
-
 
   return (
     <div className="Game">
@@ -387,20 +318,6 @@ const Game = forwardRef(({
             }}
           >
             <BoltIcon />
-          </IconButton>
-        </Tooltip>
-
-        {/* Stats Icon */}
-        <Tooltip title="Stats & History">
-          <IconButton
-            variant="contained"
-            ref={statsButtonRef}
-            onClick={() => {
-              setStatsDialogOpen(true);
-              statsButtonRef.current.blur();
-            }}
-          >
-            <BarChartIcon />
           </IconButton>
         </Tooltip>
 
@@ -483,22 +400,6 @@ const Game = forwardRef(({
           focusGuessesBoard();
         }}
         hardModeWords={hardModeWords}
-      />
-
-      <StatsDialog
-        open={statsDialogOpen}
-        handleClose={() => {
-          setStatsDialogOpen(false);
-          focusGuessesBoard();
-        }}
-        today={today}
-        distributionData={distributionData}
-        guessesDB={guessesDB}
-        changeDate={changeDate}
-        deleteDBDates={deleteDBDates}
-        green={green}
-        yellow={yellow}
-        gray={gray}
       />
       {/* END, dialogs */}
     </div>
