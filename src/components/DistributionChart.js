@@ -2,9 +2,9 @@ import { BarChart } from '@mui/x-charts';
 
 export default function DistributionChart({ numGuesses, distributionData, green, gray }) {
   const countLabels = Object.keys(distributionData);
-  const barColors = Array(7).fill(gray);
+  const barColors = Array(countLabels.length).fill(gray);
   if (numGuesses) {
-    barColors[numGuesses] = green;
+    barColors[numGuesses - 1] = green;
   }
 
   return (
