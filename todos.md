@@ -45,7 +45,9 @@
 * [x] show which are solved on Date Picker
 * [x] add tooltips to game inputs
 * [x] allow query param by puzzle number
-* [ ] move game inputs to App bar, especially the settings
+* [ ] move game inputs to App bar
+  * [x] especially the settings
+  * [ ] other inputs
 * [ ] populate additional pages in App bar
   * [ ] About
   * [ ] Instructions
@@ -89,3 +91,4 @@ For later
   * [ ] SearchBar
   * [ ] IFrame
   * [ ] FeedbackPage, DonatePage
+* [ ] avoid hardcoding 'white' in ResponsiveAppBar
