@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useRef, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -10,11 +10,26 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from "react-router-dom";
+import { Tooltip } from '@mui/material';
+import SettingsMenu from './SettingsMenu';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 const title = "WORDLE REPLAY"
 
-function ResponsiveAppBar({ pages }) {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
+function ResponsiveAppBar({
+  pages,
+  hardMode,
+  handleHardModeChange,
+  colorBlindMode,
+  handleColorBlindModeChange,
+  darkMode,
+  toggleColorMode,
+  focusGuessesBoard
+}) {
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElSettings, setAnchorElSettings] = useState(null);
+
+  const settingsButtonRef = useRef(null);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -124,9 +139,43 @@ function ResponsiveAppBar({ pages }) {
             ))}
           </Box>
 
+          {/* Settings Icon */}
+          <Tooltip title="Game Settings">
+            <IconButton
+              id="basic-button"
+              ref={settingsButtonRef}
+              aria-label="settings-button"
+              aria-controls={Boolean(anchorElSettings) ? 'basic-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={Boolean(anchorElSettings) ? 'true' : undefined}
+              onClick={(event) => {
+                setAnchorElSettings(event.currentTarget);
+                settingsButtonRef.current.blur();
+              }}
+            >
+              <SettingsIcon sx={{ color: 'white' }} />
+            </IconButton>
+          </Tooltip>
+
+          <SettingsMenu
+            handleClose={() => {
+              setAnchorElSettings(null);
+              settingsButtonRef.current.blur();  // prevent focusing on button
+              focusGuessesBoard();
+            }}
+            anchorEl={anchorElSettings}
+            hardMode={hardMode}
+            handleHardModeChange={handleHardModeChange}
+            colorBlindMode={colorBlindMode}
+            handleColorBlindModeChange={handleColorBlindModeChange}
+            darkMode={darkMode}
+            toggleColorMode={toggleColorMode}
+          />
+
         </Toolbar>
       </Container>
     </AppBar>
   );
 }
+
 export default ResponsiveAppBar;

@@ -1,5 +1,5 @@
 import { emptyDistributionData, numLetters, rankToColor, backspaceSymbol, earliestDate, initialNumGuessesToShow, colorMap, GREEN, YELLOW, GRAY } from "../constants";
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, forwardRef } from 'react';
 import { blankRow, blankGuessesGrid, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex, dateToPuzzleNum, dateIsBetween, puzzleNumToDate, numIsBetween, getDistCountLabel, getNextUnsolvedDate } from '../utils';
 import useScreenSize from './useScreenSize';
 import { dateToWord } from '../assets/date_to_word';
@@ -13,12 +13,10 @@ import { deleteItem, initDB, putItem } from '../db';
 import { Button, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallbacks } from '../hardModeWordsFiltering';
-import SettingsMenu from './SettingsMenu';
 import { useSearchParams } from "react-router-dom";
 import CalendarDialog from "./CalendarDialog";
 import BoltIcon from '@mui/icons-material/Bolt';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import SettingsIcon from '@mui/icons-material/Settings';
 import StatsDialog from './StatsDialog';
 import PuzzleNumSelectorDialog from "./PuzzleNumSelectorDialog";
 
@@ -35,7 +33,17 @@ const isValidPuzzleNum = (num) => {
 };
 
 
-function Game({ colorMode, toggleColorMode }) {
+const Game = forwardRef(({
+  colorMode,
+  hardMode,
+  colorBlindMode,
+  darkMode,
+  hardModeWords,
+  setHardModeWords,
+  possibleWords,
+  setPossibleWords,
+  focusGuessesBoard,
+}, guessesBoardRef) => {
   const screenSize = useScreenSize();
   const [searchParams, setSearchParams] = useSearchParams();
   const [puzzleDate, setPuzzleDate] = useState(  // try use param date, otherwise try use param num, else today
@@ -60,29 +68,22 @@ function Game({ colorMode, toggleColorMode }) {
   const [guessesDB, setGuessesDB] = useState({});
   const [lastLoadedDate, setLastLoadedDate] = useState();
   const [lastLoadAttemptDate, setLastLoadAttemptDate] = useState();
-  const [hardModeWords, setHardModeWords] = useState(new Set(wordleAcceptableWords));
-  const [possibleWords, setPossibleWords] = useState(new Set(wordleAcceptableWords));
   const [seenInsights, setSeenInsights] = useState(new Set());
   const [suggestionsDialogOpen, setSuggestionsDialogOpen] = useState(false);
   const [statsDialogOpen, setStatsDialogOpen] = useState(false);
-  const [hardMode, setHardMode] = useState(localStorage.getItem('hardMode') === 'true');  // TODO: unit test
-  const [colorBlindMode, setColorBlindMode] = useState(localStorage.getItem('colorBlindMode') === 'true');  // TODO: unit test
   const [showPuzzleSelectorDialog, setShowPuzzleSelectorDialog] = useState(false);
   const [showCalendarDialog, setShowCalendarDialog] = useState(false);
-  const [anchorElSettings, setAnchorElSettings] = useState(null);
 
   // console.log(`${puzzleDate} ${answer}`);
-  const guessesBoardRef = useRef(null);
   const puzzleNumSelectorButtonRef = useRef(null);
   const calendarButtonRef = useRef(null);
   const suggestionsButtonRef = useRef(null);
   const statsButtonRef = useRef(null);
-  const settingsButtonRef = useRef(null);
 
   useEffect(() => {
     initDB(setDistributionData, setGuessesDB); // Initialize the database
-    guessesBoardRef.current.focus();  // focus on guesses board initially
-  }, []);
+    focusGuessesBoard();  // focus on guesses board initially
+  }, [focusGuessesBoard]);
 
   // ensure search params match puzzleDate and puzzleNum
   useEffect(() => {
@@ -174,8 +175,8 @@ function Game({ colorMode, toggleColorMode }) {
       setLastLoadedDate(puzzleDate);
     }
     setLastLoadAttemptDate(puzzleDate);
-    guessesBoardRef.current.focus();
-  }, [puzzleDate, lastLoadAttemptDate, lastLoadedDate, guessesDB, answer, hardModeWords, letterMaxRanks]);
+    focusGuessesBoard();
+  }, [puzzleDate, lastLoadAttemptDate, lastLoadedDate, guessesDB, answer, hardModeWords, setHardModeWords, letterMaxRanks, focusGuessesBoard]);
 
   const numGuesses = () => {  // TODO: convert to useEffect?
     return nextLetterIndex[0] + 1;
@@ -309,7 +310,7 @@ function Game({ colorMode, toggleColorMode }) {
     setHardModeWords([...wordleAcceptableWords]);
     setPossibleWords(new Set([...wordleAcceptableWords]));
     setSeenInsights(new Set());
-    guessesBoardRef.current.focus();
+    focusGuessesBoard();
   };
 
   const changeDate = (dateStr) => {
@@ -324,22 +325,6 @@ function Game({ colorMode, toggleColorMode }) {
     setAnswer(dateToWord.get(dateStr).toUpperCase());
     resetGame();  // TODO: make this optional?
   };
-
-  const handleHardModeChange = (event) => {
-    const newHardMode = event.target.checked;
-    const newPossibleWords = newHardMode ? new Set(hardModeWords) : wordleAcceptableWords;
-    setHardMode(newHardMode);
-    setPossibleWords(newPossibleWords);
-    localStorage.setItem('hardMode', newHardMode);  // persist
-  };
-
-  const handleColorBlindModeChange = (event) => {
-    const newColorBlindMode = event.target.checked;
-    setColorBlindMode(newColorBlindMode);
-    localStorage.setItem('colorBlindMode', newColorBlindMode);  // persist
-  };
-
-  const darkMode = colorMode === 'dark';
 
   const colorBlindModeDesc = colorBlindMode ? 'colorBlind' : 'standard';
   const green = colorMap[colorMode][colorBlindModeDesc][GREEN];
@@ -419,24 +404,6 @@ function Game({ colorMode, toggleColorMode }) {
           </IconButton>
         </Tooltip>
 
-        {/* Settings Icon */}
-        <Tooltip title="Game Settings">
-          <IconButton
-            id="basic-button"
-            ref={settingsButtonRef}
-            aria-label="settings-button"
-            aria-controls={Boolean(anchorElSettings) ? 'basic-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={Boolean(anchorElSettings) ? 'true' : undefined}
-            onClick={(event) => {
-              setAnchorElSettings(event.currentTarget);
-              settingsButtonRef.current.blur();
-            }}
-          >
-            <SettingsIcon />
-          </IconButton>
-        </Tooltip>
-
       </Stack>
       {/* END row of input icons/buttons */}
 
@@ -488,7 +455,7 @@ function Game({ colorMode, toggleColorMode }) {
         open={showPuzzleSelectorDialog}
         handleClose={() => {
           setShowPuzzleSelectorDialog(false);
-          guessesBoardRef.current.focus();
+          focusGuessesBoard();
         }}
         puzzleNum={puzzleNum}
         isValidPuzzleNum={isValidPuzzleNum}
@@ -499,7 +466,7 @@ function Game({ colorMode, toggleColorMode }) {
         open={showCalendarDialog}
         handleClose={() => {
           setShowCalendarDialog(false);
-          guessesBoardRef.current.focus();
+          focusGuessesBoard();
         }}
         today={today}
         puzzleDate={puzzleDate}
@@ -513,7 +480,7 @@ function Game({ colorMode, toggleColorMode }) {
         open={suggestionsDialogOpen}
         handleClose={() => {
           setSuggestionsDialogOpen(false);
-          guessesBoardRef.current.focus();
+          focusGuessesBoard();
         }}
         hardModeWords={hardModeWords}
       />
@@ -522,7 +489,7 @@ function Game({ colorMode, toggleColorMode }) {
         open={statsDialogOpen}
         handleClose={() => {
           setStatsDialogOpen(false);
-          guessesBoardRef.current.focus();
+          focusGuessesBoard();
         }}
         today={today}
         distributionData={distributionData}
@@ -533,24 +500,9 @@ function Game({ colorMode, toggleColorMode }) {
         yellow={yellow}
         gray={gray}
       />
-
-      <SettingsMenu
-        handleClose={() => {
-          setAnchorElSettings(null);
-          settingsButtonRef.current.blur();  // prevent focusing on button
-          guessesBoardRef.current.focus();
-        }}
-        anchorEl={anchorElSettings}
-        hardMode={hardMode}
-        handleHardModeChange={handleHardModeChange}
-        colorBlindMode={colorBlindMode}
-        handleColorBlindModeChange={handleColorBlindModeChange}
-        darkMode={darkMode}
-        toggleColorMode={toggleColorMode}
-      />
       {/* END, dialogs */}
     </div>
   );
-}
+});
 
 export default Game;
