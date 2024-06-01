@@ -73,6 +73,7 @@
 * [ ] update README
   * [ ] steps on how to add new News post
 * [ ] transition to wordlereplay.com (including in package.json, share link)
+* [ ] update "auto update" script (if needed) to include the "export" at the beginning of file
 
 Instructions:
 * how to delete history (including all)
