@@ -1,26 +1,19 @@
 import { numLetters, rankToColor, backspaceSymbol, initialNumGuessesToShow } from "../constants";
-import { useEffect, useState, useRef, forwardRef } from 'react';
+import { useEffect, useState, forwardRef } from 'react';
 import { blankRow, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex, getDistCountLabel, getNextUnsolvedDate } from '../utils';
 import useScreenSize from './useScreenSize';
 // import { DateSelector } from './DateSelector';
 // import { SearchBar } from './components/SearchBar';
 import GuessesBoard from './GuessesBoard';
 import Keyboard from './Keyboard';
-import { InvalidGuessDialog, SuggestionsDialog, WonDialog } from './AlertDialog';
+import { InvalidGuessDialog, WonDialog } from './AlertDialog';
 import { putItem } from '../db';
-import { Button, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallbacks } from '../hardModeWordsFiltering';
-import CalendarDialog from "./CalendarDialog";
-import BoltIcon from '@mui/icons-material/Bolt';
-import PuzzleNumSelectorDialog from "./PuzzleNumSelectorDialog";
 
 
 const Game = forwardRef(({
   today,
   puzzleDate,
-  searchParams,
-  setSearchParams,
-  isValidPuzzleNum,
   hardMode,
   colorBlindMode,
   darkMode,
@@ -48,7 +41,6 @@ const Game = forwardRef(({
   changeDate,
   resetGame,
   green,
-  yellow,
   gray,
 }, guessesBoardRef) => {
   const screenSize = useScreenSize();
@@ -57,35 +49,6 @@ const Game = forwardRef(({
   const [wonDialogOpen, setWonDialogOpen] = useState(false);
   const [lastLoadedDate, setLastLoadedDate] = useState();
   const [lastLoadAttemptDate, setLastLoadAttemptDate] = useState();
-  const [suggestionsDialogOpen, setSuggestionsDialogOpen] = useState(false);
-  const [showPuzzleSelectorDialog, setShowPuzzleSelectorDialog] = useState(false);
-  const [showCalendarDialog, setShowCalendarDialog] = useState(false);
-
-  // console.log(`${puzzleDate} ${answer}`);
-  const puzzleNumSelectorButtonRef = useRef(null);
-  const calendarButtonRef = useRef(null);
-  const suggestionsButtonRef = useRef(null);
-
-  // ensure search params match puzzleDate and puzzleNum
-  useEffect(() => {
-    const hasParamDate = searchParams.has('date');
-    const hasParamNum = searchParams.has('num');
-    const paramDate = searchParams.get('date');
-    const paramNum = searchParams.get('num');
-    if (hasParamDate && hasParamNum) {  // has both
-      if (paramDate !== puzzleDate || paramNum !== puzzleNum) {  // if either not right, set both
-        setSearchParams({...searchParams, date: puzzleDate, num: puzzleNum})
-      }
-    } else if (hasParamDate) {  // just date
-      if (paramDate !== puzzleDate) {
-        setSearchParams({...searchParams, date: puzzleDate})
-      }
-    } else if (hasParamNum) {  // just num
-      if (paramNum !== puzzleNum) {
-        setSearchParams({...searchParams, num: puzzleNum})
-      }
-    }
-  }, [searchParams, setSearchParams, puzzleDate, puzzleNum]);
 
   // load any previous guesses from DB for a given puzzle
   // TODO: commonize?
@@ -265,65 +228,6 @@ const Game = forwardRef(({
 
   return (
     <div className="Game">
-      {/* <div>
-        <h1>Screen Size Detection with React Hook</h1>
-        <p>Width: {screenSize.width}</p>
-        <p>Height: {screenSize.height}</p>
-      </div> */}
-
-      {/* Row of input icons/buttons above Guess Board */}
-      <Stack
-        direction="row"
-        spacing={1}
-        justifyContent="center"
-        alignItems="flex-end"
-      >
-        {/* <SearchBar today={today} changeDate={changeDate} solvedPuzzleNums={solvedPuzzleNums} /> */}
-        {/* <DateSelector today={today} puzzleDate={puzzleDate} changeDate={changeDate} /> */}
-
-        {/* Puzzle Number */}
-        <Tooltip title="Enter Puzzle Number">
-          <Button
-            ref={puzzleNumSelectorButtonRef}
-            onClick={() => {
-              setShowPuzzleSelectorDialog(prev => !prev);
-              puzzleNumSelectorButtonRef.current.blur();
-            }}
-          >
-            <Typography>{`#${puzzleNum}`}</Typography>
-          </Button>
-        </Tooltip>
-
-        {/* Puzzle Date */}
-        <Tooltip title="Choose Puzzle Date">
-          <Button
-            ref={calendarButtonRef}
-            onClick={() => {
-              setShowCalendarDialog(prev => !prev);
-              calendarButtonRef.current.blur();
-            }}
-          >
-            <Typography>{puzzleDate}</Typography>
-          </Button>
-        </Tooltip>
-
-        {/* Suggestions Icon */}
-        <Tooltip title="Suggestions">
-          <IconButton
-            variant="contained"
-            ref={suggestionsButtonRef}
-            onClick={() => {
-              setSuggestionsDialogOpen(true);
-              suggestionsButtonRef.current.blur();
-            }}
-          >
-            <BoltIcon />
-          </IconButton>
-        </Tooltip>
-
-      </Stack>
-      {/* END row of input icons/buttons */}
-
       <GuessesBoard
         screenSize={screenSize}
         ref={guessesBoardRef}
@@ -367,41 +271,7 @@ const Game = forwardRef(({
         green={green}
         gray={gray}
       />
-
-      <PuzzleNumSelectorDialog
-        open={showPuzzleSelectorDialog}
-        handleClose={() => {
-          setShowPuzzleSelectorDialog(false);
-          focusGuessesBoard();
-        }}
-        puzzleNum={puzzleNum}
-        isValidPuzzleNum={isValidPuzzleNum}
-        changeDate={changeDate}
-      />
-
-      <CalendarDialog
-        open={showCalendarDialog}
-        handleClose={() => {
-          setShowCalendarDialog(false);
-          focusGuessesBoard();
-        }}
-        today={today}
-        puzzleDate={puzzleDate}
-        guessesDB={guessesDB}
-        changeDate={changeDate}
-        green={green}
-        yellow={yellow}
-      />
-
-      <SuggestionsDialog
-        open={suggestionsDialogOpen}
-        handleClose={() => {
-          setSuggestionsDialogOpen(false);
-          focusGuessesBoard();
-        }}
-        hardModeWords={hardModeWords}
-      />
-      {/* END, dialogs */}
+      {/* End Dialogs */}
     </div>
   );
 });
