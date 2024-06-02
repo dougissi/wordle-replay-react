@@ -133,7 +133,7 @@ function ResponsiveAppBar({
             </Menu>
           </Box>
 
-          <Typography
+          {/* <Typography
             variant="h5"
             noWrap
             component="a"
@@ -150,7 +150,7 @@ function ResponsiveAppBar({
             }}
           >
             {title}
-          </Typography>
+          </Typography> */}
 
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (

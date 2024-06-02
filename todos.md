@@ -45,10 +45,10 @@
 * [x] show which are solved on Date Picker
 * [x] add tooltips to game inputs
 * [x] allow query param by puzzle number
-* [ ] move game inputs to App bar
+* [x] move game inputs to App bar
   * [x] especially the settings
   * [x] other inputs
-  * [ ] tidy title and other elements of nav bar
+  * [x] tidy title and other elements of nav bar
 * [x] bugfix: won dialog highlighting the one higher guess number
 * [ ] populate additional pages in App bar
   * [ ] About
@@ -94,3 +94,4 @@ For later
   * [ ] IFrame
   * [ ] FeedbackPage, DonatePage
 * [ ] avoid hardcoding 'white' in ResponsiveAppBar
+* [ ] convert 'YYYY-MM-DD' to constant variable throughout
