@@ -10,7 +10,7 @@ export const initDB = (setDistributionData, setGuessesDB) => {
   const request = indexedDB.open(DB_NAME, DB_VERSION);
 
   request.onupgradeneeded = (event) => {
-    const db = event.target.result;
+    db = event.target.result;
     // Create object store or schema here
     db.createObjectStore("guesses", { keyPath: "date" });
     // Define indexes or additional configuration
@@ -23,7 +23,7 @@ export const initDB = (setDistributionData, setGuessesDB) => {
     // copy old solved history from localStorage to indexedDB, if not already done
     const transferFlag = localStorage.getItem('transferredOldSolvedDataFlag');
     if (transferFlag !== 'true') {
-      const oldData = localStorage.getItem('wordlereplay_solved');
+      const oldData = localStorage.getItem('wordlereplay-solved');
       const newData = formatOldDataForIndexedDB(oldData);
       newData.forEach((item) => putItem(item));
       localStorage.setItem('transferredOldSolvedDataFlag', 'true');  // Set flag in localStorage to indicate transfer is done

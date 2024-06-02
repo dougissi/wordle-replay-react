@@ -1,1 +1,1 @@
-They finally did it. The New York Times launched their own [Wordle Archive](https://wordlearchive.com/). It'd full of advertisements. It also uses _a ton_ of memory.
+They finally did it. The New York Times launched their own [Wordle Archive](https://wordlearchive.com/). It's full of advertisements. It also uses _a ton_ of memory.

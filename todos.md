@@ -7,7 +7,6 @@
 * [ ] animate tile flips
 * [x] unit tests for utils.js
 * [ ] update React tests for App.js
-* [ ] prevent selecting text on keyboard (especially on mobile)
 * [x] add data labels to distribution
 * [x] change color of number of the distribution that you just solved
 * [x] keep generateDateArray? No
@@ -21,6 +20,7 @@
 * [x] give info somewhere on total solved and total remaining --> something like a stats page
 * [x] allow deleting of history in table, and delete all history
 * [ ] mechanism to save history
+* [ ] mechanism to import history
 * [x] filter history table
 * [x] add Autocomplete for selecting by puzzle number
 * [x] move focus to guesses board after closing / clicking anything in the input bar above guesses board
@@ -41,6 +41,7 @@
   * [x] make better title for distribution chart
   * [x] more details when hovering over a distribution bars as to what it means
   * [ ] have history table match background color when in dark mode
+* [ ] bugfix: don't exit on year change on Calendar
 * [x] show previous guesses on solved puzzles
 * [x] show which are solved on Date Picker
 * [x] add tooltips to game inputs
@@ -58,7 +59,7 @@
   * [x] Donate
 * [ ] brighter links in markdown when on dark mode (consider [stack overflow answer](https://stackoverflow.com/questions/66356329/how-to-add-styling-for-elements-in-react-markdown))
 * [x] simple version of News blog
-* [ ] add Badge when there's new News
+* [x] add Badge when there's new News
 * [x] remove placeholder LOGO from App bar
 * [ ] allow user to decide if they want to see previous guesses OR replay without seeing
 * [x] render additional pages as markdown
@@ -68,6 +69,7 @@
 * [x] prevent having to push "enter" to resume puzzle play on unfinished puzzles?
 * [x] show correct keyboard colors when resuming puzzle
 * [x] publish to GitHub pages
+* [ ] add local storage keys to constants
 * [ ] AWS dynamoDB?
 * [ ] open Feedback and Donate links in new tab
 * [ ] make sure really fits on phone screen

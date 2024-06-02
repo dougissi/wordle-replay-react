@@ -10,7 +10,7 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from "react-router-dom";
-import { Tooltip } from '@mui/material';
+import { Badge, Tooltip } from '@mui/material';
 import PuzzleNumSelectorDialog from './PuzzleNumSelectorDialog';
 import CalendarDialog from "./CalendarDialog";
 import BoltIcon from '@mui/icons-material/Bolt';
@@ -42,6 +42,7 @@ function ResponsiveAppBar({
   focusGuessesBoard,
   changeDate,
   deleteDBDates,
+  showNewsBadge,
   green,
   yellow,
   gray,
@@ -65,6 +66,10 @@ function ResponsiveAppBar({
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
+  };
+
+  const labelWithBadge = (label, showBadge) => {
+    return <Badge color="secondary" variant="dot" badgeContent={Number(showBadge)}>{label}</Badge>;
   };
 
   return (
@@ -99,7 +104,7 @@ function ResponsiveAppBar({
               onClick={handleOpenNavMenu}
               color="inherit"
             >
-              <MenuIcon />
+              {labelWithBadge(<MenuIcon />, showNewsBadge)}
             </IconButton>
             <Menu
               id="menu-appbar"
@@ -126,7 +131,7 @@ function ResponsiveAppBar({
                     to={page.path}
                     style={{ color: 'inherit', textAlign: 'center', textDecoration: 'none' }}
                   >
-                    {page.label}
+                    {labelWithBadge(page.label, page.label === 'News' && showNewsBadge)}
                   </Typography>
                 </MenuItem>
               ))}
@@ -162,7 +167,7 @@ function ResponsiveAppBar({
                 sx={{ my: 2, color: textColor, display: 'block' }}
                 style={{ textDecoration: 'none' }}
               >
-                {page.label}
+                {labelWithBadge(page.label, page.label === 'News' && showNewsBadge)}
               </Button>
             ))}
           </Box>

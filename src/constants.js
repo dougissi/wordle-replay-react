@@ -58,3 +58,23 @@ colorToIcon.colorBlind[GRAY] =   "⬜";
 
 export const backspaceSymbol = "⬅";
 export const earliestDate = "2021-06-19";
+
+export const lsKeys = {
+    maxSeenNewsPostId: 'maxSeenNewsPostId',
+}
+
+// posts will appear on page in the order given in the array
+export const newsPosts = [
+    {
+      id: 0,
+      date: "2024-05-31",
+      title: "NYT Launches Wordle Archive",
+      fileName: "2024-05-31_nyt_wordlearchive.md"
+    },
+];
+  
+// get max news post id
+export let maxNewsPostId = 0;
+newsPosts.forEach(post => {
+    maxNewsPostId = Math.max(maxNewsPostId, post.id);
+});

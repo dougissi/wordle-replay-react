@@ -11,7 +11,7 @@ import NewsPage from './components/Pages/NewsPage';
 import { dateToWord } from './assets/date_to_word';
 import { wordleAcceptableWords } from './assets/wordle_acceptable_words';
 import { blankGuessesGrid, dateIsBetween, dateToPuzzleNum, getDistCountLabel, numIsBetween, puzzleNumToDate } from './utils';
-import { colorMap, earliestDate, emptyDistributionData, GREEN, YELLOW, GRAY } from './constants';
+import { colorMap, earliestDate, emptyDistributionData, GREEN, YELLOW, GRAY, lsKeys, maxNewsPostId } from './constants';
 import { initDB, deleteItem } from './db';
 
 
@@ -53,6 +53,8 @@ function App() {
   const [guessesDB, setGuessesDB] = useState({});
   const [hardModeWords, setHardModeWords] = useState(new Set(wordleAcceptableWords));
   const [possibleWords, setPossibleWords] = useState(new Set(wordleAcceptableWords));
+  const [maxSeenNewsPostId, setMaxSeenNewsPostId] = useState(Number(localStorage.getItem(lsKeys.maxSeenNewsPostId)));  // 0 if doesn't exist
+  const [showNewsBadge, setShowNewsBadge] = useState(maxNewsPostId > maxSeenNewsPostId);
   
   const toggleColorMode = () => {
     const newColorMode = colorMode === 'light' ? 'dark' : 'light';
@@ -204,17 +206,37 @@ function App() {
           changeDate={changeDate}
           resetGame={resetGame}
           green={green}
-          yellow={yellow}
           gray={gray}
           ref={guessesBoardRef}
         />
       )
     },
-    { path: '/about', label: 'About', element: <AboutPage /> },
-    { path: '/news', label: 'News', element: <NewsPage /> },
-    { path: 'https://docs.google.com/forms/d/e/1FAIpQLSfKeTZCnnicWaVnn0PpGWvUjZvjrXeA7rx1wZUKCNnJJbIthA/viewform?usp=sf_link', label: 'Feedback' },
-    { path: 'https://www.paypal.com/donate/?hosted_button_id=JWHYPBKUV6FQE', label: 'Donate' },
-  ]
+    { 
+      path: '/about',
+      label: 'About',
+      element: <AboutPage />
+    },
+    { 
+      path: '/news',
+      label: 'News',
+      element: (
+        <NewsPage
+          maxSeenNewsPostId={maxSeenNewsPostId}
+          setMaxSeenNewsPostId={setMaxSeenNewsPostId}
+          showNewsBadge={showNewsBadge}
+          setShowNewsBadge={setShowNewsBadge}
+        />
+      )
+    },
+    { 
+      path: 'https://docs.google.com/forms/d/e/1FAIpQLSfKeTZCnnicWaVnn0PpGWvUjZvjrXeA7rx1wZUKCNnJJbIthA/viewform?usp=sf_link',
+      label: 'Feedback'
+    },
+    { 
+      path: 'https://www.paypal.com/donate/?hosted_button_id=JWHYPBKUV6FQE',
+      label: 'Donate'
+    },
+  ];
 
   return (
     <ColorModeContext.Provider value={{ colorMode, toggleColorMode }}>
@@ -239,7 +261,9 @@ function App() {
             focusGuessesBoard={focusGuessesBoard}
             changeDate={changeDate}
             deleteDBDates={deleteDBDates}
+            showNewsBadge={showNewsBadge}
             green={green}
+            yellow={yellow}
             gray={gray}
           />
           <Routes>
