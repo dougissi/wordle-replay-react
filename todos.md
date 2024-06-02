@@ -47,7 +47,8 @@
 * [x] allow query param by puzzle number
 * [ ] move game inputs to App bar
   * [x] especially the settings
-  * [ ] other inputs
+  * [x] other inputs
+  * [ ] tidy title and other elements of nav bar
 * [x] bugfix: won dialog highlighting the one higher guess number
 * [ ] populate additional pages in App bar
   * [ ] About

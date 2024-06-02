@@ -11,6 +11,10 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from "react-router-dom";
 import { Tooltip } from '@mui/material';
+import PuzzleNumSelectorDialog from './PuzzleNumSelectorDialog';
+import CalendarDialog from "./CalendarDialog";
+import BoltIcon from '@mui/icons-material/Bolt';
+import { SuggestionsDialog } from './AlertDialog';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import StatsDialog from './StatsDialog';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -23,8 +27,12 @@ const textColor = 'white';
 function ResponsiveAppBar({
   pages,
   today,
+  puzzleDate,
+  puzzleNum,
+  isValidPuzzleNum,
   hardMode,
   handleHardModeChange,
+  hardModeWords,
   colorBlindMode,
   handleColorBlindModeChange,
   darkMode,
@@ -39,9 +47,15 @@ function ResponsiveAppBar({
   gray,
 }) {
   const [anchorElNav, setAnchorElNav] = useState(null);
+  const [showPuzzleSelectorDialog, setShowPuzzleSelectorDialog] = useState(false);
+  const [showCalendarDialog, setShowCalendarDialog] = useState(false);
+  const [suggestionsDialogOpen, setSuggestionsDialogOpen] = useState(false);
   const [statsDialogOpen, setStatsDialogOpen] = useState(false);
   const [anchorElSettings, setAnchorElSettings] = useState(null);
 
+  const puzzleNumSelectorButtonRef = useRef(null);
+  const calendarButtonRef = useRef(null);
+  const suggestionsButtonRef = useRef(null);
   const statsButtonRef = useRef(null);
   const settingsButtonRef = useRef(null);
 
@@ -152,6 +166,77 @@ function ResponsiveAppBar({
               </Button>
             ))}
           </Box>
+
+          {/* Puzzle Number */}
+          <Tooltip title="Choose Puzzle Number">
+            <Button
+              ref={puzzleNumSelectorButtonRef}
+              onClick={() => {
+                setShowPuzzleSelectorDialog(prev => !prev);
+                puzzleNumSelectorButtonRef.current.blur();
+              }}
+            >
+              <Typography color={textColor}>{`#${puzzleNum}`}</Typography>
+            </Button>
+          </Tooltip>
+          <PuzzleNumSelectorDialog
+            open={showPuzzleSelectorDialog}
+            handleClose={() => {
+              setShowPuzzleSelectorDialog(false);
+              focusGuessesBoard();
+            }}
+            puzzleNum={puzzleNum}
+            isValidPuzzleNum={isValidPuzzleNum}
+            changeDate={changeDate}
+          />
+
+          {/* Puzzle Date */}
+          <Tooltip title="Choose Puzzle Date">
+            <Button
+              ref={calendarButtonRef}
+              onClick={() => {
+                setShowCalendarDialog(prev => !prev);
+                calendarButtonRef.current.blur();
+              }}
+            >
+              <Typography color={textColor}>{puzzleDate}</Typography>
+            </Button>
+          </Tooltip>
+          <CalendarDialog
+            open={showCalendarDialog}
+            handleClose={() => {
+              setShowCalendarDialog(false);
+              focusGuessesBoard();
+            }}
+            today={today}
+            puzzleDate={puzzleDate}
+            guessesDB={guessesDB}
+            changeDate={changeDate}
+            green={green}
+            yellow={yellow}
+          />
+
+          {/* Suggestions Icon */}
+          <Tooltip title="Suggestions">
+            <IconButton
+              variant="contained"
+              ref={suggestionsButtonRef}
+              onClick={() => {
+                setSuggestionsDialogOpen(true);
+                suggestionsButtonRef.current.blur();
+              }}
+            >
+              <BoltIcon sx={{ color: textColor }} />
+            </IconButton>
+          </Tooltip>
+          <SuggestionsDialog
+            open={suggestionsDialogOpen}
+            handleClose={() => {
+              setSuggestionsDialogOpen(false);
+              focusGuessesBoard();
+            }}
+            hardModeWords={hardModeWords}
+          />
 
           {/* Stats & History */}
           <Tooltip title="Stats & History">

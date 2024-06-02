@@ -70,6 +70,27 @@ function App() {
     [colorMode],
   );
 
+  // ensure search params match puzzleDate and puzzleNum
+  useEffect(() => {
+    const hasParamDate = searchParams.has('date');
+    const hasParamNum = searchParams.has('num');
+    const paramDate = searchParams.get('date');
+    const paramNum = searchParams.get('num');
+    if (hasParamDate && hasParamNum) {  // has both
+      if (paramDate !== puzzleDate || paramNum !== puzzleNum) {  // if either not right, set both
+        setSearchParams({...searchParams, date: puzzleDate, num: puzzleNum})
+      }
+    } else if (hasParamDate) {  // just date
+      if (paramDate !== puzzleDate) {
+        setSearchParams({...searchParams, date: puzzleDate})
+      }
+    } else if (hasParamNum) {  // just num
+      if (paramNum !== puzzleNum) {
+        setSearchParams({...searchParams, num: puzzleNum})
+      }
+    }
+  }, [searchParams, setSearchParams, puzzleDate, puzzleNum]);
+
   const focusGuessesBoard = () => {  // focus on guesses board if at the game
     if (window.location.pathname === gamePath) {
       guessesBoardRef.current.focus();
@@ -156,9 +177,6 @@ function App() {
         <Game
           today={today}
           puzzleDate={puzzleDate}
-          searchParams={searchParams}
-          setSearchParams={setSearchParams}
-          isValidPuzzleNum={isValidPuzzleNum}
           hardMode={hardMode}
           colorBlindMode={colorBlindMode}
           darkMode={darkMode}
@@ -206,8 +224,12 @@ function App() {
           <ResponsiveAppBar
             pages={pages}
             today={today}
+            puzzleDate={puzzleDate}
+            puzzleNum={puzzleNum}
+            isValidPuzzleNum={isValidPuzzleNum}
             hardMode={hardMode}
             handleHardModeChange={handleHardModeChange}
+            hardModeWords={hardModeWords}
             colorBlindMode={colorBlindMode}
             handleColorBlindModeChange={handleColorBlindModeChange}
             darkMode={darkMode}
@@ -218,7 +240,6 @@ function App() {
             changeDate={changeDate}
             deleteDBDates={deleteDBDates}
             green={green}
-            yellow={yellow}
             gray={gray}
           />
           <Routes>
