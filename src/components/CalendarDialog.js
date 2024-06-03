@@ -115,7 +115,9 @@ function Calendar({ today, puzzleDate, guessesDB, changeDate, handleClose, unfin
             // console.log("selected:", date.format('YYYY-MM-DD'));
             changeDate(date.format('YYYY-MM-DD'));
             setValue(date);
-            handleClose();
+            if (date.year() === value.year()) {  // change year selects a date, so don't close calendar unless specifically selected
+              handleClose();
+            }
           }
         }}
         onMonthChange={handleMonthChange}

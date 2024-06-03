@@ -41,7 +41,7 @@
   * [x] make better title for distribution chart
   * [x] more details when hovering over a distribution bars as to what it means
   * [ ] have history table match background color when in dark mode
-* [ ] bugfix: don't exit on year change on Calendar
+* [x] bugfix: don't exit Calendar on year change
 * [x] show previous guesses on solved puzzles
 * [x] show which are solved on Date Picker
 * [x] add tooltips to game inputs
