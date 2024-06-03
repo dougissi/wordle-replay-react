@@ -1,3 +1,5 @@
+import { Link } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 
@@ -22,7 +24,28 @@ function Markdown({ fileName }) {
 
     return (
         <div className="Markdown">
-            <ReactMarkdown>{markdownContent}</ReactMarkdown>
+            <ReactMarkdown
+                components={{
+                    a(props) {
+                        const {node, href, children, ...rest} = props;
+                        if (href.startsWith('http')) {  // open external pages in new tab
+                            rest.target = "_blank";
+                            rest.rel = "noopener noreferrer";
+                        }
+                        return (
+                            <Link
+                                component={RouterLink}  // use react-router-dom link for faster internal routing
+                                to={href}
+                                {...rest}
+                            >
+                                {children}
+                            </Link>
+                        );
+                    }
+                }}
+            >
+                {markdownContent}
+            </ReactMarkdown>
         </div>
     );
 }

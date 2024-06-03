@@ -57,7 +57,7 @@
   * [ ] News (Blog)
   * [x] Feedback
   * [x] Donate
-* [ ] brighter links in markdown when on dark mode (consider [stack overflow answer](https://stackoverflow.com/questions/66356329/how-to-add-styling-for-elements-in-react-markdown))
+* [x] brighter links in markdown when on dark mode (solved thanks to this documentation on [react-markdown components](https://github.com/remarkjs/react-markdown#appendix-b-components))
 * [x] simple version of News blog
 * [x] add Badge when there's new News
 * [x] remove placeholder LOGO from App bar
