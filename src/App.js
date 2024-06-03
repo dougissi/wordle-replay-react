@@ -10,9 +10,10 @@ import AboutPage from './components/Pages/AboutPage';
 import NewsPage from './components/Pages/NewsPage';
 import { dateToWord } from './assets/date_to_word';
 import { wordleAcceptableWords } from './assets/wordle_acceptable_words';
-import { blankGuessesGrid, dateIsBetween, dateToPuzzleNum, getDistCountLabel, numIsBetween, puzzleNumToDate } from './utils';
-import { colorMap, earliestDate, emptyDistributionData, GREEN, YELLOW, GRAY, lsKeys, maxNewsPostId } from './constants';
-import { initDB, deleteItem } from './db';
+import { blankGuessesGrid, blankRow, dateIsBetween, dateToPuzzleNum, getDistCountLabel, getGuessRanks, getLetterAlphabetIndex, getTopSuggestions, numIsBetween, puzzleNumToDate } from './utils';
+import { colorMap, earliestDate, emptyDistributionData, GREEN, YELLOW, GRAY, lsKeys, maxNewsPostId, numSuggestions, rankToColor, numLetters } from './constants';
+import { initDB, deleteItem, putItem } from './db';
+import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallbacks } from './hardModeWordsFiltering';
 
 
 const gamePath = '/';
@@ -52,9 +53,13 @@ function App() {
   const [distributionData, setDistributionData] = useState({...emptyDistributionData});
   const [guessesDB, setGuessesDB] = useState({});
   const [hardModeWords, setHardModeWords] = useState(new Set(wordleAcceptableWords));
+  const [suggestions, setSuggestions] = useState([]);
   const [possibleWords, setPossibleWords] = useState(new Set(wordleAcceptableWords));
   const [maxSeenNewsPostId, setMaxSeenNewsPostId] = useState(Number(localStorage.getItem(lsKeys.maxSeenNewsPostId)));  // 0 if doesn't exist
   const [showNewsBadge, setShowNewsBadge] = useState(maxNewsPostId > maxSeenNewsPostId);
+  const [invalidGuess, setInvalidGuess] = useState("");
+  const [invalidGuessDialogOpen, setInvalidGuessDialogOpen] = useState(false);
+  const [wonDialogOpen, setWonDialogOpen] = useState(false);
   
   const toggleColorMode = () => {
     const newColorMode = colorMode === 'light' ? 'dark' : 'light';
@@ -103,6 +108,12 @@ function App() {
     initDB(setDistributionData, setGuessesDB); // Initialize the database
     focusGuessesBoard();  // TODO: can this move to Game? focus on guesses board initially
   }, []);
+
+  // get new suggestions when hardModeWords change
+  useEffect(() => {
+    const newSuggestions = getTopSuggestions(hardModeWords, numSuggestions);
+    setSuggestions(newSuggestions);
+  }, [hardModeWords]);
 
   const darkMode = colorMode === 'dark';  // TODO: useEffect?
   const colorBlindModeDesc = colorBlindMode ? 'colorBlind' : 'standard';
@@ -171,6 +182,92 @@ function App() {
     }
   }
 
+  function enterGuess(guess, gData) {  // guess must be UPPER case
+    if (!possibleWords.has(guess.toLowerCase())) {
+      setInvalidGuess(guess);  // TODO: never gets unset, but works fine
+      setInvalidGuessDialogOpen(true);
+    } else {  // guess is an acceptable word
+      // get the ranks for each letter of the guess
+      // in the form of a string of 5 numbers, each [0, 2],
+      // where 0 -> gray, 1 -> yellow, 2 -> green
+      const guessRanks = getGuessRanks(guess, answer); 
+      const guessColors = [...guessRanks].map((rank) => rankToColor[rank]);
+
+      const newGuessesColors = [...guessesColors];
+      newGuessesColors[nextLetterIndex[0]] = guessColors;
+      setGuessesColors(newGuessesColors);
+
+      // for each letter of guess, keep the max color rank
+      // across all guesses
+      const newLetterMaxRanks = [...letterMaxRanks];
+      for (let i = 0; i < guess.length; i++) {
+        const letter = guess[i];
+        const j = getLetterAlphabetIndex(letter);
+        newLetterMaxRanks[j] = Math.max(newLetterMaxRanks[j], guessRanks[i])
+      }
+      setLetterMaxRanks(newLetterMaxRanks);
+
+      if (guessRanks === '22222') {  // guess is all greens (i.e., the answer)
+        setWonDialogOpen(true);
+        if (!guessesDB.hasOwnProperty(puzzleDate) || !guessesDB[puzzleDate].solvedDate) {  // save if never saved or unsolved
+          saveGuess(gData, true);  // including `true` will add solved date
+
+          // update distribution
+          const countLabel = getDistCountLabel(numGuesses());
+          const newDistributionData = {...distributionData};
+          newDistributionData[countLabel]++;
+          setDistributionData(newDistributionData);
+        }
+      } else {  // guess not the answer
+        // update next letter index, potentially adding a new row
+        const nextRowIndex = nextLetterIndex[0] + 1;
+        if (nextRowIndex === gData.length) {  // at end of all words
+          setGuessesData([...gData, blankRow()]);  // add blank row
+          setGuessesColors([...newGuessesColors, blankRow()]); // add blank row
+        }
+        setNextLetterIndex([nextRowIndex, 0]);
+        saveGuess(gData);  // no `true` param so no solved date will be included
+      }
+
+      // update hard mode words and seen insights
+      const insights = getInsightsFromGuessRanks(guess.toLowerCase(), guessRanks);
+      const newInsights = insights.filter((insight) => !seenInsights.has(insight));
+      const newInsightCallbacks = newInsights.map((insight) => getInsightCallback(insight));
+      const newHardModeWords = new Set([...hardModeWords].filter((word) => satisfiesAllInsightCallbacks(word, newInsightCallbacks)));
+      setSeenInsights(seenInsights.union(new Set(newInsights)));
+      setHardModeWords(newHardModeWords);
+
+      // update possible words set if hard mode is on
+      if (hardMode) {
+        setPossibleWords(newHardModeWords);
+      }
+    }
+  }
+
+  const numGuesses = () => {  // TODO: convert to useEffect?
+    return nextLetterIndex[0] + 1;
+  };
+
+  const saveGuess = (gData, isSolved) => {
+    const guessesDataNoBlanks = gData.filter((guess) => guess[0] !== "");  // remove blank rows
+    const newItem = { puzzleNum: puzzleNum, date: puzzleDate, solvedDate: isSolved ? today : null, guesses: guessesDataNoBlanks };
+    putItem(newItem); // Add/update item into IndexedDB
+
+    // update guessesDB state
+    const newGuessesDB = {...guessesDB};
+    newGuessesDB[puzzleDate] = newItem;
+    setGuessesDB(newGuessesDB);
+  };
+
+  const submitGuessFromButtonClick = (guess) => {
+    const newGuessesData = [...guessesData];
+    const guessUpper = guess.toUpperCase();
+    newGuessesData[nextLetterIndex[0]] = [...guessUpper];
+    setNextLetterIndex([nextLetterIndex[0], numLetters]);  // update next letter index to the end (matches what would happen on normal entering)
+    setGuessesData(newGuessesData);
+    enterGuess(guessUpper, newGuessesData);
+  }
+
   const pages = [
     {
       path: gamePath,  // homepage
@@ -192,19 +289,21 @@ function App() {
           setLetterMaxRanks={setLetterMaxRanks}
           nextLetterIndex={nextLetterIndex}
           setNextLetterIndex={setNextLetterIndex}
-          seenInsights={seenInsights}
           setSeenInsights={setSeenInsights}
           distributionData={distributionData}
-          setDistributionData={setDistributionData}
           guessesDB={guessesDB}
-          setGuessesDB={setGuessesDB}
           hardModeWords={hardModeWords}
           setHardModeWords={setHardModeWords}
-          possibleWords={possibleWords}
-          setPossibleWords={setPossibleWords}
           focusGuessesBoard={focusGuessesBoard}
           changeDate={changeDate}
           resetGame={resetGame}
+          enterGuess={enterGuess}
+          invalidGuess={invalidGuess}
+          invalidGuessDialogOpen={invalidGuessDialogOpen}
+          setInvalidGuessDialogOpen={setInvalidGuessDialogOpen}
+          wonDialogOpen={wonDialogOpen}
+          setWonDialogOpen={setWonDialogOpen}
+          numGuesses={numGuesses}
           green={green}
           gray={gray}
           ref={guessesBoardRef}
@@ -262,6 +361,8 @@ function App() {
             changeDate={changeDate}
             deleteDBDates={deleteDBDates}
             showNewsBadge={showNewsBadge}
+            suggestions={suggestions}
+            submitGuessFromButtonClick={submitGuessFromButtonClick}
             green={green}
             yellow={yellow}
             gray={gray}

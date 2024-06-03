@@ -172,7 +172,66 @@ const getNextUnsolvedDate = (puzzleDate, today, guessesDB) => {
     }
 
     return null;  // all solved
-  }
+}
+
+function getFreqsByIndex(words) {
+    // get letter frequency by index
+    const freqsByIndex = [];
+    for (let i = 0; i < numLetters; i++) {
+        freqsByIndex.push({});  // push each separately to ensure unique
+    }
+    words.forEach(word => {
+        for (let i = 0; i < word.length; i++) {
+            const letter = word[i];
+            freqsByIndex[i][letter] = (freqsByIndex[i][letter] || 0) + 1;
+        }
+    });
+    return freqsByIndex;
+}
+
+function getFreqOverall(freqsByIndex) {
+    const freqOverall = {};
+    freqsByIndex.forEach(freq => {
+        for (const letter in freq) {
+            freqOverall[letter] = (freqOverall[letter] || 0) + freq[letter];
+        }
+    });
+    return freqOverall;
+}
+
+function getWordRanks(words, freqsByIndex) {
+    const wordRanks = [];
+    words.forEach(word => {
+        let rank = 0;
+        for (let i = 0; i < word.length; i++) {
+            const letter = word[i];
+            rank += freqsByIndex[i][letter];
+        }
+        wordRanks.push([rank, word]);
+    });
+    return wordRanks;
+}
+
+function getTopSuggestions(words, n) {
+    const freqsByIndex = getFreqsByIndex(words);
+    const wordRanks = getWordRanks(words, freqsByIndex);
+    return wordRanks.sort((a,b) => {  // sort descending by rank, then alphabetically
+        if (a[0] > b[0]) {
+            return -1;
+        }
+        if (a[0] < b[0]) {
+            return 1;
+        }
+        if (a[1] < b[1]) {
+            return -1;
+        }
+        if (a[1] > b[1]) {
+            return 1;
+        }
+        return 0;
+    }).map(([_, word]) => word).slice(0, n);
+}
+
 
 export {
     blankRow,
@@ -188,5 +247,9 @@ export {
     getDistCountLabel,
     processGuessesDB,
     formatOldDataForIndexedDB,
-    getNextUnsolvedDate
+    getNextUnsolvedDate,
+    getFreqsByIndex,
+    getFreqOverall,
+    getWordRanks,
+    getTopSuggestions
 }

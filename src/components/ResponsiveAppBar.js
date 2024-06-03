@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import { Badge, Tooltip } from '@mui/material';
 import PuzzleNumSelectorDialog from './PuzzleNumSelectorDialog';
 import CalendarDialog from "./CalendarDialog";
-import BoltIcon from '@mui/icons-material/Bolt';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { SuggestionsDialog } from './AlertDialog';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import StatsDialog from './StatsDialog';
@@ -43,6 +43,8 @@ function ResponsiveAppBar({
   changeDate,
   deleteDBDates,
   showNewsBadge,
+  suggestions,
+  submitGuessFromButtonClick,
   green,
   yellow,
   gray,
@@ -231,7 +233,7 @@ function ResponsiveAppBar({
                 suggestionsButtonRef.current.blur();
               }}
             >
-              <BoltIcon sx={{ color: textColor }} />
+              <HelpOutlineIcon sx={{ color: textColor }} />
             </IconButton>
           </Tooltip>
           <SuggestionsDialog
@@ -241,6 +243,8 @@ function ResponsiveAppBar({
               focusGuessesBoard();
             }}
             hardModeWords={hardModeWords}
+            suggestions={suggestions}
+            submitGuessFromButtonClick={submitGuessFromButtonClick}
           />
 
           {/* Stats & History */}

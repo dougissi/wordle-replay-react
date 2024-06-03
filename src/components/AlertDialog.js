@@ -128,16 +128,41 @@ function WonDialog({ open, handleClose, answer, numGuesses, guessesColors, distr
     )
 }
 
-function SuggestionsDialog({ open, handleClose, hardModeWords }) {
+function SuggestionsDialog({ open, handleClose, hardModeWords, suggestions, submitGuessFromButtonClick }) {
     const okButton = <Button key="hardModeWordsOkButton" onClick={handleClose}>OK</Button>;
+
+    const SuggestionButtons = () => {
+        return (
+            <Stack key="suggestion-buttons-row" direction="row" spacing={2}>
+                {suggestions.map((s, i) => {
+                    return (
+                        <Button 
+                            key={`suggestion-button${i}`} 
+                            onClick={() => {
+                                submitGuessFromButtonClick(s);
+                                handleClose();
+                            }}
+                        >
+                            {s}
+                        </Button>
+                    );
+                })}
+            </Stack>
+        );
+    }
 
     return (
         <AlertDialog
             open={open}
             handleClose={handleClose}
-            title="Valid next guesses based on guesses so far"
-            text={[...hardModeWords].join(", ")}
+            // title="Suggestions"
             buttons={[okButton]}
+            addlContent={[
+                <h3 key='top-suggestions-heading'>Top Suggestions</h3>,
+                <SuggestionButtons />, 
+                <h3 key='all-possible-suggestions-heading'>All Remaining Possible Solutions</h3>,
+                <DialogContentText>{[...hardModeWords].join(", ")}</DialogContentText>]
+            }
         />
     )
 }

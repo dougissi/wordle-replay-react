@@ -29,7 +29,7 @@
 * [x] some indication or button that have to press "enter"/"return" to submit puzzle num on mobile -- perhaps a submit button is easiest?
 * [x] move focus to puzzle num selector text field initially
 * [x] guess possible words
-* [ ] guess suggestions
+* [x] guess suggestions
 * [x] give option to turn on Hard Mode (instead of accepting all valid word guesses, only those of the filtered suggestions)
 * [x] add hard mode localStorage to save state
 * [x] fix bug when pressing ENTER to close Possible Words Dialog it auto opens again -- done via blur
@@ -69,6 +69,7 @@
 * [x] prevent having to push "enter" to resume puzzle play on unfinished puzzles?
 * [x] show correct keyboard colors when resuming puzzle
 * [x] publish to GitHub pages
+* [ ] bugfix: after clicking "Play Next" button, you can see the next solution briefly
 * [ ] add local storage keys to constants
 * [ ] AWS dynamoDB?
 * [ ] open Feedback and Donate links in new tab
@@ -101,3 +102,4 @@ For later
 * [ ] update metadata
   * [ ] logo
   * [ ] description
+* [ ] improve guess suggestions
