@@ -72,8 +72,9 @@
 * [ ] add local storage keys to constants
 * [ ] AWS dynamoDB?
 * [ ] open Feedback and Donate links in new tab
-* [ ] make sure really fits on phone screen
+* [x] make sure really fits on phone screen
 * [x] add favicon and other metadata
+* [x] Google Analytics
 * [ ] test on windows laptop (particularly if "Enter" and "Escape" keys are same as expected)
 * [ ] test on android phone
 * [ ] update README
