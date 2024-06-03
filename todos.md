@@ -69,7 +69,7 @@
 * [x] prevent having to push "enter" to resume puzzle play on unfinished puzzles?
 * [x] show correct keyboard colors when resuming puzzle
 * [x] publish to GitHub pages
-* [ ] bugfix: after clicking "Play Next" button, you can see the next solution briefly
+* [x] bugfix: after clicking "Play Next" button, you can see the next solution briefly
 * [ ] add local storage keys to constants
 * [ ] AWS dynamoDB?
 * [ ] open Feedback and Donate links in new tab

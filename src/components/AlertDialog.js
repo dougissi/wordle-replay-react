@@ -96,8 +96,8 @@ function WonDialog({ open, handleClose, answer, numGuesses, guessesColors, distr
 
     const handleClickPlayNextButton = () => {
         if (nextUnsolvedDate) {
-            changeDate(nextUnsolvedDate);
-            handleClose();
+            handleClose();  // close right away
+            setTimeout(() => changeDate(nextUnsolvedDate), 150);  // change date after delay (prevent answer in heading updating to new date's answer)
         }
     }
 
@@ -136,8 +136,8 @@ function SuggestionsDialog({ open, handleClose, hardModeWords, suggestions, subm
             <Stack key="suggestion-buttons-row" direction="row" spacing={2}>
                 {suggestions.map((s, i) => {
                     return (
-                        <Button 
-                            key={`suggestion-button${i}`} 
+                        <Button
+                            key={`suggestion-button${i}`}
                             onClick={() => {
                                 submitGuessFromButtonClick(s);
                                 handleClose();
@@ -155,11 +155,10 @@ function SuggestionsDialog({ open, handleClose, hardModeWords, suggestions, subm
         <AlertDialog
             open={open}
             handleClose={handleClose}
-            // title="Suggestions"
             buttons={[okButton]}
             addlContent={[
                 <h3 key='top-suggestions-heading'>Top Suggestions</h3>,
-                <SuggestionButtons />, 
+                <SuggestionButtons />,
                 <h3 key='all-possible-suggestions-heading'>All Remaining Possible Solutions</h3>,
                 <DialogContentText>{[...hardModeWords].join(", ")}</DialogContentText>]
             }
