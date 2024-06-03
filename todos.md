@@ -73,7 +73,7 @@
 * [ ] AWS dynamoDB?
 * [ ] open Feedback and Donate links in new tab
 * [ ] make sure really fits on phone screen
-* [ ] add favicon and other metadata
+* [x] add favicon and other metadata
 * [ ] test on windows laptop (particularly if "Enter" and "Escape" keys are same as expected)
 * [ ] test on android phone
 * [ ] update README
@@ -97,3 +97,6 @@ For later
   * [ ] FeedbackPage, DonatePage
 * [ ] avoid hardcoding 'white' in ResponsiveAppBar
 * [ ] convert 'YYYY-MM-DD' to constant variable throughout
+* [ ] update metadata
+  * [ ] logo
+  * [ ] description
