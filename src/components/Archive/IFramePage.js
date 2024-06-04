@@ -1,5 +1,5 @@
 import useScreenSize from "../useScreenSize";
-import Page from "./Page";
+import Page from "../Pages/Page";
 
 export default function IFramePage({ title, src }) {
     const screenSize = useScreenSize();  // TODO: commonize with Game

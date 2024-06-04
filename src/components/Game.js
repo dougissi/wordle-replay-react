@@ -2,8 +2,6 @@ import { numLetters, rankToColor, backspaceSymbol, initialNumGuessesToShow } fro
 import { useEffect, useState, forwardRef } from 'react';
 import { blankRow, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex } from '../utils';
 import useScreenSize from './useScreenSize';
-// import { DateSelector } from './DateSelector';
-// import { SearchBar } from './components/SearchBar';
 import GuessesBoard from './GuessesBoard';
 import Keyboard from './Keyboard';
 import InvalidGuessDialog from "./Dialogs/InvalidGuessDialog";

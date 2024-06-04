@@ -93,11 +93,12 @@ For later
 * [ ] allow autofocus on buttons within dialogs (there was a bug in production build when pressing ENTER on guesses board)
 * [ ] custom wordle?
 * [ ] figure out how to change focus back to guesses board after changing, say, dark mode and then exiting settings menu or editing history in stats dialog
-* [ ] archive 
-  * [ ] DateSelector
-  * [ ] SearchBar
-  * [ ] IFrame
-  * [ ] FeedbackPage, DonatePage
+* [x] archive 
+  * [x] DateSelector
+  * [x] SearchBar
+  * [x] IFrame
+  * [x] FeedbackPage, DonatePage
+* [ ] delete archive?
 * [ ] avoid hardcoding 'white' in ResponsiveAppBar
 * [ ] convert 'YYYY-MM-DD' to constant variable throughout
 * [ ] update metadata
