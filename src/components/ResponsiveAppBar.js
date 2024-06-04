@@ -13,12 +13,12 @@ import { Link } from "react-router-dom";
 import { Badge, Tooltip } from '@mui/material';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import PuzzleNumSelectorDialog from './PuzzleNumSelectorDialog';
-import CalendarDialog from "./CalendarDialog";
+import PuzzleNumSelectorDialog from './Dialogs/PuzzleNumSelectorDialog';
+import CalendarDialog from "./Dialogs/CalendarDialog";
+import SuggestionsDialog from './Dialogs/SuggestionsDialog';
+import StatsDialog from './Dialogs/StatsDialog';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import { SuggestionsDialog } from './AlertDialog';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import StatsDialog from './StatsDialog';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SettingsMenu from './SettingsMenu';
 

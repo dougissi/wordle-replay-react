@@ -8,8 +8,8 @@ import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { DayCalendarSkeleton } from '@mui/x-date-pickers/DayCalendarSkeleton';
 import CheckIcon from '@mui/icons-material/Check';
 import CircleIcon from '@mui/icons-material/Circle';
-import { earliestDate } from '../constants';
-import { AlertDialog } from './AlertDialog';
+import { earliestDate } from '../../constants';
+import AlertDialog from './AlertDialog';
 import { Typography } from '@mui/material';
 
 /**

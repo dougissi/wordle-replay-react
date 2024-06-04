@@ -7,10 +7,10 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
-import DistributionChart from './DistributionChart';
-import HistoryPieChart from './HistoryPieChart';
-import HistoryTable from './HistoryTable';
-import { puzzleNumToDate, dateToPuzzleNum } from '../utils';
+import DistributionChart from '../DistributionChart';
+import HistoryPieChart from '../HistoryPieChart';
+import HistoryTable from '../HistoryTable';
+import { puzzleNumToDate, dateToPuzzleNum } from '../../utils';
 import { Stack } from '@mui/material';
 
 const Transition = React.forwardRef(function Transition(props, ref) {

@@ -6,7 +6,8 @@ import useScreenSize from './useScreenSize';
 // import { SearchBar } from './components/SearchBar';
 import GuessesBoard from './GuessesBoard';
 import Keyboard from './Keyboard';
-import { InvalidGuessDialog, WonDialog } from './AlertDialog';
+import InvalidGuessDialog from "./Dialogs/InvalidGuessDialog";
+import WonDialog from "./Dialogs/WonDialog";
 
 import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallbacks } from '../hardModeWordsFiltering';
 

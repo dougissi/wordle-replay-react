@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { TextField } from "@mui/material";
-import { puzzleNumToDate } from "../utils";
-import { AlertDialog } from "./AlertDialog";
+import { puzzleNumToDate } from "../../utils";
+import AlertDialog from "./AlertDialog";
 
 function PuzzleNumSelector({ puzzleNum, isValidPuzzleNum, changeDate, handleClose }) {
     const [value, setValue] = useState(puzzleNum);
