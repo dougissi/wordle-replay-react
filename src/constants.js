@@ -67,7 +67,7 @@ export const lsKeys = {
 // posts will appear on page in the order given in the array
 export const newsPosts = [
     {
-      id: 0,
+      id: 1,
       date: "2024-05-31",
       title: "NYT Launches Wordle Archive",
       fileName: "2024-05-31_nyt_wordlearchive.md"

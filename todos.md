@@ -70,7 +70,6 @@
 * [x] show correct keyboard colors when resuming puzzle
 * [x] publish to GitHub pages
 * [x] bugfix: after clicking "Play Next" button, you can see the next solution briefly
-* [ ] if change date on calendar, say, but currently on the About page, make sure to change page to the game board
 * [x] add "<" and ">" buttons to play prev and next unsolved
 * [ ] add local storage keys to constants
 * [ ] AWS dynamoDB?
@@ -105,3 +104,5 @@ For later
   * [ ] logo
   * [ ] description
 * [ ] improve guess suggestions
+* [ ] update manifest
+* [ ] if change date on calendar, say, but currently on the About page, make sure to change page to the game board
