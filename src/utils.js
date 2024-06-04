@@ -144,34 +144,39 @@ function formatOldDataForIndexedDB(oldData) {
 }
 
 const getNextUnsolvedDate = (puzzleDate, today, guessesDB) => {
-    let currDateStr = puzzleDate;
-    let currDate = dayjs(currDateStr);
+    let currDate = dayjs(puzzleDate).add(1, 'day');  // start with tomorrow
+    let currDateStr = currDate.format('YYYY-MM-DD');
 
     // look forward from current
     while (currDateStr <= today) {
-      if (!guessesDB[currDateStr]?.solvedDate) {
-        return currDateStr;
-      }
+        if (!guessesDB[currDateStr]?.solvedDate) {
+            return currDateStr;
+        }
 
-      // add day
-      currDate = currDate.add(1, 'day');
-      currDateStr = currDate.format('YYYY-MM-DD');
+        // add day
+        currDate = currDate.add(1, 'day');
+        currDateStr = currDate.format('YYYY-MM-DD');
     }
 
-    // nothing found going forward, instead look back
-    currDateStr = puzzleDate;
-    currDate = dayjs(currDateStr);
+    return null;  // all next solved 
+}
+
+const getPreviousUnsolvedDate = (puzzleDate, guessesDB) => {
+    let currDate = dayjs(puzzleDate).subtract(1, 'day');  // start with yesterday
+    let currDateStr = currDate.format('YYYY-MM-DD');
+
+    // look back from current
     while (currDateStr >= earliestDate) {
-      if (!guessesDB[currDateStr]?.solvedDate) {
-        return currDateStr;
-      }
+        if (!guessesDB[currDateStr]?.solvedDate) {
+            return currDateStr;
+        }
 
-      // subtract day
-      currDate = currDate.subtract(1, 'day');
-      currDateStr = currDate.format('YYYY-MM-DD');
+        // subtract day
+        currDate = currDate.subtract(1, 'day');
+        currDateStr = currDate.format('YYYY-MM-DD');
     }
 
-    return null;  // all solved
+    return null;  // all previous solved
 }
 
 function getFreqsByIndex(words) {
@@ -248,6 +253,7 @@ export {
     processGuessesDB,
     formatOldDataForIndexedDB,
     getNextUnsolvedDate,
+    getPreviousUnsolvedDate,
     getFreqsByIndex,
     getFreqOverall,
     getWordRanks,

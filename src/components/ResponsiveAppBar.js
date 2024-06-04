@@ -11,6 +11,8 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from "react-router-dom";
 import { Badge, Tooltip } from '@mui/material';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import PuzzleNumSelectorDialog from './PuzzleNumSelectorDialog';
 import CalendarDialog from "./CalendarDialog";
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
@@ -45,6 +47,8 @@ function ResponsiveAppBar({
   showNewsBadge,
   suggestions,
   submitGuessFromButtonClick,
+  nextUnsolvedDate,
+  previousUnsolvedDate,
   green,
   yellow,
   gray,
@@ -74,6 +78,42 @@ function ResponsiveAppBar({
     return <Badge color="secondary" variant="dot" badgeContent={Number(showBadge)}>{label}</Badge>;
   };
 
+  const navButtonSX = { 
+    minHeight: 0, 
+    minWidth: 0, 
+    padding: '3px'
+  };
+
+  const SuggestionsButton = ({ sx }) => {
+    return (
+      <Box sx={sx}>
+        <Tooltip title="Suggestions">
+          <IconButton
+            variant="contained"
+            ref={suggestionsButtonRef}
+            onClick={() => {
+              setSuggestionsDialogOpen(true);
+              suggestionsButtonRef.current.blur();
+            }}
+            sx={navButtonSX}
+          >
+            <HelpOutlineIcon sx={{ color: textColor }} />
+          </IconButton>
+        </Tooltip>
+        <SuggestionsDialog
+          open={suggestionsDialogOpen}
+          handleClose={() => {
+            setSuggestionsDialogOpen(false);
+            focusGuessesBoard();
+          }}
+          hardModeWords={hardModeWords}
+          suggestions={suggestions}
+          submitGuessFromButtonClick={submitGuessFromButtonClick}
+        />
+      </Box> 
+    );
+  }
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -86,7 +126,7 @@ function ResponsiveAppBar({
             href="/"
             sx={{
               mr: 2,
-              display: { xs: 'none', md: 'flex' },
+              display: { xs: 'none', lg: 'flex' },
               fontFamily: 'monospace',
               fontWeight: 700,
               letterSpacing: '.3rem',
@@ -97,7 +137,7 @@ function ResponsiveAppBar({
             {title}
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{ display: { xs: 'block', lg: 'none' } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -105,6 +145,7 @@ function ResponsiveAppBar({
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
               color="inherit"
+              sx={navButtonSX}
             >
               {labelWithBadge(<MenuIcon />, showNewsBadge)}
             </IconButton>
@@ -123,7 +164,7 @@ function ResponsiveAppBar({
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
-                display: { xs: 'block', md: 'none' },
+                display: { xs: 'block', lg: 'none' },
               }}
             >
               {pages.map((page) => (
@@ -138,28 +179,9 @@ function ResponsiveAppBar({
                 </MenuItem>
               ))}
             </Menu>
-          </Box>
+          </Box>       
 
-          {/* <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            {title}
-          </Typography> */}
-
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ display: { xs: 'none', lg: 'flex' } }}>
             {pages.map((page) => (
               <Button
                 key={`${page.label}-nav-link`}
@@ -174,78 +196,90 @@ function ResponsiveAppBar({
             ))}
           </Box>
 
-          {/* Puzzle Number */}
-          <Tooltip title="Choose Puzzle Number">
-            <Button
-              ref={puzzleNumSelectorButtonRef}
-              onClick={() => {
-                setShowPuzzleSelectorDialog(prev => !prev);
-                puzzleNumSelectorButtonRef.current.blur();
-              }}
-            >
-              <Typography color={textColor}>{`#${puzzleNum}`}</Typography>
-            </Button>
-          </Tooltip>
-          <PuzzleNumSelectorDialog
-            open={showPuzzleSelectorDialog}
-            handleClose={() => {
-              setShowPuzzleSelectorDialog(false);
-              focusGuessesBoard();
-            }}
-            puzzleNum={puzzleNum}
-            isValidPuzzleNum={isValidPuzzleNum}
-            changeDate={changeDate}
-          />
+          <SuggestionsButton sx={{ display: { xs: 'inherit', lg: 'none'}}} />
 
-          {/* Puzzle Date */}
-          <Tooltip title="Choose Puzzle Date">
-            <Button
-              ref={calendarButtonRef}
-              onClick={() => {
-                setShowCalendarDialog(prev => !prev);
-                calendarButtonRef.current.blur();
-              }}
-            >
-              <Typography color={textColor}>{puzzleDate}</Typography>
-            </Button>
-          </Tooltip>
-          <CalendarDialog
-            open={showCalendarDialog}
-            handleClose={() => {
-              setShowCalendarDialog(false);
-              focusGuessesBoard();
-            }}
-            today={today}
-            puzzleDate={puzzleDate}
-            guessesDB={guessesDB}
-            changeDate={changeDate}
-            green={green}
-            yellow={yellow}
-          />
+          
+          <Box sx={{ flexGrow: 1 }}>
 
-          {/* Suggestions Icon */}
-          <Tooltip title="Suggestions">
-            <IconButton
-              variant="contained"
-              ref={suggestionsButtonRef}
-              onClick={() => {
-                setSuggestionsDialogOpen(true);
-                suggestionsButtonRef.current.blur();
+            {/* Previous Unsolved Arrow Icon */}
+            <Tooltip title="Previous Unsolved">
+              <span>
+                <IconButton
+                  disabled={!previousUnsolvedDate}
+                  onClick={() => changeDate(previousUnsolvedDate)}
+                  sx={navButtonSX}
+                >
+                  <KeyboardArrowLeftIcon sx={{ color: previousUnsolvedDate ? textColor : "inherit" }} />
+                </IconButton>
+              </span>
+            </Tooltip>
+
+            {/* Puzzle Number */}
+            <Tooltip title="Choose Puzzle Number">
+              <Button
+                ref={puzzleNumSelectorButtonRef}
+                onClick={() => {
+                  setShowPuzzleSelectorDialog(prev => !prev);
+                  puzzleNumSelectorButtonRef.current.blur();
+                }}
+                sx={navButtonSX}
+              >
+                <Typography color={textColor}>{`#${puzzleNum}`}</Typography>
+              </Button>
+            </Tooltip>
+            <PuzzleNumSelectorDialog
+              open={showPuzzleSelectorDialog}
+              handleClose={() => {
+                setShowPuzzleSelectorDialog(false);
+                focusGuessesBoard();
               }}
-            >
-              <HelpOutlineIcon sx={{ color: textColor }} />
-            </IconButton>
-          </Tooltip>
-          <SuggestionsDialog
-            open={suggestionsDialogOpen}
-            handleClose={() => {
-              setSuggestionsDialogOpen(false);
-              focusGuessesBoard();
-            }}
-            hardModeWords={hardModeWords}
-            suggestions={suggestions}
-            submitGuessFromButtonClick={submitGuessFromButtonClick}
-          />
+              puzzleNum={puzzleNum}
+              isValidPuzzleNum={isValidPuzzleNum}
+              changeDate={changeDate}
+            />
+
+            {/* Puzzle Date */}
+            <Tooltip title="Choose Puzzle Date">
+              <Button
+                ref={calendarButtonRef}
+                onClick={() => {
+                  setShowCalendarDialog(prev => !prev);
+                  calendarButtonRef.current.blur();
+                }}
+                sx={navButtonSX}
+              >
+                <Typography color={textColor}>{puzzleDate}</Typography>
+              </Button>
+            </Tooltip>
+            <CalendarDialog
+              open={showCalendarDialog}
+              handleClose={() => {
+                setShowCalendarDialog(false);
+                focusGuessesBoard();
+              }}
+              today={today}
+              puzzleDate={puzzleDate}
+              guessesDB={guessesDB}
+              changeDate={changeDate}
+              green={green}
+              yellow={yellow}
+            />
+
+            {/* Next Unsolved Arrow Icon */}
+            <Tooltip title="Next Unsolved">
+              <span>
+                <IconButton
+                  disabled={!nextUnsolvedDate}
+                  onClick={() => changeDate(nextUnsolvedDate)}
+                  sx={navButtonSX}
+                >
+                  <KeyboardArrowRightIcon sx={{ color: nextUnsolvedDate ? textColor : "inherit" }} />
+                </IconButton>
+              </span>
+            </Tooltip>
+          </Box>
+
+          <SuggestionsButton sx={{ display: { xs: 'none', lg: 'inherit'}}} />
 
           {/* Stats & History */}
           <Tooltip title="Stats & History">
@@ -256,6 +290,7 @@ function ResponsiveAppBar({
                 setStatsDialogOpen(true);
                 statsButtonRef.current.blur();
               }}
+              sx={navButtonSX}
             >
               <BarChartIcon sx={{ color: textColor }} />
             </IconButton>
@@ -289,6 +324,7 @@ function ResponsiveAppBar({
                 setAnchorElSettings(event.currentTarget);
                 settingsButtonRef.current.blur();
               }}
+              sx={navButtonSX}
             >
               <SettingsIcon sx={{ color: textColor }} />
             </IconButton>

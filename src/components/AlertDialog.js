@@ -61,7 +61,22 @@ function InvalidGuessDialog({ open, handleClose, guess, clearGuess, hardMode }) 
     )
 }
 
-function WonDialog({ open, handleClose, answer, numGuesses, guessesColors, distributionData, colorBlindMode, puzzleNum, puzzleDate, nextUnsolvedDate, changeDate, green, gray }) {
+function WonDialog({
+    open,
+    handleClose,
+    answer,
+    numGuesses,
+    guessesColors,
+    distributionData,
+    colorBlindMode,
+    puzzleNum,
+    puzzleDate,
+    nextUnsolvedDate,
+    previousUnsolvedDate,
+    changeDate,
+    green,
+    gray
+}) {
     const guessesIcons = [];
     for (let i = 0; i < guessesColors.length; i++) {
         const guessColors = guessesColors[i];
@@ -94,16 +109,17 @@ function WonDialog({ open, handleClose, answer, numGuesses, guessesColors, distr
         }
     };
 
-    const handleClickPlayNextButton = () => {
-        if (nextUnsolvedDate) {
+    const handleClickPlayUnsolvedButton = (newDate) => {
+        if (newDate) {
             handleClose();  // close right away
-            setTimeout(() => changeDate(nextUnsolvedDate), 150);  // change date after delay (prevent answer in heading updating to new date's answer)
+            setTimeout(() => changeDate(newDate), 150);  // change date after delay (prevent answer in heading updating to new date's answer)
         }
     }
 
     const copyButton = <Button key="copyIconsButton" onClick={() => navigator.clipboard.writeText(shareText)}>Copy</Button>;
     const shareButton = <Button key="shareIconsButton" onClick={handleShare} disabled={!isShareSupported()}>Share</Button>;
-    const playNextButton = <Button key="playNextButton" onClick={handleClickPlayNextButton} disabled={!nextUnsolvedDate}>Play Next</Button>
+    const playNextButton = <Button key="playNextButton" onClick={() => handleClickPlayUnsolvedButton(nextUnsolvedDate)} disabled={!nextUnsolvedDate}>Next Unsolved</Button>
+    const playPreviousButton = <Button key="playPreviousButton" onClick={() => handleClickPlayUnsolvedButton(previousUnsolvedDate)} disabled={!previousUnsolvedDate}>Previous Unsolved</Button>
 
     return (
         <AlertDialog
@@ -111,7 +127,7 @@ function WonDialog({ open, handleClose, answer, numGuesses, guessesColors, distr
             handleClose={handleClose}
             title={`You found "${answer}"!`}
             // text="Thanks for playing."  // TODO: update
-            buttons={[playNextButton]}
+            buttons={[playPreviousButton, playNextButton]}
             addlContent={[
                 <DistributionChart key="distributionChart" numGuesses={numGuesses} distributionData={distributionData} green={green} gray={gray} />,
                 <Typography key="guesses" variant="h6">Guesses</Typography>,
@@ -133,7 +149,7 @@ function SuggestionsDialog({ open, handleClose, hardModeWords, suggestions, subm
 
     const SuggestionButtons = () => {
         return (
-            <Stack key="suggestion-buttons-row" direction="row" spacing={2}>
+            <Stack direction="row" spacing={2}>
                 {suggestions.map((s, i) => {
                     return (
                         <Button
@@ -158,9 +174,9 @@ function SuggestionsDialog({ open, handleClose, hardModeWords, suggestions, subm
             buttons={[okButton]}
             addlContent={[
                 <h3 key='top-suggestions-heading'>Top Suggestions</h3>,
-                <SuggestionButtons />,
+                <SuggestionButtons key="suggestion-buttons-row" />,
                 <h3 key='all-possible-suggestions-heading'>All Remaining Possible Solutions</h3>,
-                <DialogContentText>{[...hardModeWords].join(", ")}</DialogContentText>]
+                <DialogContentText key='all-possible-words-dialog-text'>{[...hardModeWords].join(", ")}</DialogContentText>]
             }
         />
     )

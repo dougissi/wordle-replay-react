@@ -10,7 +10,7 @@ import AboutPage from './components/Pages/AboutPage';
 import NewsPage from './components/Pages/NewsPage';
 import { dateToWord } from './assets/date_to_word';
 import { wordleAcceptableWords } from './assets/wordle_acceptable_words';
-import { blankGuessesGrid, blankRow, dateIsBetween, dateToPuzzleNum, getDistCountLabel, getGuessRanks, getLetterAlphabetIndex, getTopSuggestions, numIsBetween, puzzleNumToDate } from './utils';
+import { blankGuessesGrid, blankRow, dateIsBetween, dateToPuzzleNum, getDistCountLabel, getGuessRanks, getLetterAlphabetIndex, getNextUnsolvedDate as _getNextUnsolvedDate, getPreviousUnsolvedDate as _getPreviousUnsolvedDate, getTopSuggestions, numIsBetween, puzzleNumToDate } from './utils';
 import { colorMap, earliestDate, emptyDistributionData, GREEN, YELLOW, GRAY, lsKeys, maxNewsPostId, numSuggestions, rankToColor, numLetters } from './constants';
 import { initDB, deleteItem, putItem } from './db';
 import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallbacks } from './hardModeWordsFiltering';
@@ -60,6 +60,8 @@ function App() {
   const [invalidGuess, setInvalidGuess] = useState("");
   const [invalidGuessDialogOpen, setInvalidGuessDialogOpen] = useState(false);
   const [wonDialogOpen, setWonDialogOpen] = useState(false);
+  const [nextUnsolvedDate, setNextUnsolvedDate] = useState(null);
+  const [previousUnsolvedDate, setPreviousUnsolvedDate] = useState(null);
   
   const toggleColorMode = () => {
     const newColorMode = colorMode === 'light' ? 'dark' : 'light';
@@ -114,6 +116,12 @@ function App() {
     const newSuggestions = getTopSuggestions(hardModeWords, numSuggestions);
     setSuggestions(newSuggestions);
   }, [hardModeWords]);
+
+  // get new unsolved dates when puzzle date and/or guessesDB changes
+  useEffect(() => {
+    setNextUnsolvedDate(_getNextUnsolvedDate(puzzleDate, today, guessesDB));
+    setPreviousUnsolvedDate(_getPreviousUnsolvedDate(puzzleDate, guessesDB));
+  }, [puzzleDate, guessesDB]);
 
   const darkMode = colorMode === 'dark';  // TODO: useEffect?
   const colorBlindModeDesc = colorBlindMode ? 'colorBlind' : 'standard';
@@ -304,6 +312,8 @@ function App() {
           wonDialogOpen={wonDialogOpen}
           setWonDialogOpen={setWonDialogOpen}
           numGuesses={numGuesses}
+          nextUnsolvedDate={nextUnsolvedDate}
+          previousUnsolvedDate={previousUnsolvedDate}
           green={green}
           gray={gray}
           ref={guessesBoardRef}
@@ -363,6 +373,8 @@ function App() {
             showNewsBadge={showNewsBadge}
             suggestions={suggestions}
             submitGuessFromButtonClick={submitGuessFromButtonClick}
+            nextUnsolvedDate={nextUnsolvedDate}
+            previousUnsolvedDate={previousUnsolvedDate}
             green={green}
             yellow={yellow}
             gray={gray}

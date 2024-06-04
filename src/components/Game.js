@@ -1,6 +1,6 @@
 import { numLetters, rankToColor, backspaceSymbol, initialNumGuessesToShow } from "../constants";
 import { useEffect, useState, forwardRef } from 'react';
-import { blankRow, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex, getNextUnsolvedDate } from '../utils';
+import { blankRow, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex } from '../utils';
 import useScreenSize from './useScreenSize';
 // import { DateSelector } from './DateSelector';
 // import { SearchBar } from './components/SearchBar';
@@ -42,6 +42,8 @@ const Game = forwardRef(({
   wonDialogOpen,
   setWonDialogOpen,
   numGuesses,
+  nextUnsolvedDate,
+  previousUnsolvedDate,
   green,
   gray,
 }, guessesBoardRef) => {
@@ -192,7 +194,8 @@ const Game = forwardRef(({
         colorBlindMode={colorBlindMode}
         puzzleDate={puzzleDate}
         puzzleNum={puzzleNum}
-        nextUnsolvedDate={getNextUnsolvedDate(puzzleDate, today, guessesDB)}
+        nextUnsolvedDate={nextUnsolvedDate}
+        previousUnsolvedDate={previousUnsolvedDate}
         changeDate={changeDate}
         green={green}
         gray={gray}
