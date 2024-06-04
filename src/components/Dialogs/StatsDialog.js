@@ -10,7 +10,7 @@ import Slide from '@mui/material/Slide';
 import { PieChart } from '@mui/x-charts/PieChart';
 import DistributionChart from '../DistributionChart';
 import HistoryTable from './HistoryTable';
-import { puzzleNumToDate, dateToPuzzleNum } from '../../utils';
+import { puzzleNumToDate, dateToPuzzleNum, getDistCountLabel } from '../../utils';
 import { Stack } from '@mui/material';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -54,7 +54,7 @@ export default function StatsDialog({ open, handleClose, today, distributionData
                 </Button>
             ),
             status: status,
-            numGuesses: guessesDB[date] ? guessesDB[date].guesses.length : null,
+            numGuesses: guessesDB[date] ? getDistCountLabel(guessesDB[date].guesses.length) : null
         });
     }
 

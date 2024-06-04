@@ -51,10 +51,9 @@
   * [x] other inputs
   * [x] tidy title and other elements of nav bar
 * [x] bugfix: won dialog highlighting the one higher guess number
-* [ ] populate additional pages in App bar
-  * [ ] About
-  * [ ] Instructions
-  * [ ] News (Blog)
+* [x] populate additional pages in App bar
+  * [x] About
+  * [x] News (Blog)
   * [x] Feedback
   * [x] Donate
 * [x] brighter links in markdown when on dark mode (solved thanks to this documentation on [react-markdown components](https://github.com/remarkjs/react-markdown#appendix-b-components))

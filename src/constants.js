@@ -67,6 +67,12 @@ export const lsKeys = {
 // posts will appear on page in the order given in the array
 export const newsPosts = [
     {
+        id: 2,
+        date: "2024-06-05",
+        title: "WordleReplay.com Launches New React Frontend",
+        fileName: "2024-06-05_wordlereplayreact_release.md"
+    },
+    {
       id: 1,
       date: "2024-05-31",
       title: "NYT Launches Wordle Archive",
