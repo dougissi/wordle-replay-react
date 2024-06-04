@@ -22,7 +22,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import { Autocomplete, Stack, TextField } from '@mui/material';
-import { puzzleNumToDate } from '../utils';
+import { puzzleNumToDate } from '../../utils';
 
 const headCells = [
   {
@@ -199,9 +199,9 @@ export default function EnhancedTable({ historyData, deleteDBDates }) {
   const [orderBy, setOrderBy] = React.useState('puzzleNum');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
+  const [dense, setDense] = React.useState(true);
   const [rows, setRows] = React.useState(historyData);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [filterColumn, setFilterColumn] = React.useState();
   const [filterValues, setFilterValues] = React.useState([]);
   const [showFilterOptions, setShowFilterOptions] = React.useState(false);
@@ -268,8 +268,13 @@ export default function EnhancedTable({ historyData, deleteDBDates }) {
     [rows, order, orderBy, page, rowsPerPage],
   );
 
+  const filterSX = {
+    width: 200,
+    padding: "0px 5px"
+  };
+
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%', padding: 2 }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
         <EnhancedTableToolbar
           numSelected={selected.length}
@@ -301,8 +306,8 @@ export default function EnhancedTable({ historyData, deleteDBDates }) {
               disablePortal
               id="filter-column"
               options={headCells.filter((cell) => cell.id !== 'id')}
-              sx={{ width: 300 }}
-              renderInput={(params) => <TextField {...params} label="Select column to filter" />}
+              sx={filterSX}
+              renderInput={(params) => <TextField {...params} label="Column to filter" />}
               onChange={(event, option) => {
                 if (option) {
                   setFilterColumn(option.id);
@@ -320,7 +325,7 @@ export default function EnhancedTable({ historyData, deleteDBDates }) {
                 disablePortal
                 id="filter-values"
                 options={filterValues}
-                sx={{ width: 300 }}
+                sx={filterSX}
                 renderInput={(params) => <TextField {...params} label="Values" />}
                 onChange={(event, option) => {
                   if (option) {
@@ -399,7 +404,7 @@ export default function EnhancedTable({ historyData, deleteDBDates }) {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[10, 25, 100]}
           component="div"
           count={rows.length}
           rowsPerPage={rowsPerPage}

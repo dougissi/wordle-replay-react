@@ -7,9 +7,9 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
+import { PieChart } from '@mui/x-charts/PieChart';
 import DistributionChart from '../DistributionChart';
-import HistoryPieChart from '../HistoryPieChart';
-import HistoryTable from '../HistoryTable';
+import HistoryTable from './HistoryTable';
 import { puzzleNumToDate, dateToPuzzleNum } from '../../utils';
 import { Stack } from '@mui/material';
 
@@ -57,6 +57,22 @@ export default function StatsDialog({ open, handleClose, today, distributionData
             numGuesses: guessesDB[date] ? guessesDB[date].guesses.length : null,
         });
     }
+
+    function HistoryPieChart({ data }) {
+        return (
+          <PieChart
+            series={[
+              {
+                arcLabel: (item) => item.value,
+                arcLabelMinAngle: 45,
+                data: data,
+              },
+            ]}
+            width={400}
+            height={200}
+          />
+        );
+    }
     
 
     return (
@@ -82,8 +98,17 @@ export default function StatsDialog({ open, handleClose, today, distributionData
                 </Toolbar>
             </AppBar>
             <Stack>
-                <DistributionChart distributionData={distributionData} green={green} gray={gray} />
-                <HistoryPieChart data={historyPieData} />
+                <Stack 
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                    spacing={2} 
+                    useFlexGap
+                    flexWrap="wrap">
+                    <DistributionChart distributionData={distributionData} green={green} gray={gray} />
+                    <HistoryPieChart data={historyPieData} />
+                </Stack>
+                
                 <HistoryTable historyData={historyData} deleteDBDates={deleteDBDates} />
             </Stack>
         </Dialog>

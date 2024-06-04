@@ -35,12 +35,12 @@
 * [x] fix bug when pressing ENTER to close Possible Words Dialog it auto opens again -- done via blur
 * [x] (probably unneeded now that each guess is saved) show some sort of warning dialog when game is in progress but you're about to navigate away to another local page
 * [x] tidy suggestions button ref and general naming (vs possible words and possible guesses)
-* [ ] tidy stats page styling
-  * [ ] explanations for each section
+* [x] tidy stats page styling
+  * [x] explanations for each section
   * [x] update coloring of distribution bars
   * [x] make better title for distribution chart
   * [x] more details when hovering over a distribution bars as to what it means
-  * [ ] have history table match background color when in dark mode
+  * [x] have history table match background color when in dark mode
 * [x] bugfix: don't exit Calendar on year change
 * [x] show previous guesses on solved puzzles
 * [x] show which are solved on Date Picker
