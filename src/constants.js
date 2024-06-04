@@ -1,5 +1,5 @@
 export const numLetters = 5;
-export const numSuggestions = 3;
+export const numSuggestions = 10;
 export const initialNumGuessesToShow = 6;
 export const emptyDistributionData = {
     1: 0,

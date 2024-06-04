@@ -103,6 +103,7 @@ For later
 * [ ] update metadata
   * [ ] logo
   * [ ] description
-* [ ] improve guess suggestions
+* [x] improve guess suggestions
 * [ ] update manifest
 * [ ] if change date on calendar, say, but currently on the About page, make sure to change page to the game board
+* [ ] make news badge more visible

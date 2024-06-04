@@ -179,62 +179,91 @@ const getPreviousUnsolvedDate = (puzzleDate, guessesDB) => {
     return null;  // all previous solved
 }
 
-function getFreqsByIndex(words) {
+function countDuplicateLetters(word) {
+    const seen = new Set();
+    let dups = 0;
+    for (let i = 0; i < word.length; i++) {
+        const letter = word[i];
+        if (seen.has(letter)) {
+            dups++;
+        }
+        seen.add(letter);
+    }
+    return dups;
+}
+
+function getFreqs(words) {
     // get letter frequency by index
     const freqsByIndex = [];
     for (let i = 0; i < numLetters; i++) {
         freqsByIndex.push({});  // push each separately to ensure unique
     }
+    const freqOverall = {};
     words.forEach(word => {
         for (let i = 0; i < word.length; i++) {
             const letter = word[i];
             freqsByIndex[i][letter] = (freqsByIndex[i][letter] || 0) + 1;
+            freqOverall[letter] = (freqOverall[letter] || 0) + 1;
         }
     });
-    return freqsByIndex;
+    return [freqsByIndex, freqOverall];
 }
 
-function getFreqOverall(freqsByIndex) {
-    const freqOverall = {};
-    freqsByIndex.forEach(freq => {
-        for (const letter in freq) {
-            freqOverall[letter] = (freqOverall[letter] || 0) + freq[letter];
-        }
-    });
-    return freqOverall;
-}
-
-function getWordRanks(words, freqsByIndex) {
+function getWordRanks(words, freqs) {
     const wordRanks = [];
+    const [freqsByIndex, freqsByOverall] = freqs;
     words.forEach(word => {
-        let rank = 0;
+        let rankByIndex = 0;
+        let rankByOverall = 0;
         for (let i = 0; i < word.length; i++) {
             const letter = word[i];
-            rank += freqsByIndex[i][letter];
+            rankByIndex += freqsByIndex[i][letter];
+            rankByOverall += freqsByOverall[letter];
         }
-        wordRanks.push([rank, word]);
+        wordRanks.push({
+            word: word,
+            dups: countDuplicateLetters(word),
+            rankByIndex: rankByIndex,
+            rankByOverall: rankByOverall
+        });
     });
     return wordRanks;
 }
 
 function getTopSuggestions(words, n) {
-    const freqsByIndex = getFreqsByIndex(words);
-    const wordRanks = getWordRanks(words, freqsByIndex);
-    return wordRanks.sort((a,b) => {  // sort descending by rank, then alphabetically
-        if (a[0] > b[0]) {
+    const freqs = getFreqs(words);
+    const wordRanks = getWordRanks(words, freqs);
+    return wordRanks.sort((a,b) => {
+        // ascending dups
+        if (a.dups < b.dups) {
             return -1;
         }
-        if (a[0] < b[0]) {
+        if (a.dups > b.dups) {
             return 1;
         }
-        if (a[1] < b[1]) {
+        // descending rankByOverall
+        if (a.rankByOverall > b.rankByOverall) {
             return -1;
         }
-        if (a[1] > b[1]) {
+        if (a.rankByOverall < b.rankByOverall) {
+            return 1;
+        }
+        // descending rankByIndex
+        if (a.rankByIndex > b.rankByIndex) {
+            return -1;
+        }
+        if (a.rankByIndex < b.rankByIndex) {
+            return 1;
+        }
+        // ascending alphabetically
+        if (a.word < b.word) {
+            return -1;
+        }
+        if (a.word > b.word) {
             return 1;
         }
         return 0;
-    }).map(([_, word]) => word).slice(0, n);
+    }).map(x => x.word).slice(0, n);
 }
 
 
@@ -254,8 +283,8 @@ export {
     formatOldDataForIndexedDB,
     getNextUnsolvedDate,
     getPreviousUnsolvedDate,
-    getFreqsByIndex,
-    getFreqOverall,
+    countDuplicateLetters,
+    getFreqs,
     getWordRanks,
     getTopSuggestions
 }

@@ -149,11 +149,12 @@ function SuggestionsDialog({ open, handleClose, hardModeWords, suggestions, subm
 
     const SuggestionButtons = () => {
         return (
-            <Stack direction="row" spacing={2}>
+            <Stack direction="row" spacing={2} useFlexGap flexWrap="wrap">
                 {suggestions.map((s, i) => {
                     return (
                         <Button
                             key={`suggestion-button${i}`}
+                            variant="contained"
                             onClick={() => {
                                 submitGuessFromButtonClick(s);
                                 handleClose();
