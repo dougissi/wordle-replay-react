@@ -76,6 +76,7 @@
 
 Before post:
 * [ ] bugfix: news TOC links extending beyond edge of page (on mobile)
+* [ ] add more space before divider on News page
 * [ ] update metadata
   * [ ] logo
   * [ ] description
