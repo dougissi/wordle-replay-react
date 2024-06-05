@@ -10,7 +10,7 @@ import AboutPage from './components/Pages/AboutPage';
 import NewsPage from './components/Pages/NewsPage';
 import { dateToWord } from './assets/date_to_word';
 import { wordleAcceptableWords } from './assets/wordle_acceptable_words';
-import { blankGuessesGrid, blankRow, dateIsBetween, dateToPuzzleNum, getDistCountLabel, getGuessRanks, getLetterAlphabetIndex, getNextUnsolvedDate as _getNextUnsolvedDate, getPreviousUnsolvedDate as _getPreviousUnsolvedDate, getTopSuggestions, numIsBetween, puzzleNumToDate } from './utils';
+import { blankGuessesGrid, blankRow, dateIsBetween, dateToPuzzleNum, getDistCountLabel, getGuessRanks, getLetterAlphabetIndex, getNextUnsolvedDate as _getNextUnsolvedDate, getPreviousUnsolvedDate as _getPreviousUnsolvedDate, getTopSuggestions, numIsBetween, union, puzzleNumToDate } from './utils';
 import { colorMap, earliestDate, emptyDistributionData, GREEN, YELLOW, GRAY, lsKeys, maxNewsPostId, numSuggestions, rankToColor, numLetters } from './constants';
 import { initDB, deleteItem, putItem } from './db';
 import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallbacks } from './hardModeWordsFiltering';
@@ -242,7 +242,7 @@ function App() {
       const newInsights = insights.filter((insight) => !seenInsights.has(insight));
       const newInsightCallbacks = newInsights.map((insight) => getInsightCallback(insight));
       const newHardModeWords = new Set([...hardModeWords].filter((word) => satisfiesAllInsightCallbacks(word, newInsightCallbacks)));
-      setSeenInsights(seenInsights.union(new Set(newInsights)));
+      setSeenInsights(union(seenInsights, newInsights));
       setHardModeWords(newHardModeWords);
 
       // update possible words set if hard mode is on

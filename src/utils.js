@@ -109,6 +109,10 @@ function numIsBetween(num, start, end) {
     return num >= start && num <= end;
 }
 
+function union(a, b) {
+    return new Set([...a, ...b]);
+}
+
 function getDistCountLabel(numGuesses) {
     return numGuesses < 7 ? numGuesses : '7+';
 }
@@ -278,6 +282,7 @@ export {
     puzzleNumToDate,
     dateIsBetween,
     numIsBetween,
+    union,
     getDistCountLabel,
     processGuessesDB,
     formatOldDataForIndexedDB,

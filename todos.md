@@ -63,7 +63,7 @@
 * [x] publish to GitHub pages
 * [x] bugfix: after clicking "Play Next" button, you can see the next solution briefly
 * [x] add "<" and ">" buttons to play prev and next unsolved
-* [ ] bugfix: Set.union not working on some browsers -- use custom `union` function
+* [x] bugfix: Set.union not working on some browsers -- use custom `union` function
 * [x] make sure really fits on phone screen
 * [x] add favicon and other metadata
 * [x] Google Analytics
@@ -78,6 +78,7 @@ Before post:
 * [ ] update metadata
   * [ ] logo
   * [ ] description
+* [ ] clean out unused code files
 * [ ] update React tests for App.js
 * [ ] update README
   * [ ] steps on how to add new News post
