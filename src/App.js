@@ -10,7 +10,7 @@ import AboutPage from './components/Pages/AboutPage';
 import NewsPage from './components/Pages/NewsPage';
 import { dateToWord } from './assets/date_to_word';
 import { wordleAcceptableWords } from './assets/wordle_acceptable_words';
-import { blankGuessesGrid, blankRow, dateIsBetween, dateToPuzzleNum, getDistCountLabel, getGuessRanks, getLetterAlphabetIndex, getNextUnsolvedDate as _getNextUnsolvedDate, getPreviousUnsolvedDate as _getPreviousUnsolvedDate, getTopSuggestions, numIsBetween, union, puzzleNumToDate } from './utils';
+import { blankGuessesGrid, blankRow, dateIsBetween, dateToPuzzleNum, getDistCountLabel, getGuessRanks, getLetterAlphabetIndex, getNextUnsolvedDate, getPreviousUnsolvedDate, getTopSuggestions, numIsBetween, union, puzzleNumToDate } from './utils';
 import { colorMap, earliestDate, emptyDistributionData, GREEN, YELLOW, GRAY, lsKeys, maxNewsPostId, numSuggestions, rankToColor, numLetters } from './constants';
 import { initDB, deleteItem, putItem } from './db';
 import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallbacks } from './hardModeWordsFiltering';
@@ -119,8 +119,8 @@ function App() {
 
   // get new unsolved dates when puzzle date and/or guessesDB changes
   useEffect(() => {
-    setNextUnsolvedDate(_getNextUnsolvedDate(puzzleDate, today, guessesDB));
-    setPreviousUnsolvedDate(_getPreviousUnsolvedDate(puzzleDate, guessesDB));
+    setNextUnsolvedDate(getNextUnsolvedDate(puzzleDate, today, guessesDB));
+    setPreviousUnsolvedDate(getPreviousUnsolvedDate(puzzleDate, guessesDB));
   }, [puzzleDate, guessesDB]);
 
   const darkMode = colorMode === 'dark';  // TODO: useEffect?
