@@ -70,6 +70,7 @@
 * [x] publish to GitHub pages
 * [x] bugfix: after clicking "Play Next" button, you can see the next solution briefly
 * [x] add "<" and ">" buttons to play prev and next unsolved
+* [ ] bugfix: Set.union not working on some browsers
 * [ ] add local storage keys to constants
 * [ ] AWS dynamoDB?
 * [ ] open Feedback and Donate links in new tab
@@ -82,6 +83,9 @@
   * [ ] steps on how to add new News post
 * [ ] transition to wordlereplay.com (including in package.json, share link)
 * [ ] update "auto update" script (if needed) to include the "export" at the beginning of file
+* [ ] use custom `union` function since built-in one doesn't work in all browsers
+* [ ] add more details to feedback form
+* [ ] add "OK" button to Won Dialog (otherwise not obvious how to close)
 
 Instructions:
 * how to delete history (including all)
@@ -106,4 +110,5 @@ For later
 * [x] improve guess suggestions
 * [ ] update manifest
 * [ ] if change date on calendar, say, but currently on the About page, make sure to change page to the game board
-* [ ] make news badge more visible
+* [x] make news badge more visible
+* [ ] make common component using mui Link via react-router-dom Link

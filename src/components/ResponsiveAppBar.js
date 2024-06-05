@@ -75,7 +75,7 @@ function ResponsiveAppBar({
   };
 
   const labelWithBadge = (label, showBadge) => {
-    return <Badge color="secondary" variant="dot" badgeContent={Number(showBadge)}>{label}</Badge>;
+    return <Badge color="warning" variant="dot" badgeContent={Number(showBadge)}>{label}</Badge>;
   };
 
   const navButtonSX = { 
