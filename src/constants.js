@@ -61,6 +61,11 @@ export const backspaceSymbol = "⬅";
 export const earliestDate = "2021-06-19";
 
 export const lsKeys = {
+    colorMode: 'colorMode',
+    hardMode: 'hardMode',
+    colorBlindMode: 'colorBlindMode',
+    transferredOldSolvedDataFlag: 'transferredOldSolvedDataFlag',
+    oldWordleReplaySolved: 'wordlereplay-solved',
     maxSeenNewsPostId: 'maxSeenNewsPostId',
 }
 

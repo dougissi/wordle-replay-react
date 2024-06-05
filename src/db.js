@@ -1,6 +1,7 @@
 // db.js
 
 import { processGuessesDB, formatOldDataForIndexedDB } from "./utils";
+import { lsKeys } from "./constants";
 
 const DB_NAME = "wordlereplay_db";
 const DB_VERSION = 1;
@@ -21,12 +22,12 @@ export const initDB = (setDistributionData, setGuessesDB) => {
     db = event.target.result;  // set db globally
 
     // copy old solved history from localStorage to indexedDB, if not already done
-    const transferFlag = localStorage.getItem('transferredOldSolvedDataFlag');
+    const transferFlag = localStorage.getItem(lsKeys.transferredOldSolvedDataFlag);
     if (transferFlag !== 'true') {
-      const oldData = localStorage.getItem('wordlereplay-solved');
+      const oldData = localStorage.getItem(lsKeys.oldWordleReplaySolved);
       const newData = formatOldDataForIndexedDB(oldData);
       newData.forEach((item) => putItem(item));
-      localStorage.setItem('transferredOldSolvedDataFlag', 'true');  // Set flag in localStorage to indicate transfer is done
+      localStorage.setItem(lsKeys.transferredOldSolvedDataFlag, 'true');  // Set flag in localStorage to indicate transfer is done
       // TODO: consider removing old localStorage data
     }
     setSolvedStates(setDistributionData, setGuessesDB);

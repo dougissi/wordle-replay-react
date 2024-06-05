@@ -30,9 +30,9 @@ const isValidPuzzleNum = (num) => {
 
 
 function App() {
-  const [colorMode, setColorMode] = useState(localStorage.getItem('colorMode') || 'light');  // TODO: unit test
-  const [hardMode, setHardMode] = useState(localStorage.getItem('hardMode') === 'true');  // TODO: unit test
-  const [colorBlindMode, setColorBlindMode] = useState(localStorage.getItem('colorBlindMode') === 'true');  // TODO: unit test
+  const [colorMode, setColorMode] = useState(localStorage.getItem(lsKeys.colorMode) || 'light');  // TODO: unit test
+  const [hardMode, setHardMode] = useState(localStorage.getItem(lsKeys.hardMode) === 'true');  // TODO: unit test
+  const [colorBlindMode, setColorBlindMode] = useState(localStorage.getItem(lsKeys.colorBlindMode) === 'true');  // TODO: unit test
   const [searchParams, setSearchParams] = useSearchParams();
   const [puzzleDate, setPuzzleDate] = useState(  // try use param date, otherwise try use param num, else today
     isValidDate(searchParams.get('date'))
@@ -65,7 +65,7 @@ function App() {
   
   const toggleColorMode = () => {
     const newColorMode = colorMode === 'light' ? 'dark' : 'light';
-    localStorage.setItem('colorMode', newColorMode);  // persist
+    localStorage.setItem(lsKeys.colorMode, newColorMode);  // persist
     setColorMode(newColorMode);
   };
 
@@ -136,13 +136,13 @@ function App() {
     const newPossibleWords = newHardMode ? new Set(hardModeWords) : wordleAcceptableWords;
     setHardMode(newHardMode);
     setPossibleWords(newPossibleWords);
-    localStorage.setItem('hardMode', newHardMode);  // persist
+    localStorage.setItem(lsKeys.hardMode, newHardMode);  // persist
   };
 
   const handleColorBlindModeChange = (event) => {
     const newColorBlindMode = event.target.checked;
     setColorBlindMode(newColorBlindMode);
-    localStorage.setItem('colorBlindMode', newColorBlindMode);  // persist
+    localStorage.setItem(lsKeys.colorBlindMode, newColorBlindMode);  // persist
   };
 
   const resetGame = () => {
