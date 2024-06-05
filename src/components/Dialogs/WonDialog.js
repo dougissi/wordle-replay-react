@@ -16,7 +16,7 @@ export default function WonDialog({
         const guessIcons = guessColors.map((color) => colorBlindMode ? colorToIcon.colorBlind[color] : colorToIcon.standard[color]).join("");
         guessesIcons.push(guessIcons);
     }
-    const domain = "promisepress.com"; // TODO: update upon release
+    const domain = "wordlereplay.com";
     const shareText = `Wordle: #${puzzleNum} ${puzzleDate}\nGuesses: ${numGuesses}\n\n${guessesIcons.join("\n")}\n\n${domain}/?date=${puzzleDate}`;
 
     const isShareSupported = () => {

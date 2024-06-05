@@ -67,14 +67,15 @@
 * [x] make sure really fits on phone screen
 * [x] add favicon and other metadata
 * [x] Google Analytics
-* [ ] test on windows laptop (particularly if "Enter" and "Escape" keys are same as expected)
+* [x] test on windows laptop (particularly if "Enter" and "Escape" keys are same as expected)
 * [x] test on android phone
-* [ ] add more details to feedback form
+* [x] add more details to feedback form
 * [x] add "OK" button to Won Dialog (otherwise not obvious how to close)
 * [x] add local storage keys to constants
-* [ ] transition to wordlereplay.com (including in package.json, share link)
+* [x] transition to wordlereplay.com (including in package.json, share link)
 
 Before post:
+* [ ] bugfix: news TOC links extending beyond edge of page (on mobile)
 * [ ] update metadata
   * [ ] logo
   * [ ] description
