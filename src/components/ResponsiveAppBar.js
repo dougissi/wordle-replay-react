@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import dayjs from 'dayjs';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -21,6 +22,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SettingsMenu from './SettingsMenu';
+import { earliestDate } from '../constants';
 
 
 const title = "WORDLE REPLAY";
@@ -49,11 +51,15 @@ function ResponsiveAppBar({
   submitGuessFromButtonClick,
   nextUnsolvedDate,
   previousUnsolvedDate,
+  earliestUnsolvedDate,
+  latestUnsolvedDate,
   green,
   yellow,
   gray,
 }) {
   const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElPreviousPuzzle, setAnchorElPreviousPuzzle] = useState(null);
+  const [anchorElNextPuzzle, setAnchorElNextPuzzle] = useState(null);
   const [showPuzzleSelectorDialog, setShowPuzzleSelectorDialog] = useState(false);
   const [showCalendarDialog, setShowCalendarDialog] = useState(false);
   const [suggestionsDialogOpen, setSuggestionsDialogOpen] = useState(false);
@@ -65,6 +71,8 @@ function ResponsiveAppBar({
   const suggestionsButtonRef = useRef(null);
   const statsButtonRef = useRef(null);
   const settingsButtonRef = useRef(null);
+  const previousPuzzleButtonRef = useRef(null);
+  const nextPuzzleButtonRef = useRef(null);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -72,6 +80,22 @@ function ResponsiveAppBar({
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
+  };
+
+  const handleOpenPreviousPuzzleMenu = (event) => {
+    setAnchorElPreviousPuzzle(event.currentTarget);
+  };
+
+  const handleClosePreviousPuzzleMenu = () => {
+    setAnchorElPreviousPuzzle(null);
+  };
+
+  const handleOpenNextPuzzleMenu = (event) => {
+    setAnchorElNextPuzzle(event.currentTarget);
+  };
+
+  const handleCloseNextPuzzleMenu = () => {
+    setAnchorElNextPuzzle(null);
   };
 
   const labelWithBadge = (label, showBadge) => {
@@ -140,7 +164,7 @@ function ResponsiveAppBar({
           <Box sx={{ display: { xs: 'block', lg: 'none' } }}>
             <IconButton
               size="large"
-              aria-label="account of current user"
+              aria-label="menu button"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
@@ -200,18 +224,61 @@ function ResponsiveAppBar({
 
           
           <Box sx={{ flexGrow: 1 }}>
-            {/* Previous Unsolved Arrow Icon */}
-            <Tooltip title="Previous Unsolved">
+            {/* Previous Arrow Icon */}
+            <Tooltip title="Play Previous">
               <span>
                 <IconButton
-                  disabled={!previousUnsolvedDate}
-                  onClick={() => changeDate(previousUnsolvedDate)}
+                  disabled={puzzleDate === earliestDate || !previousUnsolvedDate}
+                  id="basic-button"
+                  ref={previousPuzzleButtonRef}
+                  aria-label="previous-puzzle-button"
+                  aria-controls={Boolean(anchorElPreviousPuzzle) ? 'basic-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={Boolean(anchorElPreviousPuzzle) ? 'true' : undefined}
+                  onClick={(event) => {
+                    setAnchorElPreviousPuzzle(event.currentTarget);
+                    previousPuzzleButtonRef.current.blur();
+                  }}
                   sx={navButtonSX}
                 >
-                  <KeyboardArrowLeftIcon sx={{ color: previousUnsolvedDate ? textColor : "inherit" }} />
+                  <KeyboardArrowLeftIcon sx={{ color: (puzzleDate === earliestDate || !previousUnsolvedDate) ? "inherit" : textColor }} />
                 </IconButton>
               </span>
             </Tooltip>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorElPreviousPuzzle}
+              open={Boolean(anchorElPreviousPuzzle)}
+              onClose={handleClosePreviousPuzzleMenu}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button',
+              }}
+            >
+              <MenuItem 
+                onClick={() => {
+                  changeDate(dayjs(puzzleDate).subtract(1, 'day').format('YYYY-MM-DD'));
+                  handleClosePreviousPuzzleMenu();
+                }}
+              >
+                Previous
+              </MenuItem>
+              <MenuItem 
+                onClick={() => {
+                  changeDate(previousUnsolvedDate);
+                  handleClosePreviousPuzzleMenu();
+                }}
+              >
+                Previous Unsolved
+              </MenuItem>
+              <MenuItem 
+                onClick={() => {
+                  changeDate(earliestUnsolvedDate);
+                  handleClosePreviousPuzzleMenu();
+                }}
+              >
+                Earliest Unsolved
+              </MenuItem>
+            </Menu>
 
             {/* Puzzle Number */}
             <Tooltip title="Choose Puzzle Number">
@@ -265,17 +332,60 @@ function ResponsiveAppBar({
             />
 
             {/* Next Unsolved Arrow Icon */}
-            <Tooltip title="Next Unsolved">
+            <Tooltip title="Play Next">
               <span>
                 <IconButton
-                  disabled={!nextUnsolvedDate}
-                  onClick={() => changeDate(nextUnsolvedDate)}
+                  disabled={puzzleDate === today || !nextUnsolvedDate}
+                  id="basic-button"
+                  ref={nextPuzzleButtonRef}
+                  aria-label="next-puzzle-button"
+                  aria-controls={Boolean(anchorElNextPuzzle) ? 'basic-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={Boolean(anchorElNextPuzzle) ? 'true' : undefined}
+                  onClick={(event) => {
+                    setAnchorElNextPuzzle(event.currentTarget);
+                    nextPuzzleButtonRef.current.blur();
+                  }}
                   sx={navButtonSX}
                 >
-                  <KeyboardArrowRightIcon sx={{ color: nextUnsolvedDate ? textColor : "inherit" }} />
+                  <KeyboardArrowRightIcon sx={{ color: (puzzleDate === today || !nextUnsolvedDate) ? "inherit" : textColor }} />
                 </IconButton>
               </span>
             </Tooltip>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorElNextPuzzle}
+              open={Boolean(anchorElNextPuzzle)}
+              onClose={handleCloseNextPuzzleMenu}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button',
+              }}
+            >
+              <MenuItem 
+                onClick={() => {
+                  changeDate(dayjs(puzzleDate).add(1, 'day').format('YYYY-MM-DD'));
+                  handleCloseNextPuzzleMenu();
+                }}
+              >
+                Next
+              </MenuItem>
+              <MenuItem 
+                onClick={() => {
+                  changeDate(nextUnsolvedDate);
+                  handleCloseNextPuzzleMenu();
+                }}
+              >
+                Next Unsolved
+              </MenuItem>
+              <MenuItem 
+                onClick={() => {
+                  changeDate(latestUnsolvedDate);
+                  handleCloseNextPuzzleMenu();
+                }}
+              >
+                Latest Unsolved
+              </MenuItem>
+            </Menu>
           </Box>
 
           <SuggestionsButton sx={{ display: { xs: 'none', lg: 'inherit'}}} />
