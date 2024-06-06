@@ -147,12 +147,13 @@ function formatOldDataForIndexedDB(oldData) {
     return newSolvedData;
 }
 
-const getNextUnsolvedDate = (puzzleDate, today, guessesDB) => {
-    let currDate = dayjs(puzzleDate).add(1, 'day');  // start with tomorrow
+const getUnsolvedDateForward = (start, end, guessesDB) => {
+    let currDate = dayjs(start);
     let currDateStr = currDate.format('YYYY-MM-DD');
+    const endStr = dayjs(end).format('YYYY-MM-DD');
 
     // look forward from current
-    while (currDateStr <= today) {
+    while (currDateStr <= endStr) {
         if (!guessesDB[currDateStr]?.solvedDate) {
             return currDateStr;
         }
@@ -162,15 +163,16 @@ const getNextUnsolvedDate = (puzzleDate, today, guessesDB) => {
         currDateStr = currDate.format('YYYY-MM-DD');
     }
 
-    return null;  // all next solved 
+    return null;  // all solved
 }
 
-const getPreviousUnsolvedDate = (puzzleDate, guessesDB) => {
-    let currDate = dayjs(puzzleDate).subtract(1, 'day');  // start with yesterday
+const getUnsolvedDateBackward = (end, start, guessesDB) => {
+    let currDate = dayjs(end);
     let currDateStr = currDate.format('YYYY-MM-DD');
+    const startStr = dayjs(start).format('YYYY-MM-DD');
 
     // look back from current
-    while (currDateStr >= earliestDate) {
+    while (currDateStr >= startStr) {
         if (!guessesDB[currDateStr]?.solvedDate) {
             return currDateStr;
         }
@@ -180,7 +182,27 @@ const getPreviousUnsolvedDate = (puzzleDate, guessesDB) => {
         currDateStr = currDate.format('YYYY-MM-DD');
     }
 
-    return null;  // all previous solved
+    return null;  // all solved
+}
+
+const getNextUnsolvedDate = (puzzleDate, today, guessesDB) => {
+    const nextDay = dayjs(puzzleDate).add(1, 'day');
+    return getUnsolvedDateForward(nextDay, today, guessesDB);
+}
+
+const getPreviousUnsolvedDate = (puzzleDate, guessesDB) => {
+    const prevDay = dayjs(puzzleDate).subtract(1, 'day');
+    return getUnsolvedDateBackward(prevDay, earliestDate, guessesDB);
+}
+
+const getEarliestUnsolvedDate = (puzzleDate, guessesDB) => {
+    const prevDay = dayjs(puzzleDate).subtract(1, 'day');
+    return getUnsolvedDateForward(earliestDate, prevDay, guessesDB);
+}
+
+const getLatestUnsolvedDate = (puzzleDate, today, guessesDB) => {
+    const nextDay = dayjs(puzzleDate).add(1, 'day');
+    return getUnsolvedDateBackward(today, nextDay, guessesDB);
 }
 
 function countDuplicateLetters(word) {
@@ -288,6 +310,8 @@ export {
     formatOldDataForIndexedDB,
     getNextUnsolvedDate,
     getPreviousUnsolvedDate,
+    getEarliestUnsolvedDate,
+    getLatestUnsolvedDate,
     countDuplicateLetters,
     getFreqs,
     getWordRanks,
