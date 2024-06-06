@@ -85,6 +85,7 @@ Before post:
 * [ ] update README
   * [ ] steps on how to add new News post
   * [ ] steps on how to add a new page
+  * [ ] npm run predeploy and docs/ folder
 
 
 For later

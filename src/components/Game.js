@@ -1,6 +1,6 @@
 import { numLetters, rankToColor, backspaceSymbol, initialNumGuessesToShow } from "../constants";
 import { useEffect, useState, forwardRef } from 'react';
-import { blankRow, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex } from '../utils';
+import { blankRow, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex, union } from '../utils';
 import useScreenSize from './useScreenSize';
 import GuessesBoard from './GuessesBoard';
 import Keyboard from './Keyboard';
@@ -84,7 +84,7 @@ const Game = forwardRef(({
 
         // keep all unique insights (for hard mode word tracking)
         const insights = getInsightsFromGuessRanks(guess.toLowerCase(), guessRanks);
-        newSeenInsights = newSeenInsights.union(new Set(insights));
+        newSeenInsights = union(newSeenInsights, insights);
 
         // track if solved
         if (guessRanks === '22222') {
