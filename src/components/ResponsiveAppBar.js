@@ -200,7 +200,6 @@ function ResponsiveAppBar({
 
           
           <Box sx={{ flexGrow: 1 }}>
-
             {/* Previous Unsolved Arrow Icon */}
             <Tooltip title="Previous Unsolved">
               <span>

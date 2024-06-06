@@ -75,7 +75,7 @@
 * [x] transition to wordlereplay.com (including in package.json, share link)
 
 Before post:
-* [ ] bugfix: news TOC links extending beyond edge of page (on mobile)
+* [x] bugfix: news TOC links extending beyond edge of page (on mobile)
 * [ ] add more space before divider on News page
 * [ ] update metadata
   * [ ] logo
@@ -115,3 +115,6 @@ For later
 * [ ] make common component using mui Link via react-router-dom Link
 * [ ] AWS dynamoDB?
 * [ ] update "auto update" script (if needed) to include the "export" at the beginning of file
+* [ ] find way to keep suggestions open all the time?
+* [ ] convert "<>" buttons to be menus of say, "Previous, Previous Unsolved, and Earliest Unsolved" -- also address the same issue in Won Dialog
+* [ ] instead of badge on news TOC list, just color the item

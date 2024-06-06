@@ -40,24 +40,28 @@ export default function NewsPage({
         <>
             {/* TOC */}
             {newsPosts.length > 1 &&
-                <List style={{ padding: '20px' }}>
+                <List
+                    sx={{ listStyleType: 'disc', pl: 4 }}
+                >
                     {newsPosts.map(post => (
                         <ListItemButton 
                             key={`news-post-toc-button${post.id}`} 
                             onClick={() => scrollToElement(newsPostHTMLId(post))}
+                            sx={{ display: 'list-item' }}
                         >
-                            <Badge 
-                                color="secondary"
-                                variant="dot"
-                                badgeContent={Number(post.id > maxSeenNewsPostId)}
-                                anchorOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'left',
-                                }}
-                            >
-                                <ListItemText>{postTitleWithDate(post)}</ListItemText>
-                            </Badge>
-                            
+                            <ListItemText>
+                                <Badge
+                                    color="secondary"
+                                    variant="dot"
+                                    badgeContent={Number(post.id > maxSeenNewsPostId)}
+                                    anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left',
+                                    }}
+                                >
+                                    {postTitleWithDate(post)}
+                                </Badge>
+                            </ListItemText>
                         </ListItemButton>
                     ))}
                 </List>
@@ -68,7 +72,11 @@ export default function NewsPage({
             <List>
                 {newsPosts.map((post, i) => (
                     <div key={`news-post-div${post.id}`}>
-                        <h2 id={newsPostHTMLId(post)}>
+                        <h2
+                            id={newsPostHTMLId(post)}
+                            className='Markdown'
+                            style={{ textAlign: 'center' }}
+                        >
                             {postTitleWithDate(post)}
                         </h2>
                         <Markdown fileName={`news/${post.fileName}`} />
