@@ -76,10 +76,10 @@
 
 Before post:
 * [x] bugfix: news TOC links extending beyond edge of page (on mobile)
-* [ ] add more space before divider on News page
-* [ ] update metadata
-  * [ ] logo
-  * [ ] description
+* [x] add more space before divider on News page
+* [x] update metadata
+  * [x] logo
+  * [x] description
 * [ ] clean out unused code files
 * [ ] update React tests for App.js
 * [ ] update README

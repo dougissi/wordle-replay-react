@@ -82,7 +82,7 @@ export default function NewsPage({
                         <Markdown fileName={`news/${post.fileName}`} />
                         
                         {/* add divider if not last post */}
-                        { (i < newsPosts.length - 1) && <Divider /> }
+                        { (i < newsPosts.length - 1) && <Divider style={{ paddingTop: '20px' }} /> }
                     </div>
                 ))}
             </List>
