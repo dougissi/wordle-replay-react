@@ -25,8 +25,8 @@ If you've already played today's puzzle, there are several ways to play previous
   * Click the puzzle date (e.g., `2024-06-03`) and select a new date from the calendar pop up
   * Click the `>` button to play the most recent unsolved puzzle _after_ the current puzzle
 * URL Parameters (useful for sharing particular puzzles with friends):
-  * include the date in the URL: `https://www.wordlereplay.com/`**`?date=2024-06-03`**
-  * include the puzzle number in the URL: `https://www.wordlereplay.com/`**`?num=1081`**
+  * include the date in the URL: `https://wordlereplay.com/`**`?date=2024-06-03`**
+  * include the puzzle number in the URL: `https://wordlereplay.com/`**`?num=1081`**
 * History Table:
   * After clicking the Stats & History button in the top right corner, there is a History Table at the bottom of the popup window. You can click the date of any puzzle in the table to play it.
   * See below for more details on history
