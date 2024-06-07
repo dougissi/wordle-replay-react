@@ -41,8 +41,9 @@ export default function SuggestionsDialog({ open, handleClose, hardModeWords, su
                 </DialogContentText>,
                 <h3 key='top-suggestions-heading'>Top Suggestions</h3>,
                 <SuggestionButtons key="suggestion-buttons-row" />,
-                <h3 key='all-possible-suggestions-heading'>All Remaining Possible Solutions</h3>,
-                <DialogContentText key='all-possible-words-dialog-text'>{[...hardModeWords].join(", ")}</DialogContentText>
-            ]} />
+                <h3 key='all-possible-suggestions-heading'>{`All Remaining Possible Solutions: ${hardModeWords.size}`}</h3>,
+                <DialogContentText key='all-possible-solutions-dialog-text'>{[...hardModeWords].join(", ")}</DialogContentText>
+            ]}
+        />
     );
 }
