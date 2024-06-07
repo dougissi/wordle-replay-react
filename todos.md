@@ -118,3 +118,5 @@ For later
 * [ ] find way to keep suggestions open all the time?
 * [ ] convert "<>" buttons to be menus of say, "Previous, Previous Unsolved, and Earliest Unsolved" -- also address the same issue in Won Dialog
 * [ ] instead of badge on news TOC list, just color the item
+* [ ] newsletter/mailing list?
+* [ ] commonize "IconButtonMenu"s in Responsive App bar

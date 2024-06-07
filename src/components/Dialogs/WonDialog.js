@@ -5,7 +5,7 @@ import { colorToIcon } from "../../constants";
 import AlertDialog from './AlertDialog';
 
 export default function WonDialog({
-    open, handleClose, answer, numGuesses, guessesColors, distributionData, colorBlindMode, puzzleNum, puzzleDate, nextUnsolvedDate, previousUnsolvedDate, changeDate, green, gray
+    open, handleClose, answer, numGuesses, guessesColors, distributionData, colorBlindMode, puzzleNum, puzzleDate, green, gray
 }) {
     const guessesIcons = [];
     for (let i = 0; i < guessesColors.length; i++) {
@@ -39,18 +39,10 @@ export default function WonDialog({
         }
     };
 
-    const handleClickPlayUnsolvedButton = (newDate) => {
-        if (newDate) {
-            handleClose(); // close right away
-            setTimeout(() => changeDate(newDate), 150); // change date after delay (prevent answer in heading updating to new date's answer)
-        }
-    };
-
     const copyButton = <Button key="copyIconsButton" onClick={() => navigator.clipboard.writeText(shareText)}>Copy</Button>;
     const shareButton = <Button key="shareIconsButton" onClick={handleShare} disabled={!isShareSupported()}>Share</Button>;
     const okButton = <Button key="wonDialogOkButton" onClick={handleClose}>OK</Button>;
-    const playNextButton = <Button key="playNextButton" onClick={() => handleClickPlayUnsolvedButton(nextUnsolvedDate)} disabled={!nextUnsolvedDate}>Next Unsolved</Button>;
-    const playPreviousButton = <Button key="playPreviousButton" onClick={() => handleClickPlayUnsolvedButton(previousUnsolvedDate)} disabled={!previousUnsolvedDate}>Previous Unsolved</Button>;
+
 
     return (
         <AlertDialog
@@ -58,7 +50,7 @@ export default function WonDialog({
             handleClose={handleClose}
             title={`You found "${answer}"!`}
             // text="Thanks for playing."  // TODO: update
-            buttons={[playPreviousButton, playNextButton, okButton]}
+            buttons={[okButton]}
             addlContent={[
                 <DistributionChart key="distributionChart" numGuesses={numGuesses} distributionData={distributionData} green={green} gray={gray} />,
                 <Typography key="guesses" variant="h6">Guesses</Typography>,

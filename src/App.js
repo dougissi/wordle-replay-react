@@ -316,6 +316,10 @@ function App() {
           wonDialogOpen={wonDialogOpen}
           setWonDialogOpen={setWonDialogOpen}
           numGuesses={numGuesses}
+          nextUnsolvedDate={nextUnsolvedDate}
+          previousUnsolvedDate={previousUnsolvedDate}
+          earliestUnsolvedDate={earliestUnsolvedDate}
+          latestUnsolvedDate={latestUnsolvedDate}
           green={green}
           gray={gray}
           ref={guessesBoardRef}

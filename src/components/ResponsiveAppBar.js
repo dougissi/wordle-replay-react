@@ -236,7 +236,7 @@ function ResponsiveAppBar({
                   aria-haspopup="true"
                   aria-expanded={Boolean(anchorElPreviousPuzzle) ? 'true' : undefined}
                   onClick={(event) => {
-                    setAnchorElPreviousPuzzle(event.currentTarget);
+                    handleOpenPreviousPuzzleMenu(event);
                     previousPuzzleButtonRef.current.blur();
                   }}
                   sx={navButtonSX}
@@ -343,7 +343,7 @@ function ResponsiveAppBar({
                   aria-haspopup="true"
                   aria-expanded={Boolean(anchorElNextPuzzle) ? 'true' : undefined}
                   onClick={(event) => {
-                    setAnchorElNextPuzzle(event.currentTarget);
+                    handleOpenNextPuzzleMenu(event);
                     nextPuzzleButtonRef.current.blur();
                   }}
                   sx={navButtonSX}

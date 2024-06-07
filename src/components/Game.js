@@ -191,11 +191,8 @@ const Game = forwardRef(({
         guessesColors={guessesColors}
         distributionData={distributionData}
         colorBlindMode={colorBlindMode}
-        puzzleDate={puzzleDate}
         puzzleNum={puzzleNum}
-        nextUnsolvedDate={nextUnsolvedDate}
-        previousUnsolvedDate={previousUnsolvedDate}
-        changeDate={changeDate}
+        puzzleDate={puzzleDate}
         green={green}
         gray={gray}
       />
