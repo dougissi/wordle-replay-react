@@ -80,12 +80,12 @@ Before post:
 * [x] update metadata
   * [x] logo
   * [x] description
-* [ ] clean out unused code files
-* [ ] update React tests for App.js
+* [x] clean out unused code files
 * [ ] update README
-  * [ ] steps on how to add new News post
-  * [ ] steps on how to add a new page
-  * [ ] npm run predeploy and docs/ folder
+  * [x] steps on how to add new News post
+  * [x] npm run predeploy and docs/ folder
+* [ ] don't skip over showing all greens and go straight to Won Dialog
+* [ ] make Share button clearer on Won Dialog (with some sort of response after clicking)
 
 
 For later
@@ -106,6 +106,7 @@ For later
   * [x] IFrame
   * [x] FeedbackPage, DonatePage
 * [ ] delete archive?
+* [ ] update React tests for App.js (see src/setupTests.js)
 * [x] avoid hardcoding 'white' in ResponsiveAppBar
 * [ ] convert 'YYYY-MM-DD' to constant variable throughout
 * [x] improve guess suggestions
