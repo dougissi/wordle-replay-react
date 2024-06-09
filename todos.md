@@ -118,6 +118,6 @@ For later
 * [ ] update "auto update" script (if needed) to include the "export" at the beginning of file
 * [ ] find way to keep suggestions open all the time?
 * [ ] convert "<>" buttons to be menus of say, "Previous, Previous Unsolved, and Earliest Unsolved" -- also address the same issue in Won Dialog
-* [ ] instead of badge on news TOC list, just color the item
+* [x] instead of badge on news TOC list, just color the item
 * [ ] newsletter/mailing list?
 * [ ] commonize "IconButtonMenu"s in Responsive App bar

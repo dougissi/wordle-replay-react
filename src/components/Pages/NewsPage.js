@@ -6,7 +6,6 @@ import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import Markdown from '../Markdown';
 import dayjs from 'dayjs';
-import { Badge } from '@mui/material';
 import { lsKeys, maxNewsPostId, newsPosts }  from '../../constants';
 
 function scrollToElement(id) {
@@ -49,18 +48,8 @@ export default function NewsPage({
                             onClick={() => scrollToElement(newsPostHTMLId(post))}
                             sx={{ display: 'list-item' }}
                         >
-                            <ListItemText>
-                                <Badge
-                                    color="secondary"
-                                    variant="dot"
-                                    badgeContent={Number(post.id > maxSeenNewsPostId)}
-                                    anchorOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'left',
-                                    }}
-                                >
-                                    {postTitleWithDate(post)}
-                                </Badge>
+                            <ListItemText sx={{ bgcolor: (Number(post.id > maxSeenNewsPostId) ? 'warning.main' : 'inherit') }}>
+                                {postTitleWithDate(post)}
                             </ListItemText>
                         </ListItemButton>
                     ))}
