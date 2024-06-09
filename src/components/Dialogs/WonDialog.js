@@ -1,12 +1,18 @@
+import { useState } from "react";
 import Button from "@mui/material/Button";
 import DistributionChart from "../DistributionChart";
 import { Stack, Typography } from "@mui/material";
 import { colorToIcon } from "../../constants";
 import AlertDialog from './AlertDialog';
+import IosShareIcon from '@mui/icons-material/IosShare';
+import Alert from '@mui/material/Alert';
+
 
 export default function WonDialog({
     open, handleClose, answer, numGuesses, guessesColors, distributionData, colorBlindMode, puzzleNum, puzzleDate, green, gray
 }) {
+    const [showCopyAlert, setShowCopyAlert] = useState(false);
+
     const guessesIcons = [];
     for (let i = 0; i < guessesColors.length; i++) {
         const guessColors = guessesColors[i];
@@ -39,8 +45,26 @@ export default function WonDialog({
         }
     };
 
-    const copyButton = <Button key="copyIconsButton" onClick={() => navigator.clipboard.writeText(shareText)}>Copy</Button>;
-    const shareButton = <Button key="shareIconsButton" onClick={handleShare} disabled={!isShareSupported()}>Share</Button>;
+    const copyButton = (
+        <>
+            {showCopyAlert && <Alert severity="success">Guess icons copied</Alert>}
+            <Button
+                key="copyIconsButton"
+                startIcon={<IosShareIcon/>}
+                onClick={() => {
+                    navigator.clipboard.writeText(shareText);
+                    setShowCopyAlert(true);
+                    setTimeout(() => {
+                        setShowCopyAlert(false);
+                    }, 1500);
+                }}
+            >
+                Copy
+            </Button>
+        </>
+        
+    );
+    const shareButton = <Button key="shareIconsButton" startIcon={<IosShareIcon/>} onClick={handleShare} disabled={!isShareSupported()}>Share</Button>;
     const okButton = <Button key="wonDialogOkButton" onClick={handleClose}>OK</Button>;
 
 
@@ -50,7 +74,7 @@ export default function WonDialog({
             handleClose={handleClose}
             title={`You found "${answer}"!`}
             // text="Thanks for playing."  // TODO: update
-            buttons={[okButton]}
+            buttons={[(isShareSupported() ? shareButton: copyButton), okButton]}
             addlContent={[
                 <DistributionChart key="distributionChart" numGuesses={numGuesses} distributionData={distributionData} green={green} gray={gray} />,
                 <Typography key="guesses" variant="h6">Guesses</Typography>,
@@ -58,10 +82,8 @@ export default function WonDialog({
                     {guessesIcons.map((guessIcons, i) => (
                         <Typography key={`guess${i}`}>{guessIcons}</Typography>
                     ))}
-                </Stack>,
-                <Stack key="guessesIconsButtons" direction="row" spacing={2}>
-                    {isShareSupported() ? [copyButton, shareButton] : [copyButton]}
                 </Stack>
-            ]} />
+            ]}
+        />
     );
 }
