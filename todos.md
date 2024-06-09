@@ -84,8 +84,8 @@ Before post:
 * [ ] update README
   * [x] steps on how to add new News post
   * [x] npm run predeploy and docs/ folder
-* [ ] don't skip over showing all greens and go straight to Won Dialog
-* [ ] make Share button clearer on Won Dialog (with some sort of response after clicking)
+* [x] don't skip over showing all greens and go straight to Won Dialog
+* [x] make Share button clearer on Won Dialog (with some sort of response after clicking)
 
 
 For later

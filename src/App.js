@@ -220,7 +220,6 @@ function App() {
       setLetterMaxRanks(newLetterMaxRanks);
 
       if (guessRanks === '22222') {  // guess is all greens (i.e., the answer)
-        setWonDialogOpen(true);
         if (!guessesDB.hasOwnProperty(puzzleDate) || !guessesDB[puzzleDate].solvedDate) {  // save if never saved or unsolved
           saveGuess(gData, true);  // including `true` will add solved date
 
@@ -229,6 +228,11 @@ function App() {
           const newDistributionData = {...distributionData};
           newDistributionData[countLabel]++;
           setDistributionData(newDistributionData);
+
+          // show Won Dialog after delay
+          setTimeout(() => {setWonDialogOpen(true)}, 750);
+        } else {  // previously solved
+          setWonDialogOpen(true);  // show Won Dialog right away
         }
       } else {  // guess not the answer
         // update next letter index, potentially adding a new row
@@ -307,7 +311,6 @@ function App() {
           hardModeWords={hardModeWords}
           setHardModeWords={setHardModeWords}
           focusGuessesBoard={focusGuessesBoard}
-          changeDate={changeDate}
           resetGame={resetGame}
           enterGuess={enterGuess}
           invalidGuess={invalidGuess}
@@ -316,10 +319,6 @@ function App() {
           wonDialogOpen={wonDialogOpen}
           setWonDialogOpen={setWonDialogOpen}
           numGuesses={numGuesses}
-          nextUnsolvedDate={nextUnsolvedDate}
-          previousUnsolvedDate={previousUnsolvedDate}
-          earliestUnsolvedDate={earliestUnsolvedDate}
-          latestUnsolvedDate={latestUnsolvedDate}
           green={green}
           gray={gray}
           ref={guessesBoardRef}

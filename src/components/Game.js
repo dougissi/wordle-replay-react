@@ -32,7 +32,6 @@ const Game = forwardRef(({
   hardModeWords,
   setHardModeWords,
   focusGuessesBoard,
-  changeDate,
   resetGame,
   enterGuess,
   invalidGuess,
@@ -41,8 +40,6 @@ const Game = forwardRef(({
   wonDialogOpen,
   setWonDialogOpen,
   numGuesses,
-  nextUnsolvedDate,
-  previousUnsolvedDate,
   green,
   gray,
 }, guessesBoardRef) => {
