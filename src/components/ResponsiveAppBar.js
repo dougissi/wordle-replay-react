@@ -144,6 +144,7 @@ function ResponsiveAppBar({
           hardModeWords={hardModeWords}
           suggestions={suggestions}
           submitGuessFromButtonClick={submitGuessFromButtonClick}
+          navToGame={navToGame}
         />
       </Box> 
     );
