@@ -23,7 +23,7 @@ export default function WonDialog({
         guessesIcons.push(guessIcons);
     }
     const domain = "wordlereplay.com";
-    const shareText = `Wordle: #${puzzleNum} ${puzzleDate}\nGuesses: ${numGuesses}\n\n${guessesIcons.join("\n")}\n\nhttps://${domain}/?date=${puzzleDate}.`;
+    const shareText = `Wordle: #${puzzleNum} ${puzzleDate}\nGuesses: ${numGuesses}\n\n${guessesIcons.join("\n")}\n\nhttps://${domain}/?date=${puzzleDate}.`;  // period at end of URL prevents iMessage link preview
 
     const isShareSupported = () => {
         return navigator.share !== undefined;
