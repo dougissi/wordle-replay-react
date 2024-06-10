@@ -111,13 +111,15 @@ For later
 * [ ] convert 'YYYY-MM-DD' to constant variable throughout
 * [x] improve guess suggestions
 * [ ] update manifest
-* [ ] if change date on calendar, say, but currently on the About page, make sure to change page to the game board
+* [x] if change date on calendar, say, but currently on the About page, make sure to change page to the game board
 * [x] make news badge more visible
 * [ ] make common component using mui Link via react-router-dom Link
 * [ ] AWS dynamoDB?
 * [ ] update "auto update" script (if needed) to include the "export" at the beginning of file
 * [ ] find way to keep suggestions open all the time?
-* [ ] convert "<>" buttons to be menus of say, "Previous, Previous Unsolved, and Earliest Unsolved" -- also address the same issue in Won Dialog
+* [x] convert "<>" buttons to be menus of say, "Previous, Previous Unsolved, and Earliest Unsolved" -- also address the same issue in Won Dialog
 * [x] instead of badge on news TOC list, just color the item
 * [ ] newsletter/mailing list?
 * [ ] commonize "IconButtonMenu"s in Responsive App bar
+* [ ] why do Menu and Suggestions (both Box components) need setTimeout to focus on guesses board?
+* [ ] remove unnecessary console logs

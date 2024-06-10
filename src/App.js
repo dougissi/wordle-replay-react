@@ -382,6 +382,7 @@ function App() {
             previousUnsolvedDate={previousUnsolvedDate}
             earliestUnsolvedDate={earliestUnsolvedDate}
             latestUnsolvedDate={latestUnsolvedDate}
+            gamePath={gamePath}
             green={green}
             yellow={yellow}
             gray={gray}

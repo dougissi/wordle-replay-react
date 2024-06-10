@@ -5,7 +5,7 @@ import AlertDialog from './AlertDialog';
 import { Link } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
-export default function SuggestionsDialog({ open, handleClose, hardModeWords, suggestions, submitGuessFromButtonClick }) {
+export default function SuggestionsDialog({ open, handleClose, hardModeWords, suggestions, submitGuessFromButtonClick, navToGame }) {
     const okButton = <Button key="hardModeWordsOkButton" onClick={handleClose}>OK</Button>;
 
     const SuggestionButtons = () => {
@@ -19,6 +19,7 @@ export default function SuggestionsDialog({ open, handleClose, hardModeWords, su
                             onClick={() => {
                                 submitGuessFromButtonClick(s);
                                 handleClose();
+                                navToGame();
                             }}
                         >
                             {s}

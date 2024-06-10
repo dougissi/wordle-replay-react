@@ -10,7 +10,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Badge, Tooltip } from '@mui/material';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -53,6 +53,7 @@ function ResponsiveAppBar({
   previousUnsolvedDate,
   earliestUnsolvedDate,
   latestUnsolvedDate,
+  gamePath,
   green,
   yellow,
   gray,
@@ -65,6 +66,7 @@ function ResponsiveAppBar({
   const [suggestionsDialogOpen, setSuggestionsDialogOpen] = useState(false);
   const [statsDialogOpen, setStatsDialogOpen] = useState(false);
   const [anchorElSettings, setAnchorElSettings] = useState(null);
+  const navigate = useNavigate();
 
   const puzzleNumSelectorButtonRef = useRef(null);
   const calendarButtonRef = useRef(null);
@@ -74,12 +76,19 @@ function ResponsiveAppBar({
   const previousPuzzleButtonRef = useRef(null);
   const nextPuzzleButtonRef = useRef(null);
 
+  const navToGame = () => {
+    if (window.location.pathname !== gamePath) {
+      navigate(gamePath);
+    }
+  };
+
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
+    setTimeout(focusGuessesBoard, 200);  // TODO: why need timeout?
   };
 
   const handleOpenPreviousPuzzleMenu = (event) => {
@@ -88,6 +97,7 @@ function ResponsiveAppBar({
 
   const handleClosePreviousPuzzleMenu = () => {
     setAnchorElPreviousPuzzle(null);
+    navToGame();
   };
 
   const handleOpenNextPuzzleMenu = (event) => {
@@ -96,6 +106,7 @@ function ResponsiveAppBar({
 
   const handleCloseNextPuzzleMenu = () => {
     setAnchorElNextPuzzle(null);
+    navToGame();
   };
 
   const labelWithBadge = (label, showBadge) => {
@@ -128,7 +139,7 @@ function ResponsiveAppBar({
           open={suggestionsDialogOpen}
           handleClose={() => {
             setSuggestionsDialogOpen(false);
-            focusGuessesBoard();
+            setTimeout(focusGuessesBoard, 200);  // TODO: why need this timeout?
           }}
           hardModeWords={hardModeWords}
           suggestions={suggestions}
@@ -298,6 +309,7 @@ function ResponsiveAppBar({
               handleClose={() => {
                 setShowPuzzleSelectorDialog(false);
                 focusGuessesBoard();
+                navToGame();
               }}
               puzzleNum={puzzleNum}
               isValidPuzzleNum={isValidPuzzleNum}
@@ -322,6 +334,7 @@ function ResponsiveAppBar({
               handleClose={() => {
                 setShowCalendarDialog(false);
                 focusGuessesBoard();
+                navToGame();
               }}
               today={today}
               puzzleDate={puzzleDate}
@@ -409,6 +422,7 @@ function ResponsiveAppBar({
             handleClose={() => {
               setStatsDialogOpen(false);
               focusGuessesBoard();
+              navToGame();
             }}
             today={today}
             distributionData={distributionData}

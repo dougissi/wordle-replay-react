@@ -46,7 +46,7 @@ export default function WonDialog({
     };
 
     const copyButton = (
-        <>
+        <div key="copy-button-with-alert">
             {showCopyAlert && <Alert severity="success">Guess icons copied</Alert>}
             <Button
                 key="copyIconsButton"
@@ -61,7 +61,7 @@ export default function WonDialog({
             >
                 Copy
             </Button>
-        </>
+        </div>
         
     );
     const shareButton = <Button key="shareIconsButton" startIcon={<IosShareIcon/>} onClick={handleShare} disabled={!isShareSupported()}>Share</Button>;
