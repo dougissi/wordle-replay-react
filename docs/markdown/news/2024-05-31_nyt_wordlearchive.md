@@ -1,3 +1,3 @@
-They finally did it. The New York Times launched their own [Wordle Archive](https://wordlearchive.com/). The initial version that launched was so full of full of advertisements that it was basically unusable. It also used _a ton_ of memory, enough that could slow a user's whole computer down. But they've cleaned it up since then, and I'm happy about that for the community. I'm sure they'll continue to improve it in the future.
+They finally did it. The New York Times launched their own [Wordle Archive](https://wordlearchive.com/). I'm both happy and sad to report that it's so full of full of advertisements that it's nearly unusable. It also used _a ton_ of memory, literally 1.3 GB, which is enough that could slow a user's whole computer down. Perhaps they'll improve it in the future.
 
-Perhaps they'll even glean some inspiration from Wordle Replay!
+Maybe they'll even glean some inspiration from WordleReplay.com?
