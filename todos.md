@@ -81,7 +81,7 @@ Before post:
   * [x] logo
   * [x] description
 * [x] clean out unused code files
-* [ ] update README
+* [x] update README
   * [x] steps on how to add new News post
   * [x] npm run predeploy and docs/ folder
 * [x] don't skip over showing all greens and go straight to Won Dialog
