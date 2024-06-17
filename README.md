@@ -30,7 +30,7 @@ Most of the Javascript utility functions have unit tests using Jest, located in 
 
 ## Add a News Post
 
-To add a news post, create a new Markdown .md file in the `src/news` folder that contains all of the content of the post (yes, using Markdown). Each time a new post is deployed, the UI will also add badge icons to the navigation bar to nudge the users to see the latest news.
+To add a news post, create a new Markdown .md file in the `public/markdown/news` folder that contains all of the content of the post (yes, using Markdown). Each time a new post is deployed, the UI will also add badge icons to the navigation bar to nudge the users to see the latest news.
 
 Notes:
 * Do not include the title in the Markdown file, as that will be based on the `newsPost` array (see below)
