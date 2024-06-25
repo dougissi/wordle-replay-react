@@ -240,7 +240,7 @@ function ResponsiveAppBar({
             <Tooltip title="Play Previous">
               <span>
                 <IconButton
-                  disabled={puzzleDate === earliestDate || !previousUnsolvedDate}
+                  disabled={puzzleDate === earliestDate}
                   id="basic-button"
                   ref={previousPuzzleButtonRef}
                   aria-label="previous-puzzle-button"
@@ -253,7 +253,7 @@ function ResponsiveAppBar({
                   }}
                   sx={navButtonSX}
                 >
-                  <KeyboardArrowLeftIcon sx={{ color: (puzzleDate === earliestDate || !previousUnsolvedDate) ? "inherit" : textColor }} />
+                  <KeyboardArrowLeftIcon sx={{ color: puzzleDate === earliestDate ? "inherit" : textColor }} />
                 </IconButton>
               </span>
             </Tooltip>
@@ -275,6 +275,7 @@ function ResponsiveAppBar({
                 Previous
               </MenuItem>
               <MenuItem 
+                disabled={!previousUnsolvedDate}
                 onClick={() => {
                   changeDate(previousUnsolvedDate);
                   handleClosePreviousPuzzleMenu();
@@ -282,7 +283,8 @@ function ResponsiveAppBar({
               >
                 Previous Unsolved
               </MenuItem>
-              <MenuItem 
+              <MenuItem
+                disabled={!previousUnsolvedDate}
                 onClick={() => {
                   changeDate(earliestUnsolvedDate);
                   handleClosePreviousPuzzleMenu();
@@ -349,7 +351,7 @@ function ResponsiveAppBar({
             <Tooltip title="Play Next">
               <span>
                 <IconButton
-                  disabled={puzzleDate === today || !nextUnsolvedDate}
+                  disabled={puzzleDate === today}
                   id="basic-button"
                   ref={nextPuzzleButtonRef}
                   aria-label="next-puzzle-button"
@@ -362,7 +364,7 @@ function ResponsiveAppBar({
                   }}
                   sx={navButtonSX}
                 >
-                  <KeyboardArrowRightIcon sx={{ color: (puzzleDate === today || !nextUnsolvedDate) ? "inherit" : textColor }} />
+                  <KeyboardArrowRightIcon sx={{ color: puzzleDate === today ? "inherit" : textColor }} />
                 </IconButton>
               </span>
             </Tooltip>
@@ -383,7 +385,8 @@ function ResponsiveAppBar({
               >
                 Next
               </MenuItem>
-              <MenuItem 
+              <MenuItem
+                disabled={!nextUnsolvedDate}
                 onClick={() => {
                   changeDate(nextUnsolvedDate);
                   handleCloseNextPuzzleMenu();
@@ -391,7 +394,8 @@ function ResponsiveAppBar({
               >
                 Next Unsolved
               </MenuItem>
-              <MenuItem 
+              <MenuItem
+                disabled={!nextUnsolvedDate}
                 onClick={() => {
                   changeDate(latestUnsolvedDate);
                   handleCloseNextPuzzleMenu();
