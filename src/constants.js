@@ -73,6 +73,12 @@ export const lsKeys = {
 // posts will appear on page in the order given in the array
 export const newsPosts = [
     {
+        id: 4,
+        date: "2024-07-19",
+        title: "Top Suggested Guesses (Optionally) Always Visible",
+        fileName: "2024-07-19_suggestions_always_visible.md"
+    },
+    {
         id: 3,
         date: "2024-06-07",
         title: "Navigate to Earliest/Latest Unsolved Puzzles from Nav Bar",
