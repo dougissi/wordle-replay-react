@@ -41,6 +41,10 @@ function Markdown({ fileName }) {
                                 {children}
                             </Link>
                         );
+                    },
+                    img(props) {
+                        const {node, children, alt, src, ...rest} = props;
+                        return <img className="markdown-img" alt={alt} src={src} {...rest}>{children}</img>;
                     }
                 }}
             >
