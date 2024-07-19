@@ -49,8 +49,7 @@ function ResponsiveAppBar({
   changeDate,
   deleteDBDates,
   showNewsBadge,
-  suggestions,
-  submitGuessFromButtonClick,
+  SuggestedGuessButtons,
   nextUnsolvedDate,
   previousUnsolvedDate,
   earliestUnsolvedDate,
@@ -121,6 +120,18 @@ function ResponsiveAppBar({
     padding: '3px'
   };
 
+  const SuggestedGuessButtonsForDialog = () => {
+    return (
+      <SuggestedGuessButtons
+        afterButtonClick={() => {
+          setSuggestionsDialogOpen(false);
+          setTimeout(focusGuessesBoard, 200);  // TODO: why need this timeout?
+          navToGame();
+        }}
+      />
+    )
+  }
+
   const SuggestionsButton = ({ sx }) => {
     return (
       <Box sx={sx}>
@@ -144,9 +155,7 @@ function ResponsiveAppBar({
             setTimeout(focusGuessesBoard, 200);  // TODO: why need this timeout?
           }}
           hardModeWords={hardModeWords}
-          suggestions={suggestions}
-          submitGuessFromButtonClick={submitGuessFromButtonClick}
-          navToGame={navToGame}
+          SuggestedGuessButtonsForDialog={SuggestedGuessButtonsForDialog}
         />
       </Box> 
     );
