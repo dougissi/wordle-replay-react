@@ -347,6 +347,7 @@ function App() {
           setInvalidGuessDialogOpen={setInvalidGuessDialogOpen}
           wonDialogOpen={wonDialogOpen}
           setWonDialogOpen={setWonDialogOpen}
+          deleteDBDates={deleteDBDates}
           numGuesses={numGuesses}
           SuggestedGuessButtons={SuggestedGuessButtons}
           green={green}

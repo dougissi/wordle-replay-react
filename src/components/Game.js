@@ -40,6 +40,7 @@ const Game = forwardRef(({
   setInvalidGuessDialogOpen,
   wonDialogOpen,
   setWonDialogOpen,
+  deleteDBDates,
   numGuesses,
   SuggestedGuessButtons,
   green,
@@ -193,7 +194,7 @@ const Game = forwardRef(({
         handleClose={() => setWonDialogOpen(false)}
         answer={answer}
         numGuesses={numGuesses()}
-        resetGame={resetGame}
+        deleteDBDates={deleteDBDates}
         guessesColors={guessesColors}
         distributionData={distributionData}
         colorBlindMode={colorBlindMode}

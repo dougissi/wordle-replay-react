@@ -9,7 +9,7 @@ import Alert from '@mui/material/Alert';
 
 
 export default function WonDialog({
-    open, handleClose, answer, numGuesses, guessesColors, distributionData, colorBlindMode, puzzleNum, puzzleDate, green, gray
+    open, handleClose, answer, numGuesses, deleteDBDates, guessesColors, distributionData, colorBlindMode, puzzleNum, puzzleDate, green, gray
 }) {
     const [showCopyAlert, setShowCopyAlert] = useState(false);
 
@@ -65,8 +65,8 @@ export default function WonDialog({
         
     );
     const shareButton = <Button key="shareIconsButton" startIcon={<IosShareIcon/>} onClick={handleShare} disabled={!isShareSupported()}>Share</Button>;
+    const replayButton = <Button key="replayButton" onClick={() => {deleteDBDates([puzzleDate]); handleClose();}}>Replay</Button>
     const okButton = <Button key="wonDialogOkButton" onClick={handleClose}>OK</Button>;
-
 
     return (
         <AlertDialog
@@ -74,7 +74,7 @@ export default function WonDialog({
             handleClose={handleClose}
             title={`You found "${answer}"!`}
             // text="Thanks for playing."  // TODO: update
-            buttons={[(isShareSupported() ? shareButton: copyButton), okButton]}
+            buttons={[(isShareSupported() ? shareButton: copyButton), replayButton, okButton]}
             addlContent={[
                 <DistributionChart key="distributionChart" numGuesses={numGuesses} distributionData={distributionData} green={green} gray={gray} />,
                 <Typography key="guesses" variant="h6">Guesses</Typography>,
