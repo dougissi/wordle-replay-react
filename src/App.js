@@ -14,6 +14,7 @@ import { blankGuessesGrid, blankRow, dateIsBetween, dateToPuzzleNum, getDistCoun
 import { colorMap, earliestDate, emptyDistributionData, GREEN, YELLOW, GRAY, lsKeys, maxNewsPostId, numSuggestions, rankToColor, numLetters } from './constants';
 import { initDB, deleteItem, putItem } from './db';
 import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallbacks } from './hardModeWordsFiltering';
+import { Button, Stack } from '@mui/material';
 
 
 const gamePath = '/';
@@ -291,13 +292,33 @@ function App() {
     enterGuess(guessUpper, newGuessesData);
   }
 
+  const SuggestedGuessButtons = ({ afterButtonClick = () => {} }) => {
+    return (
+      <Stack direction="row" spacing={2} justifyContent="center" alignItems="center" useFlexGap flexWrap="wrap">
+        {suggestions.map((s, i) => {
+          return (
+            <Button
+              key={`suggestion-button${i}`}
+              variant="contained"
+              onClick={() => {
+                submitGuessFromButtonClick(s);
+                afterButtonClick();  // optional
+              }}
+            >
+              {s}
+            </Button>
+          );
+        })}
+      </Stack>
+    );
+  };
+
   const pages = [
     {
       path: gamePath,  // homepage
       label: 'Play',
       element: (
         <Game
-          today={today}
           puzzleDate={puzzleDate}
           hardMode={hardMode}
           colorBlindMode={colorBlindMode}
@@ -327,6 +348,7 @@ function App() {
           wonDialogOpen={wonDialogOpen}
           setWonDialogOpen={setWonDialogOpen}
           numGuesses={numGuesses}
+          SuggestedGuessButtons={SuggestedGuessButtons}
           green={green}
           gray={gray}
           ref={guessesBoardRef}
@@ -386,8 +408,7 @@ function App() {
             changeDate={changeDate}
             deleteDBDates={deleteDBDates}
             showNewsBadge={showNewsBadge}
-            suggestions={suggestions}
-            submitGuessFromButtonClick={submitGuessFromButtonClick}
+            SuggestedGuessButtons={SuggestedGuessButtons}
             nextUnsolvedDate={nextUnsolvedDate}
             previousUnsolvedDate={previousUnsolvedDate}
             earliestUnsolvedDate={earliestUnsolvedDate}

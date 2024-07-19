@@ -6,12 +6,12 @@ import GuessesBoard from './GuessesBoard';
 import Keyboard from './Keyboard';
 import InvalidGuessDialog from "./Dialogs/InvalidGuessDialog";
 import WonDialog from "./Dialogs/WonDialog";
+import { Stack, Typography } from "@mui/material";
 
 import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallbacks } from '../hardModeWordsFiltering';
 
 
 const Game = forwardRef(({
-  today,
   puzzleDate,
   hardMode,
   colorBlindMode,
@@ -41,6 +41,7 @@ const Game = forwardRef(({
   wonDialogOpen,
   setWonDialogOpen,
   numGuesses,
+  SuggestedGuessButtons,
   green,
   gray,
 }, guessesBoardRef) => {
@@ -163,7 +164,12 @@ const Game = forwardRef(({
         colorBlindMode={colorBlindMode}
       />
 
-      {suggestionsVisible && <div>Suggestions Visible</div>}
+      {suggestionsVisible && (
+        <Stack spacing={1} sx={{ p: 1 }} >
+          <SuggestedGuessButtons />
+          <Typography>{`Remaining Possible Solutions: ${hardModeWords.size}`}</Typography>
+        </Stack>
+      )}
 
       <Keyboard
         screenSize={screenSize}

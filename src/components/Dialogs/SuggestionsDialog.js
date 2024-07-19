@@ -1,34 +1,12 @@
 import Button from "@mui/material/Button";
 import DialogContentText from "@mui/material/DialogContentText";
-import { Stack } from "@mui/material";
 import AlertDialog from './AlertDialog';
 import { Link } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
+// import SuggestionButtons from '../SuggestionButtons';
 
-export default function SuggestionsDialog({ open, handleClose, hardModeWords, suggestions, submitGuessFromButtonClick, navToGame }) {
+export default function SuggestionsDialog({ open, handleClose, hardModeWords, SuggestedGuessButtonsForDialog }) {
     const okButton = <Button key="hardModeWordsOkButton" onClick={handleClose}>OK</Button>;
-
-    const SuggestionButtons = () => {
-        return (
-            <Stack direction="row" spacing={2} useFlexGap flexWrap="wrap">
-                {suggestions.map((s, i) => {
-                    return (
-                        <Button
-                            key={`suggestion-button${i}`}
-                            variant="contained"
-                            onClick={() => {
-                                submitGuessFromButtonClick(s);
-                                handleClose();
-                                navToGame();
-                            }}
-                        >
-                            {s}
-                        </Button>
-                    );
-                })}
-            </Stack>
-        );
-    };
 
     return (
         <AlertDialog
@@ -41,8 +19,8 @@ export default function SuggestionsDialog({ open, handleClose, hardModeWords, su
                     See the <Link component={RouterLink} to='/about' onClick={handleClose}>About</Link> page for general instructions.
                 </DialogContentText>,
                 <h3 key='top-suggestions-heading'>Top Suggestions</h3>,
-                <SuggestionButtons key="suggestion-buttons-row" />,
-                <h3 key='all-possible-suggestions-heading'>{`All Remaining Possible Solutions: ${hardModeWords.size}`}</h3>,
+                <SuggestedGuessButtonsForDialog key="suggestion-buttons-row" />,
+                <h3 key='all-possible-suggestions-heading'>{`Remaining Possible Solutions: ${hardModeWords.size}`}</h3>,
                 <DialogContentText key='all-possible-solutions-dialog-text'>{[...hardModeWords].join(", ")}</DialogContentText>
             ]}
         />
