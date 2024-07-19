@@ -6,7 +6,7 @@ import GuessesBoard from './GuessesBoard';
 import Keyboard from './Keyboard';
 import InvalidGuessDialog from "./Dialogs/InvalidGuessDialog";
 import WonDialog from "./Dialogs/WonDialog";
-import { Stack, Typography } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 
 import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallbacks } from '../hardModeWordsFiltering';
 
@@ -33,7 +33,6 @@ const Game = forwardRef(({
   hardModeWords,
   setHardModeWords,
   focusGuessesBoard,
-  resetGame,
   enterGuess,
   invalidGuess,
   invalidGuessDialogOpen,
@@ -42,6 +41,8 @@ const Game = forwardRef(({
   setWonDialogOpen,
   deleteDBDates,
   numGuesses,
+  solved,
+  setSolved,
   SuggestedGuessButtons,
   green,
   gray,
@@ -89,6 +90,7 @@ const Game = forwardRef(({
         // track if solved
         if (guessRanks === '22222') {
           isSolved = true;
+          setSolved(true);
         }
       });
 
@@ -120,7 +122,7 @@ const Game = forwardRef(({
     }
     setLastLoadAttemptDate(puzzleDate);
     focusGuessesBoard();
-  }, [puzzleDate, lastLoadAttemptDate, lastLoadedDate, guessesDB, answer, hardModeWords, setHardModeWords, letterMaxRanks, focusGuessesBoard, setGuessesColors, setGuessesData, setLetterMaxRanks, setNextLetterIndex, setSeenInsights]);
+  }, [puzzleDate, lastLoadAttemptDate, lastLoadedDate, guessesDB, answer, hardModeWords, setHardModeWords, letterMaxRanks, focusGuessesBoard, setGuessesColors, setGuessesData, setLetterMaxRanks, setNextLetterIndex, setSeenInsights, setSolved]);
 
   const handleInputText = (text) => {
     // console.log(`entered ${text}`);
@@ -165,13 +167,6 @@ const Game = forwardRef(({
         colorBlindMode={colorBlindMode}
       />
 
-      {suggestionsVisible && (
-        <Stack spacing={1} sx={{ p: 1 }} >
-          <SuggestedGuessButtons />
-          <Typography>{remainingSolutionsText(hardModeWords)}</Typography>
-        </Stack>
-      )}
-
       <Keyboard
         screenSize={screenSize}
         letterMaxRanks={letterMaxRanks}
@@ -179,6 +174,16 @@ const Game = forwardRef(({
         darkMode={darkMode}
         colorBlindMode={colorBlindMode}
       />
+
+      {solved && <Button onClick={() => setWonDialogOpen(true)}>Show Win Screen</Button>}
+
+      {suggestionsVisible && !solved && (
+        <Stack spacing={1} sx={{ p: 1 }} >
+          <Typography>Top Suggestions</Typography>
+          <SuggestedGuessButtons />
+          <Typography>{remainingSolutionsText(hardModeWords)}</Typography>
+        </Stack>
+      )}
 
       {/* Dialogs, initially hidden */}
       <InvalidGuessDialog

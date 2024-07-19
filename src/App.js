@@ -66,6 +66,7 @@ function App() {
   const [previousUnsolvedDate, setPreviousUnsolvedDate] = useState(null);
   const [earliestUnsolvedDate, setEarliestUnsolvedDate] = useState(null);
   const [latestUnsolvedDate, setLatestUnsolvedDate] = useState(null);
+  const [solved, setSolved] = useState(false);
   
   const toggleColorMode = () => {
     const newColorMode = colorMode === 'light' ? 'dark' : 'light';
@@ -166,6 +167,7 @@ function App() {
     setHardModeWords(new Set([...wordleAcceptableWords]));
     setPossibleWords(new Set([...wordleAcceptableWords]));
     setSeenInsights(new Set());
+    setSolved(false);
     focusGuessesBoard();
   };
 
@@ -228,6 +230,7 @@ function App() {
       setLetterMaxRanks(newLetterMaxRanks);
 
       if (guessRanks === '22222') {  // guess is all greens (i.e., the answer)
+        setSolved(true);
         if (!guessesDB.hasOwnProperty(puzzleDate) || !guessesDB[puzzleDate].solvedDate) {  // save if never saved or unsolved
           saveGuess(gData, true);  // including `true` will add solved date
 
@@ -340,7 +343,6 @@ function App() {
           hardModeWords={hardModeWords}
           setHardModeWords={setHardModeWords}
           focusGuessesBoard={focusGuessesBoard}
-          resetGame={resetGame}
           enterGuess={enterGuess}
           invalidGuess={invalidGuess}
           invalidGuessDialogOpen={invalidGuessDialogOpen}
@@ -349,6 +351,8 @@ function App() {
           setWonDialogOpen={setWonDialogOpen}
           deleteDBDates={deleteDBDates}
           numGuesses={numGuesses}
+          solved={solved}
+          setSolved={setSolved}
           SuggestedGuessButtons={SuggestedGuessButtons}
           green={green}
           gray={gray}
