@@ -52,6 +52,7 @@ Clicking the Gear Icon in the top right corner will open a Settings menu. Any se
 * Enabling **Hard Mode** will only allow you to enter guesses that satisfy all the the insights you've gained from your previous guesses. For example, if your first guess shows a green "A" at the start of the word, all of the your future guesses must also start with "A". Similarly, if a guess reveals a yellow "T" at the end of the word, all of your future guesses cannot end with "T" but most have a "T" somewhere else in the word.
 * Enabling **Dark Mode** will intelligently transition the site to a predominantly dark theme.
 * Enabling **Color Blind Mode** will make the colors of the letters in the grid and the keyboard more distinguishable. I, Doug, am red-green color deficient, so while I haven't had trouble with the original Wordle colors, I'm thankful to be able to help others who have this challenge.
+* Enabling **Suggestions Visible** will display the top suggested guesses beneath the keyboard _and keep them there_. See the Suggestions section below for another method of revealing the top suggested guesses without them always being visible.
 
 
 ## Suggestions
