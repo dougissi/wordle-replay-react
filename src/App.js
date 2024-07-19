@@ -163,7 +163,7 @@ function App() {
     setGuessesColors(blankGuessesGrid());
     setLetterMaxRanks(Array(26).fill('-1'));
     setNextLetterIndex([0, 0]);
-    setHardModeWords([...wordleAcceptableWords]);
+    setHardModeWords(new Set([...wordleAcceptableWords]));
     setPossibleWords(new Set([...wordleAcceptableWords]));
     setSeenInsights(new Set());
     focusGuessesBoard();
