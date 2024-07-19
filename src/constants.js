@@ -64,6 +64,7 @@ export const lsKeys = {
     colorMode: 'colorMode',
     hardMode: 'hardMode',
     colorBlindMode: 'colorBlindMode',
+    suggestionsVisible: 'suggestionsVisible',
     transferredOldSolvedDataFlag: 'transferredOldSolvedDataFlag',
     oldWordleReplaySolved: 'wordlereplay-solved',
     maxSeenNewsPostId: 'maxSeenNewsPostId',

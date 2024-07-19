@@ -39,6 +39,8 @@ function ResponsiveAppBar({
   hardModeWords,
   colorBlindMode,
   handleColorBlindModeChange,
+  suggestionsVisible,
+  handleSuggestionsVisibleChange,
   darkMode,
   distributionData,
   guessesDB,
@@ -468,6 +470,8 @@ function ResponsiveAppBar({
             handleHardModeChange={handleHardModeChange}
             colorBlindMode={colorBlindMode}
             handleColorBlindModeChange={handleColorBlindModeChange}
+            suggestionsVisible={suggestionsVisible}
+            handleSuggestionsVisibleChange={handleSuggestionsVisibleChange}
             darkMode={darkMode}
             toggleColorMode={toggleColorMode}
           />

@@ -33,6 +33,7 @@ function App() {
   const [colorMode, setColorMode] = useState(localStorage.getItem(lsKeys.colorMode) || 'light');  // TODO: unit test
   const [hardMode, setHardMode] = useState(localStorage.getItem(lsKeys.hardMode) === 'true');  // TODO: unit test
   const [colorBlindMode, setColorBlindMode] = useState(localStorage.getItem(lsKeys.colorBlindMode) === 'true');  // TODO: unit test
+  const [suggestionsVisible, setSuggestionsVisible] = useState(localStorage.getItem(lsKeys.suggestionsVisible) === 'true');  // TODO: unit test
   const [searchParams, setSearchParams] = useSearchParams();
   const [puzzleDate, setPuzzleDate] = useState(  // try use param date, otherwise try use param num, else today
     isValidDate(searchParams.get('date'))
@@ -147,6 +148,12 @@ function App() {
     const newColorBlindMode = event.target.checked;
     setColorBlindMode(newColorBlindMode);
     localStorage.setItem(lsKeys.colorBlindMode, newColorBlindMode);  // persist
+  };
+
+  const handleSuggestionsVisibleChange = (event) => {
+    const newSuggestionsVisible = event.target.checked;
+    setSuggestionsVisible(newSuggestionsVisible);
+    localStorage.setItem(lsKeys.suggestionsVisible, newSuggestionsVisible);  // persist
   };
 
   const resetGame = () => {
@@ -294,6 +301,7 @@ function App() {
           puzzleDate={puzzleDate}
           hardMode={hardMode}
           colorBlindMode={colorBlindMode}
+          suggestionsVisible={suggestionsVisible}
           darkMode={darkMode}
           puzzleNum={puzzleNum}
           answer={answer}
@@ -368,6 +376,8 @@ function App() {
             hardModeWords={hardModeWords}
             colorBlindMode={colorBlindMode}
             handleColorBlindModeChange={handleColorBlindModeChange}
+            suggestionsVisible={suggestionsVisible}
+            handleSuggestionsVisibleChange={handleSuggestionsVisibleChange}
             darkMode={darkMode}
             distributionData={distributionData}
             guessesDB={guessesDB}

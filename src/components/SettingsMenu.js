@@ -2,7 +2,18 @@ import Menu from '@mui/material/Menu';
 import { MenuItem } from '@mui/material';
 import SettingsSwitch from './SettingsSwitch';
 
-export default function SettingsMenu({ handleClose, anchorEl, hardMode, handleHardModeChange, colorBlindMode, handleColorBlindModeChange, darkMode, toggleColorMode }) {
+export default function SettingsMenu({
+  handleClose,
+  anchorEl,
+  hardMode,
+  handleHardModeChange,
+  colorBlindMode,
+  handleColorBlindModeChange,
+  suggestionsVisible,
+  handleSuggestionsVisibleChange,
+  darkMode,
+  toggleColorMode
+}) {
   return (
     <Menu
       id="basic-menu"
@@ -32,6 +43,13 @@ export default function SettingsMenu({ handleClose, anchorEl, hardMode, handleHa
           label="Color Blind Mode"
           checked={colorBlindMode}
           onChange={handleColorBlindModeChange}
+        />
+      </MenuItem>
+      <MenuItem>
+        <SettingsSwitch
+          label="Suggestions Visible"
+          checked={suggestionsVisible}
+          onChange={handleSuggestionsVisibleChange}
         />
       </MenuItem>
     </Menu>

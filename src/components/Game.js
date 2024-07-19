@@ -15,6 +15,7 @@ const Game = forwardRef(({
   puzzleDate,
   hardMode,
   colorBlindMode,
+  suggestionsVisible,
   darkMode,
   puzzleNum,
   answer,
@@ -161,6 +162,8 @@ const Game = forwardRef(({
         darkMode={darkMode}
         colorBlindMode={colorBlindMode}
       />
+
+      {suggestionsVisible && <div>Suggestions Visible</div>}
 
       <Keyboard
         screenSize={screenSize}
