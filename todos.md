@@ -123,3 +123,4 @@ For later
 * [ ] commonize "IconButtonMenu"s in Responsive App bar
 * [ ] why do Menu and Suggestions (both Box components) need setTimeout to focus on guesses board?
 * [ ] remove unnecessary console logs
+* [ ] center column values in history table
