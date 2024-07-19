@@ -7,6 +7,16 @@
   padding: 0px 20px;
 }
 
+.markdown-img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 90%;
+  max-height: 50vh;
+  margin: auto;
+  padding-bottom: 10px;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
