@@ -12,6 +12,7 @@ export default function WonDialog({
     open, handleClose, answer, numGuesses, deleteDBDates, guessesColors, distributionData, colorBlindMode, puzzleNum, puzzleDate, green, gray
 }) {
     const [showCopyAlert, setShowCopyAlert] = useState(false);
+    const [replayConfirm, setReplayConfirm] = useState(false);
 
     const guessesIcons = [];
     for (let i = 0; i < guessesColors.length; i++) {
@@ -65,8 +66,21 @@ export default function WonDialog({
         
     );
     const shareButton = <Button key="shareIconsButton" startIcon={<IosShareIcon/>} onClick={handleShare} disabled={!isShareSupported()}>Share</Button>;
-    const replayButton = <Button key="replayButton" onClick={() => {deleteDBDates([puzzleDate]); handleClose();}}>Replay</Button>
+    const replayButton = <Button key="replayButton" onClick={() => setReplayConfirm(true)}>Replay</Button>
     const okButton = <Button key="wonDialogOkButton" onClick={handleClose}>OK</Button>;
+
+    const areYouSureAlert = (
+        <Alert severity="warning">
+            <Stack spacing={2}>
+                Are you sure you want to replay?
+                <Stack direction="row" spacing={2}>
+                    <Button onClick={() => {deleteDBDates([puzzleDate]); setReplayConfirm(false); handleClose();}}>Yes</Button>
+                    <Button onClick={() => setReplayConfirm(false)}>No</Button>
+                </Stack>
+            </Stack>
+            
+        </Alert>
+    )
 
     return (
         <AlertDialog
@@ -82,7 +96,8 @@ export default function WonDialog({
                     {guessesIcons.map((guessIcons, i) => (
                         <Typography key={`guess${i}`}>{guessIcons}</Typography>
                     ))}
-                </Stack>
+                </Stack>,
+                replayConfirm && areYouSureAlert
             ]}
         />
     );
