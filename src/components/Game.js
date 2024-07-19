@@ -1,4 +1,4 @@
-import { numLetters, rankToColor, backspaceSymbol, initialNumGuessesToShow } from "../constants";
+import { numLetters, rankToColor, backspaceSymbol, initialNumGuessesToShow, remainingSolutionsText } from "../constants";
 import { useEffect, useState, forwardRef } from 'react';
 import { blankRow, isSingleEnglishLetter, getGuessRanks, getLetterAlphabetIndex, union } from '../utils';
 import useScreenSize from './useScreenSize';
@@ -167,7 +167,7 @@ const Game = forwardRef(({
       {suggestionsVisible && (
         <Stack spacing={1} sx={{ p: 1 }} >
           <SuggestedGuessButtons />
-          <Typography>{`Remaining Possible Solutions: ${hardModeWords.size}`}</Typography>
+          <Typography>{remainingSolutionsText(hardModeWords)}</Typography>
         </Stack>
       )}
 

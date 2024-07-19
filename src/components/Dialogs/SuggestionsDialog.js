@@ -3,7 +3,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import AlertDialog from './AlertDialog';
 import { Link } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-// import SuggestionButtons from '../SuggestionButtons';
+import { remainingSolutionsText } from "../../constants";
 
 export default function SuggestionsDialog({ open, handleClose, hardModeWords, SuggestedGuessButtonsForDialog }) {
     const okButton = <Button key="hardModeWordsOkButton" onClick={handleClose}>OK</Button>;
@@ -20,7 +20,7 @@ export default function SuggestionsDialog({ open, handleClose, hardModeWords, Su
                 </DialogContentText>,
                 <h3 key='top-suggestions-heading'>Top Suggestions</h3>,
                 <SuggestedGuessButtonsForDialog key="suggestion-buttons-row" />,
-                <h3 key='all-possible-suggestions-heading'>{`Remaining Possible Solutions: ${hardModeWords.size}`}</h3>,
+                <h3 key='all-possible-suggestions-heading'>{remainingSolutionsText(hardModeWords)}</h3>,
                 <DialogContentText key='all-possible-solutions-dialog-text'>{[...hardModeWords].join(", ")}</DialogContentText>
             ]}
         />

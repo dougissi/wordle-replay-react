@@ -97,3 +97,5 @@ export let maxNewsPostId = 0;
 newsPosts.forEach(post => {
     maxNewsPostId = Math.max(maxNewsPostId, post.id);
 });
+
+export const remainingSolutionsText = (hardModeWords) => `Remaining Possible Solutions: ${hardModeWords.size}`;
