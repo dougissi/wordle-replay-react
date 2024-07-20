@@ -15,6 +15,7 @@ export default function AlertDialog({ open, handleClose, title, text, buttons, a
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
             disableEscapeKeyDown
+            sx={{ maxWidth: "500px", m: "auto" }}
         >
         <DialogTitle id="alert-dialog-title">
             {title}

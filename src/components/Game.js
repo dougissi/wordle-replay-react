@@ -51,6 +51,7 @@ const Game = forwardRef(({
   const screenSize = useScreenSize();
   const [lastLoadedDate, setLastLoadedDate] = useState();
   const [lastLoadAttemptDate, setLastLoadAttemptDate] = useState();
+  const [replayConfirm, setReplayConfirm] = useState(false);
 
   // load any previous guesses from DB for a given puzzle
   // TODO: commonize?
@@ -197,7 +198,7 @@ const Game = forwardRef(({
 
       <WonDialog
         open={wonDialogOpen}
-        handleClose={() => setWonDialogOpen(false)}
+        handleClose={() => {setWonDialogOpen(false); setReplayConfirm(false);}}
         answer={answer}
         numGuesses={numGuesses()}
         deleteDBDates={deleteDBDates}
@@ -206,6 +207,8 @@ const Game = forwardRef(({
         colorBlindMode={colorBlindMode}
         puzzleNum={puzzleNum}
         puzzleDate={puzzleDate}
+        replayConfirm={replayConfirm}
+        setReplayConfirm={setReplayConfirm}
         playClosestUnsolvedDate={playClosestUnsolvedDate}
         green={green}
         gray={gray}

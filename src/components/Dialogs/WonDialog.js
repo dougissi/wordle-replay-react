@@ -9,10 +9,9 @@ import Alert from '@mui/material/Alert';
 
 
 export default function WonDialog({
-    open, handleClose, answer, numGuesses, deleteDBDates, guessesColors, distributionData, colorBlindMode, puzzleNum, puzzleDate, playClosestUnsolvedDate, green, gray
+    open, handleClose, answer, numGuesses, deleteDBDates, guessesColors, distributionData, colorBlindMode, puzzleNum, puzzleDate, replayConfirm, setReplayConfirm, playClosestUnsolvedDate, green, gray
 }) {
     const [showCopyAlert, setShowCopyAlert] = useState(false);
-    const [replayConfirm, setReplayConfirm] = useState(false);
 
     const guessesIcons = [];
     for (let i = 0; i < guessesColors.length; i++) {
