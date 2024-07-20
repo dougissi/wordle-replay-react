@@ -66,11 +66,11 @@ export default function WonDialog({
         
     );
     const shareButton = <Button key="shareIconsButton" startIcon={<IosShareIcon/>} onClick={handleShare} disabled={!isShareSupported()}>Share</Button>;
-    const replayButton = <Button key="replayButton" onClick={() => setReplayConfirm(true)}>Replay</Button>
+    const replayButton = <Button key="replayButton" onClick={() => setReplayConfirm(prev => !prev)}>Replay</Button>
     const okButton = <Button key="wonDialogOkButton" onClick={handleClose}>OK</Button>;
 
     const areYouSureAlert = (
-        <Alert severity="warning">
+        <Alert key="areYouSureAlert" severity="warning">
             <Stack spacing={2}>
                 Are you sure you want to replay?
                 <Stack direction="row" spacing={2}>
@@ -82,13 +82,26 @@ export default function WonDialog({
         </Alert>
     )
 
+    const buttons = (
+        <Stack>
+            <Stack direction="row" spacing={2}>
+                {isShareSupported() ? shareButton: copyButton}
+                {replayButton}
+                {okButton}
+            </Stack>
+            
+            {/* alert on new row */}
+            {replayConfirm && areYouSureAlert}  
+        </Stack>
+    )
+
     return (
         <AlertDialog
             open={open}
             handleClose={handleClose}
             title={`You found "${answer}"!`}
             // text="Thanks for playing."  // TODO: update
-            buttons={[(isShareSupported() ? shareButton: copyButton), replayButton, okButton]}
+            buttons={buttons}
             addlContent={[
                 <DistributionChart key="distributionChart" numGuesses={numGuesses} distributionData={distributionData} green={green} gray={gray} />,
                 <Typography key="guesses" variant="h6">Guesses</Typography>,
@@ -96,8 +109,7 @@ export default function WonDialog({
                     {guessesIcons.map((guessIcons, i) => (
                         <Typography key={`guess${i}`}>{guessIcons}</Typography>
                     ))}
-                </Stack>,
-                replayConfirm && areYouSureAlert
+                </Stack>
             ]}
         />
     );
