@@ -38,9 +38,10 @@ export default function NewsPage({
     const NewsContent = () => (
         <>
             {/* TOC */}
+            <h2>Table of Contents</h2>
             {newsPosts.length > 1 &&
                 <List
-                    sx={{ listStyleType: 'disc', pl: 4 }}
+                    sx={{ listStyleType: 'disc', pl: "5%", maxWidth: '1000px', m: 'auto' }}
                 >
                     {newsPosts.map(post => (
                         <ListItemButton 

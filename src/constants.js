@@ -73,6 +73,12 @@ export const lsKeys = {
 // posts will appear on page in the order given in the array
 export const newsPosts = [
     {
+        id: 6,
+        date: "2024-07-20",
+        title: "New Buttons on Win Screen: Replay Current Puzzle or Play Closest Unsolved Puzzle",
+        fileName: "2024-07-20_replay_and_closest_unsolved.md"
+    },
+    {
         id: 5,
         date: "2024-07-19",
         title: "Button to Return to Win Screen",
