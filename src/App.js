@@ -10,7 +10,7 @@ import AboutPage from './components/Pages/AboutPage';
 import NewsPage from './components/Pages/NewsPage';
 import { dateToWord } from './assets/date_to_word';
 import { wordleAcceptableWords } from './assets/wordle_acceptable_words';
-import { blankGuessesGrid, blankRow, dateIsBetween, dateToPuzzleNum, getDistCountLabel, getGuessRanks, getLetterAlphabetIndex, getNextUnsolvedDate, getPreviousUnsolvedDate, getEarliestUnsolvedDate, getLatestUnsolvedDate, getTopSuggestions, numIsBetween, union, puzzleNumToDate } from './utils';
+import { blankGuessesGrid, blankRow, dateIsBetween, dateToPuzzleNum, getDistCountLabel, getGuessRanks, getLetterAlphabetIndex, getNextUnsolvedDate, getPreviousUnsolvedDate, getEarliestUnsolvedDate, getLatestUnsolvedDate, getTopSuggestions, numIsBetween, union, puzzleNumToDate, getClosestUnsolvedDate } from './utils';
 import { colorMap, earliestDate, emptyDistributionData, GREEN, YELLOW, GRAY, lsKeys, maxNewsPostId, numSuggestions, rankToColor, numLetters } from './constants';
 import { initDB, deleteItem, putItem } from './db';
 import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallbacks } from './hardModeWordsFiltering';
@@ -66,6 +66,7 @@ function App() {
   const [previousUnsolvedDate, setPreviousUnsolvedDate] = useState(null);
   const [earliestUnsolvedDate, setEarliestUnsolvedDate] = useState(null);
   const [latestUnsolvedDate, setLatestUnsolvedDate] = useState(null);
+  const [closestUnsolvedDate, setClosestUnsolvedDate] = useState(null);
   const [solved, setSolved] = useState(false);
   
   const toggleColorMode = () => {
@@ -128,6 +129,7 @@ function App() {
     setPreviousUnsolvedDate(getPreviousUnsolvedDate(puzzleDate, guessesDB));
     setEarliestUnsolvedDate(getEarliestUnsolvedDate(puzzleDate, guessesDB));
     setLatestUnsolvedDate(getLatestUnsolvedDate(puzzleDate, today, guessesDB));
+    setClosestUnsolvedDate(getClosestUnsolvedDate(puzzleDate, today, guessesDB));
   }, [puzzleDate, guessesDB]);
 
   const darkMode = colorMode === 'dark';  // TODO: useEffect?
@@ -316,6 +318,10 @@ function App() {
     );
   };
 
+  const playClosestUnsolvedDate = () => {
+    changeDate(closestUnsolvedDate);
+  }
+
   const pages = [
     {
       path: gamePath,  // homepage
@@ -353,6 +359,7 @@ function App() {
           numGuesses={numGuesses}
           solved={solved}
           setSolved={setSolved}
+          playClosestUnsolvedDate={playClosestUnsolvedDate}
           SuggestedGuessButtons={SuggestedGuessButtons}
           green={green}
           gray={gray}

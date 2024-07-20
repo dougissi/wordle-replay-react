@@ -5,13 +5,13 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Stack } from '@mui/material';
 
-export default function AlertDialog({ open, handleClose, title, text, buttons, addlContent, onKeyDown }) {
+export default function AlertDialog({ open, handleClose, title, text, buttons, addlContent, addlActions, onKeyDown }) {
 
     return (
         <Dialog
             open={open}
             onClose={handleClose}
-            onKeyDown={ onKeyDown || handleClose}  // TODO: make more robust
+            onKeyDown={ onKeyDown || handleClose }  // TODO: make more robust
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
             disableEscapeKeyDown
@@ -34,6 +34,7 @@ export default function AlertDialog({ open, handleClose, title, text, buttons, a
         <DialogActions>
             {buttons}            
         </DialogActions>
+        {addlActions && <DialogActions>{addlActions}</DialogActions>}
         </Dialog>
     );
 }

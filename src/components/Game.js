@@ -43,6 +43,7 @@ const Game = forwardRef(({
   numGuesses,
   solved,
   setSolved,
+  playClosestUnsolvedDate,
   SuggestedGuessButtons,
   green,
   gray,
@@ -205,6 +206,7 @@ const Game = forwardRef(({
         colorBlindMode={colorBlindMode}
         puzzleNum={puzzleNum}
         puzzleDate={puzzleDate}
+        playClosestUnsolvedDate={playClosestUnsolvedDate}
         green={green}
         gray={gray}
       />

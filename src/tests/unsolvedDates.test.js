@@ -1,6 +1,29 @@
-import { getNextUnsolvedDate, getPreviousUnsolvedDate, getEarliestUnsolvedDate, getLatestUnsolvedDate } from "../utils";
+import { alreadySolved, getNextUnsolvedDate, getPreviousUnsolvedDate, getEarliestUnsolvedDate, getLatestUnsolvedDate, getClosestUnsolvedDate } from "../utils";
 
 const solvedDate = '2024-05-28';  // doesn't matter what solved date is, just needs to exist
+
+
+// alreadySolved
+
+it('alreadySolved: true', () => {
+    const guessesDB = {
+        '2024-05-28': {solvedDate: solvedDate}
+    }
+    const dateStr = '2024-05-28';
+    const actual = alreadySolved(guessesDB, dateStr);
+    const expected = true;
+    expect(actual).toEqual(expected);
+})
+
+it('alreadySolved: false', () => {
+    const guessesDB = {
+        '2024-05-28': {solvedDate: solvedDate}
+    }
+    const dateStr = '2024-05-29';
+    const actual = alreadySolved(guessesDB, dateStr);
+    const expected = false;
+    expect(actual).toEqual(expected);
+})
 
 
 // getNextUnsolvedDate
@@ -282,3 +305,152 @@ it('getLatestUnsolvedDate: all solved', () => {
     expect(actual).toEqual(expected);
 })
 
+
+// getClosestUnsolvedDate
+
+it('getClosestUnsolvedDate: closest is current puzzle date', () => {
+    const guessesDB = {
+        '2024-07-18': {solvedDate: solvedDate},
+        '2024-07-19': {solvedDate: solvedDate},
+        '2024-07-20': {solvedDate: solvedDate},
+    }
+    const today = '2024-07-20';
+    const puzzleDate = '2024-01-01';
+    const actual = getClosestUnsolvedDate(puzzleDate, today, guessesDB);
+    const expected = '2024-01-01';
+    expect(actual).toEqual(expected);
+})
+
+it('getClosestUnsolvedDate: closest is one forward', () => {
+    const guessesDB = {
+        '2024-06-18': {solvedDate: solvedDate},
+        '2024-06-19': {solvedDate: solvedDate},
+        '2024-06-20': {solvedDate: solvedDate},
+    }
+    const today = '2024-07-20';
+    const puzzleDate = '2024-06-20';
+    const actual = getClosestUnsolvedDate(puzzleDate, today, guessesDB);
+    const expected = '2024-06-21';
+    expect(actual).toEqual(expected);
+})
+
+it('getClosestUnsolvedDate: closest is one back', () => {
+    const guessesDB = {
+        '2024-06-18': {solvedDate: solvedDate},
+        '2024-06-19': {solvedDate: solvedDate},
+        '2024-06-20': {solvedDate: solvedDate},
+    }
+    const today = '2024-07-20';
+    const puzzleDate = '2024-06-18';
+    const actual = getClosestUnsolvedDate(puzzleDate, today, guessesDB);
+    const expected = '2024-06-17';
+    expect(actual).toEqual(expected);
+})
+
+it('getClosestUnsolvedDate: closest is two forward', () => {
+    const guessesDB = {
+        '2024-06-18': {solvedDate: solvedDate},
+        '2024-06-19': {solvedDate: solvedDate},
+        '2024-06-20': {solvedDate: solvedDate},
+        '2024-06-21': {solvedDate: solvedDate},
+    }
+    const today = '2024-07-20';
+    const puzzleDate = '2024-06-20';
+    const actual = getClosestUnsolvedDate(puzzleDate, today, guessesDB);
+    const expected = '2024-06-22';
+    expect(actual).toEqual(expected);
+})
+
+it('getClosestUnsolvedDate: closest is two back', () => {
+    const guessesDB = {
+        '2024-06-18': {solvedDate: solvedDate},
+        '2024-06-19': {solvedDate: solvedDate},
+        '2024-06-20': {solvedDate: solvedDate},
+        '2024-06-21': {solvedDate: solvedDate},
+    }
+    const today = '2024-07-20';
+    const puzzleDate = '2024-06-19';
+    const actual = getClosestUnsolvedDate(puzzleDate, today, guessesDB);
+    const expected = '2024-06-17';
+    expect(actual).toEqual(expected);
+})
+
+it('getClosestUnsolvedDate: tied, default forward', () => {
+    const guessesDB = {
+        '2024-06-18': {solvedDate: solvedDate},
+        '2024-06-19': {solvedDate: solvedDate},
+        '2024-06-20': {solvedDate: solvedDate},
+    }
+    const today = '2024-07-20';
+    const puzzleDate = '2024-06-19';
+    const actual = getClosestUnsolvedDate(puzzleDate, today, guessesDB);
+    const expected = '2024-06-21';
+    expect(actual).toEqual(expected);
+})
+
+it('getClosestUnsolvedDate: run out of backwards', () => {
+    const guessesDB = {
+        '2021-06-19': {solvedDate: solvedDate},
+        '2021-06-20': {solvedDate: solvedDate},
+        '2021-06-21': {solvedDate: solvedDate},
+        '2021-06-22': {solvedDate: solvedDate},
+    }
+    const today = '2024-07-20';
+    const puzzleDate = '2021-06-20';
+    const actual = getClosestUnsolvedDate(puzzleDate, today, guessesDB);
+    const expected = '2021-06-23';
+    expect(actual).toEqual(expected);
+})
+
+it('getClosestUnsolvedDate: run out of forwards', () => {
+    const guessesDB = {
+        '2024-07-17': {solvedDate: solvedDate},
+        '2024-07-18': {solvedDate: solvedDate},
+        '2024-07-19': {solvedDate: solvedDate},
+        '2024-07-20': {solvedDate: solvedDate},
+    }
+    const today = '2024-07-20';
+    const puzzleDate = '2024-07-19';
+    const actual = getClosestUnsolvedDate(puzzleDate, today, guessesDB);
+    const expected = '2024-07-16';
+    expect(actual).toEqual(expected);
+})
+
+it('getClosestUnsolvedDate: at earliest date', () => {
+    const guessesDB = {
+        '2021-06-19': {solvedDate: solvedDate},
+        '2021-06-20': {solvedDate: solvedDate},
+        '2021-06-21': {solvedDate: solvedDate},
+    }
+    const today = '2024-07-20';
+    const puzzleDate = '2021-06-19';
+    const actual = getClosestUnsolvedDate(puzzleDate, today, guessesDB);
+    const expected = '2021-06-22';
+    expect(actual).toEqual(expected);
+})
+
+it('getClosestUnsolvedDate: at today', () => {
+    const guessesDB = {
+        '2024-07-18': {solvedDate: solvedDate},
+        '2024-07-19': {solvedDate: solvedDate},
+        '2024-07-20': {solvedDate: solvedDate},
+    }
+    const today = '2024-07-20';
+    const puzzleDate = '2024-07-20';
+    const actual = getClosestUnsolvedDate(puzzleDate, today, guessesDB);
+    const expected = '2024-07-17';
+    expect(actual).toEqual(expected);
+})
+
+it('getClosestUnsolvedDate: all solved', () => {
+    const guessesDB = {
+        '2021-06-19': {solvedDate: solvedDate},
+        '2021-06-20': {solvedDate: solvedDate},
+        '2021-06-21': {solvedDate: solvedDate},
+    }
+    const today = '2021-06-21';
+    const puzzleDate = '2021-06-20';
+    const actual = getClosestUnsolvedDate(puzzleDate, today, guessesDB);
+    const expected = null;
+    expect(actual).toEqual(expected);
+})

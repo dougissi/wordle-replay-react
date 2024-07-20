@@ -147,6 +147,8 @@ function formatOldDataForIndexedDB(oldData) {
     return newSolvedData;
 }
 
+const alreadySolved = (guessesDB, dateStr) => Boolean(guessesDB[dateStr]?.solvedDate);
+
 const getUnsolvedDateForward = (start, end, guessesDB) => {
     let currDate = dayjs(start);
     let currDateStr = currDate.format('YYYY-MM-DD');
@@ -154,7 +156,7 @@ const getUnsolvedDateForward = (start, end, guessesDB) => {
 
     // look forward from current
     while (currDateStr <= endStr) {
-        if (!guessesDB[currDateStr]?.solvedDate) {
+        if (!alreadySolved(guessesDB, currDateStr)) {
             return currDateStr;
         }
 
@@ -173,7 +175,7 @@ const getUnsolvedDateBackward = (end, start, guessesDB) => {
 
     // look back from current
     while (currDateStr >= startStr) {
-        if (!guessesDB[currDateStr]?.solvedDate) {
+        if (!alreadySolved(guessesDB, currDateStr)) {
             return currDateStr;
         }
 
@@ -203,6 +205,35 @@ const getEarliestUnsolvedDate = (puzzleDate, guessesDB) => {
 const getLatestUnsolvedDate = (puzzleDate, today, guessesDB) => {
     const nextDay = dayjs(puzzleDate).add(1, 'day');
     return getUnsolvedDateBackward(today, nextDay, guessesDB);
+}
+
+const getClosestUnsolvedDate = (puzzleDate, today, guessesDB) => {
+    let forwardDate = dayjs(puzzleDate);
+    let forwardDateStr = puzzleDate;
+    
+    let backwardDate = dayjs(puzzleDate);
+    let backwardDateStr = puzzleDate;
+
+    while (forwardDateStr <= today && backwardDateStr >= earliestDate) {
+        if (!alreadySolved(guessesDB, forwardDateStr)) {
+            return forwardDateStr;
+        }
+        if (!alreadySolved(guessesDB, backwardDateStr)) {
+            return backwardDateStr;
+        }
+        forwardDate = forwardDate.add(1, 'day');
+        forwardDateStr = forwardDate.format('YYYY-MM-DD');
+        backwardDate = backwardDate.subtract(1, 'day');
+        backwardDateStr = backwardDate.format('YYYY-MM-DD');
+    }
+
+    if (forwardDateStr <= today) {
+        return getUnsolvedDateForward(forwardDateStr, today, guessesDB);
+    }
+    if (backwardDateStr >= earliestDate) {
+        return getUnsolvedDateBackward(backwardDateStr, earliestDate, guessesDB);
+    }
+    return null;  // all solved
 }
 
 function countDuplicateLetters(word) {
@@ -308,10 +339,12 @@ export {
     getDistCountLabel,
     processGuessesDB,
     formatOldDataForIndexedDB,
+    alreadySolved,
     getNextUnsolvedDate,
     getPreviousUnsolvedDate,
     getEarliestUnsolvedDate,
     getLatestUnsolvedDate,
+    getClosestUnsolvedDate,
     countDuplicateLetters,
     getFreqs,
     getWordRanks,

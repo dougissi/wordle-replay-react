@@ -125,3 +125,4 @@ For later
 * [ ] remove unnecessary console logs
 * [ ] center column values in history table
 * [ ] when puzzle solved, no more suggestions should show up (hardModeWords should be empty)
+* [ ] add buttons to calendar view for "today" and "earliest date" to quickly jump to start and end

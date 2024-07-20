@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "@mui/material/Button";
 import DistributionChart from "../DistributionChart";
-import { Stack, Typography } from "@mui/material";
+import { Stack, Tooltip, Typography } from "@mui/material";
 import { colorToIcon } from "../../constants";
 import AlertDialog from './AlertDialog';
 import IosShareIcon from '@mui/icons-material/IosShare';
@@ -9,7 +9,7 @@ import Alert from '@mui/material/Alert';
 
 
 export default function WonDialog({
-    open, handleClose, answer, numGuesses, deleteDBDates, guessesColors, distributionData, colorBlindMode, puzzleNum, puzzleDate, green, gray
+    open, handleClose, answer, numGuesses, deleteDBDates, guessesColors, distributionData, colorBlindMode, puzzleNum, puzzleDate, playClosestUnsolvedDate, green, gray
 }) {
     const [showCopyAlert, setShowCopyAlert] = useState(false);
     const [replayConfirm, setReplayConfirm] = useState(false);
@@ -63,16 +63,22 @@ export default function WonDialog({
                 Copy
             </Button>
         </div>
-        
     );
+
+    const handlePlayClosestUnsolved = () => {
+        handleClose();
+        setTimeout(playClosestUnsolvedDate, 200);
+    }
+
     const shareButton = <Button key="shareIconsButton" startIcon={<IosShareIcon/>} onClick={handleShare} disabled={!isShareSupported()}>Share</Button>;
     const replayButton = <Button key="replayButton" onClick={() => setReplayConfirm(prev => !prev)}>Replay</Button>
-    const okButton = <Button key="wonDialogOkButton" onClick={handleClose}>OK</Button>;
+    const closestUnsolvedButton = <Tooltip title="Shortcut: press Enter"><Button key="closestUnsolvedButton" onClick={handlePlayClosestUnsolved}>Closest Unsolved</Button></Tooltip>
+    const exitButton = <Button key="wonDialogExitButton" onClick={handleClose}>Exit</Button>;
 
     const areYouSureAlert = (
         <Alert key="areYouSureAlert" severity="warning">
             <Stack spacing={2}>
-                Are you sure you want to replay?
+                Are you sure you want to replay this puzzle? These guesses will be deleted.
                 <Stack direction="row" spacing={2}>
                     <Button onClick={() => {deleteDBDates([puzzleDate]); setReplayConfirm(false); handleClose();}}>Yes</Button>
                     <Button onClick={() => setReplayConfirm(false)}>No</Button>
@@ -82,26 +88,14 @@ export default function WonDialog({
         </Alert>
     )
 
-    const buttons = (
-        <Stack>
-            <Stack direction="row" spacing={2}>
-                {isShareSupported() ? shareButton: copyButton}
-                {replayButton}
-                {okButton}
-            </Stack>
-            
-            {/* alert on new row */}
-            {replayConfirm && areYouSureAlert}  
-        </Stack>
-    )
-
     return (
         <AlertDialog
             open={open}
             handleClose={handleClose}
+            onKeyDown={(event) => event.key === 'Enter' ? handlePlayClosestUnsolved() : handleClose()}
+            // onKeyDown={(event) => console.log(event.key)}
             title={`You found "${answer}"!`}
             // text="Thanks for playing."  // TODO: update
-            buttons={buttons}
             addlContent={[
                 <DistributionChart key="distributionChart" numGuesses={numGuesses} distributionData={distributionData} green={green} gray={gray} />,
                 <Typography key="guesses" variant="h6">Guesses</Typography>,
@@ -111,6 +105,8 @@ export default function WonDialog({
                     ))}
                 </Stack>
             ]}
+            buttons={[isShareSupported() ? shareButton: copyButton, replayButton, closestUnsolvedButton, exitButton]}
+            addlActions={replayConfirm && areYouSureAlert}
         />
     );
 }
