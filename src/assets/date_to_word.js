@@ -1561,4 +1561,6 @@ export const dateToWord = new Map([
     ['2025-09-25', 'drape'],
     ['2025-09-26', 'dally'],
     ['2025-09-27', 'fritz'],
+    ['2025-09-28', 'gooey'],
+    ['2025-09-29', 'civil'],
 ])
