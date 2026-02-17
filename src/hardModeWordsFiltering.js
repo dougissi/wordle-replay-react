@@ -39,6 +39,7 @@ function getInsightsFromGuessRanks(guess, guessRanks) {
             insights.push(`index ${i} != ${letter}`);
             letterInfo[letter].minCount++;
         } else {  // gray
+            insights.push(`index ${i} != ${letter}`);
             letterInfo[letter].maxed = true;
         }
     }
