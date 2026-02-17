@@ -11,6 +11,8 @@
  * const expected = [
  *     'index 0 == a',
  *     'index 1 != r',
+ *     'index 2 != i',
+ *     'index 3 != a',
  *     'index 4 != l',
  *     'countOf a == 1',
  *     'countOf r >= 1',

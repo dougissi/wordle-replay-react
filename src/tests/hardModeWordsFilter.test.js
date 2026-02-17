@@ -6,7 +6,9 @@ it('getInsightsFromGuessRanks: two "a" one gray one green, arial 01021', () => {
     const guess = 'arial';
     const guessRanks = '01021';
     const expected = [
+        'index 0 != a',
         'index 1 != r',
+        'index 2 != i',
         'index 3 == a',
         'index 4 != l',
         'countOf a == 1',
@@ -23,8 +25,10 @@ it('getInsightsFromGuessRanks: two "e" one green one yellow, greed 10120', () =>
     const guessRanks = '10120';
     const expected = [
         'index 0 != g',
+        'index 1 != r',
         'index 2 != e',
         'index 3 == e',
+        'index 4 != d',
         'countOf g >= 1',
         'countOf r == 0',
         'countOf e >= 2',
@@ -38,6 +42,7 @@ it('getInsightsFromGuessRanks: three "e" one green two yellow, reede 01221', () 
     const guess = 'reede';
     const guessRanks = '01221';
     const expected = [
+        'index 0 != r',
         'index 1 != e',
         'index 2 == e',
         'index 3 == d',
