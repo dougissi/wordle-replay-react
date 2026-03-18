@@ -38,6 +38,17 @@ Notes:
 
 Afterward, add metadata about the post to the `newsPosts` array in `src/constants.js`. The title and date in this array are what will appear in the News page.
 
+## Updating Word List
+
+In the [auto_update](./auto_update/) directory, there's a script [auto_update_word_list.sh](./auto_update/auto_update_word_list.sh) to query the NYT official Wordle word list up to a certain date in the future.
+
+The typical process, which could definitely be optimized, is to periodically navigate to [https://www.nytimes.com/svc/wordle/v2/2021-06-19.json](https://www.nytimes.com/svc/wordle/v2/2021-06-19.json) and update the date to about 2 weeks in the future, testing a few dates until you've found the latest date. Once that date is found, use it as an input parameter in the auto_update script as demonstrated below (replacing the `2026-04-20` with the latest date you've just found).
+
+```
+cd auto_update
+./auto_update_word_list.sh 2026-04-20
+```
+
 ## Deployment
 
 Currently the app is deployed using GitHub pages, based on the main branch and the `docs` folder.
