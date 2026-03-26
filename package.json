@@ -25,7 +25,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "predeploy": "npm run build; rm -r docs/*; cp -r build/* docs/;",
+    "predeploy": "npm run build && rd /s /q docs && mkdir docs && xcopy build docs /E /I /Y",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

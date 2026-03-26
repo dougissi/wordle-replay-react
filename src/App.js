@@ -1,25 +1,58 @@
-import './App.css';
-import dayjs from 'dayjs';
-import { createContext, useEffect, useState, useMemo, useRef } from 'react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import "./App.css";
+import dayjs from "dayjs";
+import { createContext, useEffect, useState, useMemo, useRef } from "react";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { Route, Routes, useSearchParams } from "react-router-dom";
-import ResponsiveAppBar from './components/ResponsiveAppBar';
-import Game from './components/Game';
-import CssBaseline from '@mui/material/CssBaseline';
-import AboutPage from './components/Pages/AboutPage';
-import NewsPage from './components/Pages/NewsPage';
-import { dateToWord } from './assets/date_to_word';
-import { wordleAcceptableWords } from './assets/wordle_acceptable_words';
-import { blankGuessesGrid, blankRow, dateIsBetween, dateToPuzzleNum, getDistCountLabel, getGuessRanks, getLetterAlphabetIndex, getNextUnsolvedDate, getPreviousUnsolvedDate, getEarliestUnsolvedDate, getLatestUnsolvedDate, getTopSuggestions, numIsBetween, union, puzzleNumToDate, getClosestUnsolvedDate } from './utils';
-import { colorMap, earliestDate, emptyDistributionData, GREEN, YELLOW, GRAY, lsKeys, maxNewsPostId, numSuggestions, rankToColor, numLetters } from './constants';
-import { initDB, deleteItem, putItem } from './db';
-import { getInsightsFromGuessRanks, getInsightCallback, satisfiesAllInsightCallbacks } from './hardModeWordsFiltering';
-import { Button, Stack } from '@mui/material';
+import ResponsiveAppBar from "./components/ResponsiveAppBar";
+import Game from "./components/Game";
+import CssBaseline from "@mui/material/CssBaseline";
+import AboutPage from "./components/Pages/AboutPage";
+import NewsPage from "./components/Pages/NewsPage";
+import { dateToWord } from "./assets/date_to_word";
+import { wordleAcceptableWords } from "./assets/wordle_acceptable_words";
+import {
+  blankGuessesGrid,
+  blankRow,
+  dateIsBetween,
+  dateToPuzzleNum,
+  getDistCountLabel,
+  getGuessRanks,
+  getLetterAlphabetIndex,
+  getNextUnsolvedDate,
+  getPreviousUnsolvedDate,
+  getEarliestUnsolvedDate,
+  getLatestUnsolvedDate,
+  getTopSuggestions,
+  numIsBetween,
+  union,
+  puzzleNumToDate,
+  getClosestUnsolvedDate,
+} from "./utils";
+import {
+  colorMap,
+  earliestDate,
+  emptyDistributionData,
+  GREEN,
+  YELLOW,
+  GRAY,
+  lsKeys,
+  maxNewsPostId,
+  numSuggestions,
+  rankToColor,
+  numLetters,
+} from "./constants";
+import { initDB, deleteItem, putItem } from "./db";
+import {
+  getInsightsFromGuessRanks,
+  getInsightCallback,
+  satisfiesAllInsightCallbacks,
+} from "./hardModeWordsFiltering";
+import { Button, Stack } from "@mui/material";
+import Privacy from "./components/Pages/Privacy";
 
-
-const gamePath = '/';
+const gamePath = "/";
 const ColorModeContext = createContext({ toggleColorMode: () => {} });
-const today = dayjs().format('YYYY-MM-DD');
+const today = dayjs().format("YYYY-MM-DD");
 const todayPuzzleNum = dateToPuzzleNum(today);
 const earliestPuzzleNum = dateToPuzzleNum(earliestDate);
 const isValidDate = (dateStr) => {
@@ -29,35 +62,39 @@ const isValidPuzzleNum = (num) => {
   return numIsBetween(num, earliestPuzzleNum, todayPuzzleNum);
 };
 
-
 function App() {
-  const [colorMode, setColorMode] = useState(localStorage.getItem(lsKeys.colorMode) || 'light');  // TODO: unit test
-  const [hardMode, setHardMode] = useState(localStorage.getItem(lsKeys.hardMode) === 'true');  // TODO: unit test
-  const [colorBlindMode, setColorBlindMode] = useState(localStorage.getItem(lsKeys.colorBlindMode) === 'true');  // TODO: unit test
-  const [suggestionsVisible, setSuggestionsVisible] = useState(localStorage.getItem(lsKeys.suggestionsVisible) === 'true');  // TODO: unit test
+  const [colorMode, setColorMode] = useState(localStorage.getItem(lsKeys.colorMode) || "light"); // TODO: unit test
+  const [hardMode, setHardMode] = useState(localStorage.getItem(lsKeys.hardMode) === "true"); // TODO: unit test
+  const [colorBlindMode, setColorBlindMode] = useState(
+    localStorage.getItem(lsKeys.colorBlindMode) === "true",
+  ); // TODO: unit test
+  const [suggestionsVisible, setSuggestionsVisible] = useState(
+    localStorage.getItem(lsKeys.suggestionsVisible) === "true",
+  ); // TODO: unit test
   const [searchParams, setSearchParams] = useSearchParams();
-  const [puzzleDate, setPuzzleDate] = useState(  // try use param date, otherwise try use param num, else today
-    isValidDate(searchParams.get('date'))
-    ? dayjs(searchParams.get('date')).format('YYYY-MM-DD')  // ensure proper format if valid
-    : (
-      isValidPuzzleNum(searchParams.get('num'))
-      ? puzzleNumToDate(searchParams.get('num'))
-      : today
-    )
+  const [puzzleDate, setPuzzleDate] = useState(
+    // try use param date, otherwise try use param num, else today
+    isValidDate(searchParams.get("date"))
+      ? dayjs(searchParams.get("date")).format("YYYY-MM-DD") // ensure proper format if valid
+      : isValidPuzzleNum(searchParams.get("num"))
+        ? puzzleNumToDate(searchParams.get("num"))
+        : today,
   );
   const [puzzleNum, setPuzzleNum] = useState(dateToPuzzleNum(puzzleDate));
   const [answer, setAnswer] = useState(dateToWord.get(puzzleDate).toUpperCase());
   const [guessesData, setGuessesData] = useState(blankGuessesGrid());
   const [guessesColors, setGuessesColors] = useState(blankGuessesGrid());
-  const [letterMaxRanks, setLetterMaxRanks] = useState(Array(26).fill('-1'));
+  const [letterMaxRanks, setLetterMaxRanks] = useState(Array(26).fill("-1"));
   const [nextLetterIndex, setNextLetterIndex] = useState([0, 0]);
   const [seenInsights, setSeenInsights] = useState(new Set());
-  const [distributionData, setDistributionData] = useState({...emptyDistributionData});
+  const [distributionData, setDistributionData] = useState({ ...emptyDistributionData });
   const [guessesDB, setGuessesDB] = useState({});
   const [hardModeWords, setHardModeWords] = useState(new Set(wordleAcceptableWords));
   const [suggestions, setSuggestions] = useState([]);
   const [possibleWords, setPossibleWords] = useState(new Set(wordleAcceptableWords));
-  const [maxSeenNewsPostId, setMaxSeenNewsPostId] = useState(Number(localStorage.getItem(lsKeys.maxSeenNewsPostId)));  // 0 if doesn't exist
+  const [maxSeenNewsPostId, setMaxSeenNewsPostId] = useState(
+    Number(localStorage.getItem(lsKeys.maxSeenNewsPostId)),
+  ); // 0 if doesn't exist
   const [showNewsBadge, setShowNewsBadge] = useState(maxNewsPostId > maxSeenNewsPostId);
   const [invalidGuess, setInvalidGuess] = useState("");
   const [invalidGuessDialogOpen, setInvalidGuessDialogOpen] = useState(false);
@@ -68,10 +105,10 @@ function App() {
   const [latestUnsolvedDate, setLatestUnsolvedDate] = useState(null);
   const [closestUnsolvedDate, setClosestUnsolvedDate] = useState(null);
   const [solved, setSolved] = useState(false);
-  
+
   const toggleColorMode = () => {
-    const newColorMode = colorMode === 'light' ? 'dark' : 'light';
-    localStorage.setItem(lsKeys.colorMode, newColorMode);  // persist
+    const newColorMode = colorMode === "light" ? "dark" : "light";
+    localStorage.setItem(lsKeys.colorMode, newColorMode); // persist
     setColorMode(newColorMode);
   };
 
@@ -87,34 +124,39 @@ function App() {
 
   // ensure search params match puzzleDate and puzzleNum
   useEffect(() => {
-    const hasParamDate = searchParams.has('date');
-    const hasParamNum = searchParams.has('num');
-    const paramDate = searchParams.get('date');
-    const paramNum = searchParams.get('num');
-    if (hasParamDate && hasParamNum) {  // has both
-      if (paramDate !== puzzleDate || paramNum !== puzzleNum) {  // if either not right, set both
-        setSearchParams({...searchParams, date: puzzleDate, num: puzzleNum})
+    const hasParamDate = searchParams.has("date");
+    const hasParamNum = searchParams.has("num");
+    const paramDate = searchParams.get("date");
+    const paramNum = searchParams.get("num");
+    if (hasParamDate && hasParamNum) {
+      // has both
+      if (paramDate !== puzzleDate || paramNum !== puzzleNum) {
+        // if either not right, set both
+        setSearchParams({ ...searchParams, date: puzzleDate, num: puzzleNum });
       }
-    } else if (hasParamDate) {  // just date
+    } else if (hasParamDate) {
+      // just date
       if (paramDate !== puzzleDate) {
-        setSearchParams({...searchParams, date: puzzleDate})
+        setSearchParams({ ...searchParams, date: puzzleDate });
       }
-    } else if (hasParamNum) {  // just num
+    } else if (hasParamNum) {
+      // just num
       if (paramNum !== puzzleNum) {
-        setSearchParams({...searchParams, num: puzzleNum})
+        setSearchParams({ ...searchParams, num: puzzleNum });
       }
     }
   }, [searchParams, setSearchParams, puzzleDate, puzzleNum]);
 
-  const focusGuessesBoard = () => {  // focus on guesses board if at the game
+  const focusGuessesBoard = () => {
+    // focus on guesses board if at the game
     if (window.location.pathname === gamePath) {
       guessesBoardRef.current.focus();
     }
-  }
+  };
 
   useEffect(() => {
     initDB(setDistributionData, setGuessesDB); // Initialize the database
-    focusGuessesBoard();  // TODO: can this move to Game? focus on guesses board initially
+    focusGuessesBoard(); // TODO: can this move to Game? focus on guesses board initially
   }, []);
 
   // get new suggestions when hardModeWords change
@@ -132,8 +174,8 @@ function App() {
     setClosestUnsolvedDate(getClosestUnsolvedDate(puzzleDate, today, guessesDB));
   }, [puzzleDate, guessesDB]);
 
-  const darkMode = colorMode === 'dark';  // TODO: useEffect?
-  const colorBlindModeDesc = colorBlindMode ? 'colorBlind' : 'standard';
+  const darkMode = colorMode === "dark"; // TODO: useEffect?
+  const colorBlindModeDesc = colorBlindMode ? "colorBlind" : "standard";
   const green = colorMap[colorMode][colorBlindModeDesc][GREEN];
   const yellow = colorMap[colorMode][colorBlindModeDesc][YELLOW];
   const gray = colorMap[colorMode][colorBlindModeDesc][GRAY];
@@ -145,26 +187,26 @@ function App() {
     const newPossibleWords = newHardMode ? new Set(hardModeWords) : wordleAcceptableWords;
     setHardMode(newHardMode);
     setPossibleWords(newPossibleWords);
-    localStorage.setItem(lsKeys.hardMode, newHardMode);  // persist
+    localStorage.setItem(lsKeys.hardMode, newHardMode); // persist
   };
 
   const handleColorBlindModeChange = (event) => {
     const newColorBlindMode = event.target.checked;
     setColorBlindMode(newColorBlindMode);
-    localStorage.setItem(lsKeys.colorBlindMode, newColorBlindMode);  // persist
+    localStorage.setItem(lsKeys.colorBlindMode, newColorBlindMode); // persist
   };
 
   const handleSuggestionsVisibleChange = (event) => {
     const newSuggestionsVisible = event.target.checked;
     setSuggestionsVisible(newSuggestionsVisible);
-    localStorage.setItem(lsKeys.suggestionsVisible, newSuggestionsVisible);  // persist
+    localStorage.setItem(lsKeys.suggestionsVisible, newSuggestionsVisible); // persist
   };
 
   const resetGame = () => {
     // TODO: need a more robust way of ensuring these states are the same as when the app loads
     setGuessesData(blankGuessesGrid());
     setGuessesColors(blankGuessesGrid());
-    setLetterMaxRanks(Array(26).fill('-1'));
+    setLetterMaxRanks(Array(26).fill("-1"));
     setNextLetterIndex([0, 0]);
     setHardModeWords(new Set([...wordleAcceptableWords]));
     setPossibleWords(new Set([...wordleAcceptableWords]));
@@ -174,25 +216,27 @@ function App() {
   };
 
   const changeDate = (dateStr) => {
-    if (dateStr === puzzleDate || !isValidDate(dateStr)) {  // if no date change or invalid date, do nothing
+    if (dateStr === puzzleDate || !isValidDate(dateStr)) {
+      // if no date change or invalid date, do nothing
       return;
     }
     setPuzzleDate(dateStr);
-    if (searchParams.has('date')) {
-      setSearchParams({...searchParams, date: dateStr});
+    if (searchParams.has("date")) {
+      setSearchParams({ ...searchParams, date: dateStr });
     }
     setPuzzleNum(dateToPuzzleNum(dateStr));
     setAnswer(dateToWord.get(dateStr).toUpperCase());
-    resetGame();  // TODO: make this optional?
+    resetGame(); // TODO: make this optional?
   };
 
   const deleteDBDates = (dateStrs) => {
-    const newGuessesDB = {...guessesDB};
-    const newDistributionData = {...distributionData};
-    dateStrs.forEach(dateStr => {
-      deleteItem(dateStr);  // delete from indexedDB
-      delete newGuessesDB[dateStr];  // update DB state
-      if (guessesDB[dateStr]?.solvedDate) {  // update distribution counts state if solved
+    const newGuessesDB = { ...guessesDB };
+    const newDistributionData = { ...distributionData };
+    dateStrs.forEach((dateStr) => {
+      deleteItem(dateStr); // delete from indexedDB
+      delete newGuessesDB[dateStr]; // update DB state
+      if (guessesDB[dateStr]?.solvedDate) {
+        // update distribution counts state if solved
         const countLabel = getDistCountLabel(guessesDB[dateStr].guesses.length);
         newDistributionData[countLabel]--;
       }
@@ -204,17 +248,19 @@ function App() {
     if (dateStrs.includes(puzzleDate)) {
       resetGame();
     }
-  }
+  };
 
-  function enterGuess(guess, gData) {  // guess must be UPPER case
+  function enterGuess(guess, gData) {
+    // guess must be UPPER case
     if (!possibleWords.has(guess.toLowerCase())) {
-      setInvalidGuess(guess);  // TODO: never gets unset, but works fine
+      setInvalidGuess(guess); // TODO: never gets unset, but works fine
       setInvalidGuessDialogOpen(true);
-    } else {  // guess is an acceptable word
+    } else {
+      // guess is an acceptable word
       // get the ranks for each letter of the guess
       // in the form of a string of 5 numbers, each [0, 2],
       // where 0 -> gray, 1 -> yellow, 2 -> green
-      const guessRanks = getGuessRanks(guess, answer); 
+      const guessRanks = getGuessRanks(guess, answer);
       const guessColors = [...guessRanks].map((rank) => rankToColor[rank]);
 
       const newGuessesColors = [...guessesColors];
@@ -227,42 +273,53 @@ function App() {
       for (let i = 0; i < guess.length; i++) {
         const letter = guess[i];
         const j = getLetterAlphabetIndex(letter);
-        newLetterMaxRanks[j] = Math.max(newLetterMaxRanks[j], guessRanks[i])
+        newLetterMaxRanks[j] = Math.max(newLetterMaxRanks[j], guessRanks[i]);
       }
       setLetterMaxRanks(newLetterMaxRanks);
 
-      if (guessRanks === '22222') {  // guess is all greens (i.e., the answer)
+      if (guessRanks === "22222") {
+        // guess is all greens (i.e., the answer)
         setSolved(true);
-        if (!guessesDB.hasOwnProperty(puzzleDate) || !guessesDB[puzzleDate].solvedDate) {  // save if never saved or unsolved
-          saveGuess(gData, true);  // including `true` will add solved date
+        if (!guessesDB.hasOwnProperty(puzzleDate) || !guessesDB[puzzleDate].solvedDate) {
+          // save if never saved or unsolved
+          saveGuess(gData, true); // including `true` will add solved date
 
           // update distribution
           const countLabel = getDistCountLabel(numGuesses());
-          const newDistributionData = {...distributionData};
+          const newDistributionData = { ...distributionData };
           newDistributionData[countLabel]++;
           setDistributionData(newDistributionData);
 
           // show Won Dialog after delay
-          setTimeout(() => {setWonDialogOpen(true)}, 750);
-        } else {  // previously solved
-          setWonDialogOpen(true);  // show Won Dialog right away
+          setTimeout(() => {
+            setWonDialogOpen(true);
+          }, 750);
+        } else {
+          // previously solved
+          setWonDialogOpen(true); // show Won Dialog right away
         }
-      } else {  // guess not the answer
+      } else {
+        // guess not the answer
         // update next letter index, potentially adding a new row
         const nextRowIndex = nextLetterIndex[0] + 1;
-        if (nextRowIndex === gData.length) {  // at end of all words
-          setGuessesData([...gData, blankRow()]);  // add blank row
+        if (nextRowIndex === gData.length) {
+          // at end of all words
+          setGuessesData([...gData, blankRow()]); // add blank row
           setGuessesColors([...newGuessesColors, blankRow()]); // add blank row
         }
         setNextLetterIndex([nextRowIndex, 0]);
-        saveGuess(gData);  // no `true` param so no solved date will be included
+        saveGuess(gData); // no `true` param so no solved date will be included
       }
 
       // update hard mode words and seen insights
       const insights = getInsightsFromGuessRanks(guess.toLowerCase(), guessRanks);
       const newInsights = insights.filter((insight) => !seenInsights.has(insight));
       const newInsightCallbacks = newInsights.map((insight) => getInsightCallback(insight));
-      const newHardModeWords = new Set([...hardModeWords].filter((word) => satisfiesAllInsightCallbacks(word, newInsightCallbacks)));
+      const newHardModeWords = new Set(
+        [...hardModeWords].filter((word) =>
+          satisfiesAllInsightCallbacks(word, newInsightCallbacks),
+        ),
+      );
       setSeenInsights(union(seenInsights, newInsights));
       setHardModeWords(newHardModeWords);
 
@@ -273,17 +330,23 @@ function App() {
     }
   }
 
-  const numGuesses = () => {  // TODO: convert to useEffect?
+  const numGuesses = () => {
+    // TODO: convert to useEffect?
     return nextLetterIndex[0] + 1;
   };
 
   const saveGuess = (gData, isSolved) => {
-    const guessesDataNoBlanks = gData.filter((guess) => guess[0] !== "");  // remove blank rows
-    const newItem = { puzzleNum: puzzleNum, date: puzzleDate, solvedDate: isSolved ? today : null, guesses: guessesDataNoBlanks };
+    const guessesDataNoBlanks = gData.filter((guess) => guess[0] !== ""); // remove blank rows
+    const newItem = {
+      puzzleNum: puzzleNum,
+      date: puzzleDate,
+      solvedDate: isSolved ? today : null,
+      guesses: guessesDataNoBlanks,
+    };
     putItem(newItem); // Add/update item into IndexedDB
 
     // update guessesDB state
-    const newGuessesDB = {...guessesDB};
+    const newGuessesDB = { ...guessesDB };
     newGuessesDB[puzzleDate] = newItem;
     setGuessesDB(newGuessesDB);
   };
@@ -292,14 +355,21 @@ function App() {
     const newGuessesData = [...guessesData];
     const guessUpper = guess.toUpperCase();
     newGuessesData[nextLetterIndex[0]] = [...guessUpper];
-    setNextLetterIndex([nextLetterIndex[0], numLetters]);  // update next letter index to the end (matches what would happen on normal entering)
+    setNextLetterIndex([nextLetterIndex[0], numLetters]); // update next letter index to the end (matches what would happen on normal entering)
     setGuessesData(newGuessesData);
     enterGuess(guessUpper, newGuessesData);
-  }
+  };
 
   const SuggestedGuessButtons = ({ afterButtonClick = () => {} }) => {
     return (
-      <Stack direction="row" spacing={2} justifyContent="center" alignItems="center" useFlexGap flexWrap="wrap">
+      <Stack
+        direction="row"
+        spacing={2}
+        justifyContent="center"
+        alignItems="center"
+        useFlexGap
+        flexWrap="wrap"
+      >
         {suggestions.map((s, i) => {
           return (
             <Button
@@ -307,7 +377,7 @@ function App() {
               variant="contained"
               onClick={() => {
                 submitGuessFromButtonClick(s);
-                afterButtonClick();  // optional
+                afterButtonClick(); // optional
               }}
             >
               {s}
@@ -320,12 +390,12 @@ function App() {
 
   const playClosestUnsolvedDate = () => {
     changeDate(closestUnsolvedDate);
-  }
+  };
 
   const pages = [
     {
-      path: gamePath,  // homepage
-      label: 'Play',
+      path: gamePath, // homepage
+      label: "Play",
       element: (
         <Game
           puzzleDate={puzzleDate}
@@ -365,16 +435,17 @@ function App() {
           gray={gray}
           ref={guessesBoardRef}
         />
-      )
+      ),
     },
-    { 
-      path: '/about',
-      label: 'About',
-      element: <AboutPage />
+    {
+      path: "/about",
+      label: "About",
+      element: <AboutPage />,
     },
-    { 
-      path: '/news',
-      label: 'News',
+    { path: "/privacy", label: "Privacy", element: <Privacy /> },
+    {
+      path: "/news",
+      label: "News",
       element: (
         <NewsPage
           maxSeenNewsPostId={maxSeenNewsPostId}
@@ -382,16 +453,16 @@ function App() {
           showNewsBadge={showNewsBadge}
           setShowNewsBadge={setShowNewsBadge}
         />
-      )
+      ),
     },
-    { 
-      path: 'https://docs.google.com/forms/d/e/1FAIpQLSfKeTZCnnicWaVnn0PpGWvUjZvjrXeA7rx1wZUKCNnJJbIthA/viewform?usp=sf_link',
-      label: 'Feedback'
+    {
+      path: "https://docs.google.com/forms/d/e/1FAIpQLSfKeTZCnnicWaVnn0PpGWvUjZvjrXeA7rx1wZUKCNnJJbIthA/viewform?usp=sf_link",
+      label: "Feedback",
     },
-    { 
-      path: 'https://www.paypal.com/donate/?hosted_button_id=JWHYPBKUV6FQE',
-      label: 'Donate'
-    },
+    // {
+    //   path: 'https://www.paypal.com/donate/?hosted_button_id=JWHYPBKUV6FQE',
+    //   label: 'Donate'
+    // },
   ];
 
   return (
