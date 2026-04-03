@@ -22,7 +22,7 @@ fi
 echo "using date $DATE"
 
 # run python script for date
-python3 ./query_new_wordle_words.py -d $DATE
+python ./query_new_wordle_words.py -d $DATE
 wait
 
 # if no changes, exit
