@@ -1,0 +1,87 @@
+name: Update Wordle Word List
+
+on:
+  schedule:
+    # Chạy vào 00:00 UTC mỗi tuần lễ
+    - cron: "0 0 * * 0"
+
+  # Cho phép trigger manual từ GitHub UI
+  workflow_dispatch:
+
+jobs:
+  update-words:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Clone repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Step 2: Setup Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      # Step 3: Setup Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      # Step 4: Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+          npm install
+
+      # Step 5: Update word list
+      - name: Update word list
+        run: |
+          cd auto_update
+          TARGET_DATE=$(date -d '+14 days' +%Y-%m-%d)
+          python ./query_new_wordle_words.py -d "$TARGET_DATE" || exit 1
+        shell: bash
+
+      # Step 5b: Check if word list updated
+      - name: Check if word list updated
+        id: check_changes
+        run: |
+          if git diff --quiet HEAD -- src/assets/date_to_word.js; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      # Step 6: Build app (chỉ nếu có changes)
+      - name: Build app
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: npm run build
+
+      # Step 7: Copy build to docs folder
+      - name: Deploy to docs
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          rm -rf docs
+          mkdir -p docs
+          cp -r build/* docs/
+
+      # Step 8: Configure Git
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      # Step 9: Commit and push changes
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git add src/assets/date_to_word.js docs/
+          git commit -m "Update word list - $(date +%Y-%m-%d)"
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
